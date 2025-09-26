@@ -1,4 +1,5 @@
-from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, level_node_string
+from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, \
+    level_node_string, recognize_blocks
 
 from PIL import Image
 
@@ -7,26 +8,6 @@ white2 = (254, 254, 254, 255)
 
 def tweak_color(color):
     return white if color == white2 else color
-
-def recognize_blocks(image_path, line_list, column_list):
-    result = set()
-    try:
-        with Image.open(image_path) as img:
-            pixels = img.load()
-            for row_idx, (y, h) in enumerate(column_list):
-                for col_idx, (x, w) in enumerate(line_list):
-                    color = pixels[x + 20, y + 20]
-                    if tweak_color(color) == white:
-                        result.add((row_idx, col_idx))
-        return result
-
-    except FileNotFoundError:
-        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
-        return None
-    except Exception as e:
-        print(f"发生了未知错误: {e}")
-        return None
-
 
 def format_digit_matrix(matrix, blocks):
     lines = []
@@ -50,7 +31,7 @@ def get_level_str_from_image(image_path):
     # print(processed_column_list)
     digits_matrix = recognize_digits(image_path, processed_line_list, processed_column_list)
     # print(digits_matrix)
-    blocks = recognize_blocks(image_path, processed_line_list, processed_column_list)
+    blocks = recognize_blocks(image_path, processed_line_list, processed_column_list, lambda color: tweak_color(color) == white)
     level_str = format_digit_matrix(digits_matrix, blocks)
     return level_str
 

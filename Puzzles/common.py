@@ -314,6 +314,27 @@ def recognize_digits(image_path: str, line_list: list[tuple[int, int]], column_l
 
     return result
 
+
+def recognize_blocks(image_path:str, line_list: list[tuple[int, int]], column_list: list[tuple[int, int]], is_white) -> set[tuple[int, int]]:
+    result = set()
+    try:
+        with Image.open(image_path) as img:
+            pixels = img.load()
+            for row_idx, (y, h) in enumerate(column_list):
+                for col_idx, (x, w) in enumerate(line_list):
+                    color = pixels[x + 20, y + 20]
+                    if is_white(color):
+                        result.add((row_idx, col_idx))
+        return result
+
+    except FileNotFoundError:
+        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
+        return None
+    except Exception as e:
+        print(f"发生了未知错误: {e}")
+        return None
+
+
 def check_template_in_region_optimized(large_image_path, template_path, top_left_coord, size, max_diff=0.3):
     """
     检查大图的指定区域内是否包含带透明背景的模板图，使用 TM_SQDIFF_NORMED 方法，

@@ -1,25 +1,17 @@
 import os
 
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, \
-    level_node_string, normalize_lines, check_template_in_region_optimized
+    level_node_string, normalize_lines, check_template_in_region_optimized, recognize_blocks
 
-
-TREE_PATH = '../../images/TileContent/tree.png'
 FLOWER_PATH = '../../images/TileContent/flower_blue.png'
 MAX_DIFFERENCE = 0.3
+block_color = (170, 170, 170, 255)
 
 def recognize_template(image_path, line_list, column_list):
     result = []
     for row_idx, (y, h) in enumerate(column_list):
         row_result = []
         for col_idx, (x, w) in enumerate(line_list):
-            found_tree = check_template_in_region_optimized(
-                large_image_path=image_path,
-                template_path=TREE_PATH,
-                top_left_coord=(x, y),
-                size=(w, h),
-                max_diff=MAX_DIFFERENCE
-            )
             found_flower = check_template_in_region_optimized(
                 large_image_path=image_path,
                 template_path=FLOWER_PATH,
@@ -27,15 +19,17 @@ def recognize_template(image_path, line_list, column_list):
                 size=(w, h),
                 max_diff=MAX_DIFFERENCE
             )
-            ch = 'T' if found_tree else 'F' if found_flower else ' '
+            ch = 'F' if found_flower else ' '
             row_result.append(ch)
         result.append(row_result)
     return result
 
-def format_template_matrix(matrix):
+def format_template_matrix(matrix, blocks):
     lines = []
     for row_idx, row in enumerate(matrix):
-        line = ''.join(row)
+        line = ''
+        for col_idx, col in enumerate(row):
+            line += 'B' if col == ' ' and (row_idx, col_idx) in blocks else col
         lines.append(line + '`')
 
     # 合并为多行字符串
@@ -50,13 +44,14 @@ def get_level_str_from_image(image_path):
     processed_column_list = process_pixel_long_results(vertical_line_results, is_horizontal=False)
     processed_column_list2 = normalize_lines(processed_column_list, start_position=202)
     template_matrix = recognize_template(image_path, processed_line_list2, processed_column_list2)
-    level_str = format_template_matrix(template_matrix)
+    blocks = recognize_blocks(image_path, processed_line_list2, processed_column_list2, lambda color: color == block_color)
+    level_str = format_template_matrix(template_matrix, blocks)
     return level_str
 
 
 def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Landscaper/")
-    for i in range(13, 36):
+    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/FourMeNot/")
+    for i in range(1, 41):
         # 图像信息
         image_path = f'{level_image_path}Level_{i:03d}.png'
         print("正在处理图片 " + image_path)
