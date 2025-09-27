@@ -389,7 +389,13 @@ def recognize_walls(
         return None
 
 
-def check_template_in_region_optimized(large_image_path, template_path, top_left_coord, size, max_diff=0.3):
+def check_template_in_region_optimized(
+        large_image_path: str,
+        template_path: str,
+        top_left_coord: tuple[int, int],
+        size: tuple[int, int],
+        max_diff=0.3
+) -> bool:
     """
     检查大图的指定区域内是否包含带透明背景的模板图，使用 TM_SQDIFF_NORMED 方法，
     并在匹配前将模板缩放到 ROI 的大小。
@@ -463,6 +469,16 @@ def check_template_in_region_optimized(large_image_path, template_path, top_left
         # print(f"匹配失败：最小相似度为 {min_val:.4f} (大于最大差异: {max_diff:.4f})")
         return False
 
+
+def check_template_list_in_region(
+        large_image_path: str,
+        template_path_list: list[str],
+        top_left_coord: tuple[int, int],
+        size: tuple[int, int],
+        max_diff=0.3
+) -> int:
+    return next((template_path for template_path in template_path_list if check_template_in_region_optimized(
+        large_image_path, template_path, top_left_coord, size, max_diff)), -1)
 
 def to_hex_char(s: str) -> str:
     """

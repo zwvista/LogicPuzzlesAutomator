@@ -3,8 +3,9 @@ import os
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, \
     level_node_string, normalize_lines, check_template_list_in_region
 
-TREE_PATH = '../../images/TileContent/tree.png'
-FLOWER_PATH = '../../images/TileContent/flower_blue.png'
+HOME_PATH = '../../images/TileContent/home.png'
+SHOP_PATH = '../../images/TileContent/shoppingcart.png'
+GAS_PATH = '../../images/TileContent/gauge.png'
 
 def recognize_template(image_path, line_list, column_list):
     result = []
@@ -13,11 +14,11 @@ def recognize_template(image_path, line_list, column_list):
         for col_idx, (x, w) in enumerate(line_list):
             index = check_template_list_in_region(
                 large_image_path=image_path,
-                template_path_list=[TREE_PATH, FLOWER_PATH],
+                template_path_list=[HOME_PATH, SHOP_PATH, GAS_PATH],
                 top_left_coord=(x, y),
                 size=(w, h)
             )
-            ch = ' ' if index == -1 else 'TF'[index]
+            ch = ' ' if index == -1 else 'HSG'[index]
             row_result.append(ch)
         result.append(row_result)
     return result
@@ -45,14 +46,16 @@ def get_level_str_from_image(image_path: str) -> str:
 
 
 def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Landscaper/")
-    for i in range(13, 36):
-        # 图像信息
-        image_path = f'{level_image_path}Level_{i:03d}.png'
-        print("正在处理图片 " + image_path)
-        level_str = get_level_str_from_image(image_path)
-        node = level_node_string(i, level_str)
-        with open(f"Levels.txt", "a") as text_file:
+    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/ShopAndGas/")
+    START_LEVEL = 1  # 起始关卡: 从1开始
+    END_LEVEL = 36  # 结束关卡号
+    with open(f"Levels.txt", "w") as text_file:
+        for i in range(START_LEVEL, END_LEVEL+1):
+            # 图像信息
+            image_path = f'{level_image_path}Level_{i:03d}.png'
+            print("正在处理图片 " + image_path)
+            level_str = get_level_str_from_image(image_path)
+            node = level_node_string(i, level_str)
             text_file.write(node)
 
 # --- 主程序 ---
