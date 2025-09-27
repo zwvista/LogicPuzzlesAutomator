@@ -47,14 +47,16 @@ def get_level_str_from_image(image_path: str) -> str:
 
 
 def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/Tatami/")
-    for i in range(1, 201):
-        # 图像信息
-        image_path = f'{level_image_path}Level_{i:03d}.png'
-        print("正在处理图片 " + image_path)
-        level_str = get_level_str_from_image(image_path)
-        node = level_node_string(i, level_str)
-        with open(f"Levels.txt", "a") as text_file:
+    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/Gardener/")
+    START_LEVEL = 1  # 起始关卡: 从1开始
+    END_LEVEL = 35  # 结束关卡号
+    with open(f"Levels.txt", "w") as text_file:
+        for i in range(START_LEVEL, END_LEVEL+1):
+            # 图像信息
+            image_path = f'{level_image_path}Level_{i:03d}.png'
+            print("正在处理图片 " + image_path)
+            level_str = get_level_str_from_image(image_path)
+            node = level_node_string(i, level_str)
             text_file.write(node)
 
 # --- 主程序 ---

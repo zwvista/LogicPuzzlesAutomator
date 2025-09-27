@@ -15,15 +15,15 @@ def format_digit_matrix(matrix):
     return result
 
 
-def get_level_str_from_image(image_path):
+def get_level_str_from_image(image_path: str) -> str:
     horizontal_line_results = analyze_horizontal_line(image_path, y_coord=210, start_x=0, end_x=1180)
-    processed_line_list = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-    # print(processed_line_list)
+    processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
+    # print(processed_horizontal_lines)
     # print("\n" + "="*50 + "\n")
     vertical_line_results = analyze_vertical_line(image_path, x_coord=10, start_y=200, end_y=1380)
-    processed_column_list = process_pixel_long_results(vertical_line_results, is_horizontal=False)
-    # print(processed_column_list)
-    digits_matrix = recognize_digits(image_path, processed_line_list, processed_column_list)
+    processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
+    # print(processed_vertical_lines)
+    digits_matrix = recognize_digits(image_path, processed_horizontal_lines, processed_vertical_lines)
     # print(digits_matrix)
     level_str = format_digit_matrix(digits_matrix)
     return level_str

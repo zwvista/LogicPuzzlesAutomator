@@ -36,15 +36,15 @@ def format_template_matrix(matrix, blocks):
     result = '\n'.join(lines)
     return result
 
-def get_level_str_from_image(image_path):
+def get_level_str_from_image(image_path: str) -> str:
     horizontal_line_results = analyze_horizontal_line(image_path, y_coord=210, start_x=0, end_x=1180)
-    processed_line_list = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-    processed_line_list2 = normalize_lines(processed_line_list, start_position=2)
+    processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
+    processed_horizontal_lines2 = normalize_lines(processed_horizontal_lines, start_position=2)
     vertical_line_results = analyze_vertical_line(image_path, x_coord=10, start_y=200, end_y=1380)
-    processed_column_list = process_pixel_long_results(vertical_line_results, is_horizontal=False)
-    processed_column_list2 = normalize_lines(processed_column_list, start_position=202)
-    template_matrix = recognize_template(image_path, processed_line_list2, processed_column_list2)
-    blocks = recognize_blocks(image_path, processed_line_list2, processed_column_list2, lambda color: color == block_color)
+    processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
+    processed_vertical_lines2 = normalize_lines(processed_vertical_lines, start_position=202)
+    template_matrix = recognize_template(image_path, processed_horizontal_lines2, processed_vertical_lines2)
+    blocks = recognize_blocks(image_path, processed_horizontal_lines2, processed_vertical_lines2, lambda color: color == block_color)
     level_str = format_template_matrix(template_matrix, blocks)
     return level_str
 

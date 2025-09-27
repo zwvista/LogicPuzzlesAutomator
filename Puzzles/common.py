@@ -192,7 +192,11 @@ def report_analysis_results(results: list[PixelStreak]) -> None:
     print("--- 报告结束 ---")
 
 
-def process_pixel_long_results(results: list[PixelStreak], is_horizontal: bool, threshold: int = 50) -> list[tuple[int, int]]:
+def process_pixel_long_results(
+        results: list[PixelStreak],
+        is_horizontal: bool,
+        threshold: int = 50
+) -> list[tuple[int, int]]:
     """
     筛选像素块结果，只保留重复次数超过阈值的，并返回它们的起始X坐标和长度。
 
@@ -220,7 +224,11 @@ def process_pixel_long_results(results: list[PixelStreak], is_horizontal: bool, 
     return processed_list
 
 
-def process_pixel_short_results(results: list[PixelStreak], is_horizontal: bool, threshold: int = 10) -> list[tuple[int, int]]:
+def process_pixel_short_results(
+        results: list[PixelStreak],
+        is_horizontal: bool,
+        threshold: int = 10
+) -> list[tuple[int, int]]:
     """
     筛选像素块结果，只保留连续一段重复次数低于阈值的，并返回它们的起始X坐标和长度。
 
@@ -256,7 +264,11 @@ def process_pixel_short_results(results: list[PixelStreak], is_horizontal: bool,
     return processed_list
 
 
-def normalize_lines(line_list: list[tuple[int, int]], start_position: int, grid_length: int = 1180) -> list[tuple[int, int]]:
+def normalize_lines(
+        line_list: list[tuple[int, int]],
+        start_position: int,
+        grid_length: int = 1180
+) -> list[tuple[int, int]]:
     cell_length = max(line_list, key=lambda x: x[1])[1] + 4
     cell_count = math.floor(grid_length / cell_length + .5)
     cell_length = int(grid_length / cell_count)
@@ -268,7 +280,11 @@ def normalize_lines(line_list: list[tuple[int, int]], start_position: int, grid_
     return result
 
 
-def recognize_digits(image_path: str, line_list: list[tuple[int, int]], column_list: list[tuple[int, int]]) -> list[list[str]]:
+def recognize_digits(
+        image_path: str,
+        line_list: list[tuple[int, int]],
+        column_list: list[tuple[int, int]]
+) -> list[list[str]]:
     """
     读取图片中多个区域的数字，不进行图像预处理。
 
@@ -316,7 +332,12 @@ def recognize_digits(image_path: str, line_list: list[tuple[int, int]], column_l
     return result
 
 
-def recognize_blocks(image_path:str, line_list: list[tuple[int, int]], column_list: list[tuple[int, int]], is_white) -> set[tuple[int, int]]:
+def recognize_blocks(
+        image_path:str,
+        line_list: list[tuple[int, int]],
+        column_list: list[tuple[int, int]],
+        is_white
+) -> set[tuple[int, int]]:
     result = set()
     try:
         with Image.open(image_path) as img:
@@ -327,6 +348,38 @@ def recognize_blocks(image_path:str, line_list: list[tuple[int, int]], column_li
                     if is_white(color):
                         result.add((row_idx, col_idx))
         return result
+
+    except FileNotFoundError:
+        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
+        return None
+    except Exception as e:
+        print(f"发生了未知错误: {e}")
+        return None
+
+
+def recognize_walls(
+        image_path:str,
+        line_list: list[tuple[int, int]],
+        column_list: list[tuple[int, int]]
+) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
+    row_walls = set()
+    col_walls = set()
+    try:
+        for col_idx, (x, w) in enumerate(line_list):
+            vertical_line_results = analyze_vertical_line(image_path, x_coord=x+10, start_y=200, end_y=1380)
+            processed_column_grid = process_pixel_short_results(vertical_line_results, is_horizontal=False)
+            for row_idx, (y, h) in enumerate(processed_column_grid):
+                if row_idx == 0 or row_idx == len(processed_column_grid) - 1 or h > 4:
+                    row_walls.add((row_idx, col_idx))
+
+        for row_idx, (y, h) in enumerate(column_list):
+            horizontal_line_results = analyze_horizontal_line(image_path, y_coord=y+10, start_x=0, end_x=1180)
+            processed_line_grid = process_pixel_short_results(horizontal_line_results, is_horizontal=True)
+            for col_idx, (x, w) in enumerate(processed_line_grid):
+                if col_idx == 0 or col_idx == len(processed_line_grid) - 1 or w > 4:
+                    col_walls.add((row_idx, col_idx))
+
+        return row_walls, col_walls
 
     except FileNotFoundError:
         print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
