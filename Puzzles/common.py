@@ -292,8 +292,9 @@ def recognize_digits(image_path: str, line_list: list[tuple[int, int]], column_l
         for col_idx, (x, w) in enumerate(line_list):
             # 裁剪感兴趣区域(ROI)
             roi = img[y:y + h, x:x + w]
+            roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
-            output = reader.readtext(roi)
+            output = reader.readtext(roi_large)
             text = ' ' if not output else output[0][1]
 
             # # 图像预处理（可选但推荐）
