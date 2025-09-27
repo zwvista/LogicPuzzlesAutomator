@@ -6,7 +6,6 @@
 import time
 import os
 import subprocess
-import pyautogui
 import sys
 
 
@@ -300,7 +299,7 @@ def main():
 
     # 配置处理参数
     START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 52  # 结束关卡号
+    END_LEVEL = 111  # 结束关卡号
 
     print(f"\n配置参数:")
     print(f"起始关卡: 第{START_LEVEL:03d}关")
