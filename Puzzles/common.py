@@ -280,6 +280,14 @@ def normalize_lines(
     return result
 
 
+def recognize_text(image_path: str, x: int, y: int, w: int, h: int) -> str | None:
+    img = cv2.imread(image_path)
+    roi = img[y:y + h, x:x + w]
+    roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
+    output = reader.readtext(roi_large)
+    return output[0][1] if output else None
+
 def recognize_digits(
         image_path: str,
         line_list: list[tuple[int, int]],
@@ -337,7 +345,7 @@ def recognize_blocks(
         line_list: list[tuple[int, int]],
         column_list: list[tuple[int, int]],
         is_white
-) -> set[tuple[int, int]]:
+) -> set[tuple[int, int]] | None:
     result = set()
     try:
         with Image.open(image_path) as img:
@@ -361,7 +369,7 @@ def recognize_walls(
         image_path:str,
         line_list: list[tuple[int, int]],
         column_list: list[tuple[int, int]]
-) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
+) -> tuple[set[tuple[int, int]], set[tuple[int, int]]] | None:
     row_walls = set()
     col_walls = set()
     try:
@@ -389,88 +397,12 @@ def recognize_walls(
         return None
 
 
-def check_template_in_region_optimized(
+def get_template_diff_in_region(
         large_image_path: str,
         template_path: str,
         top_left_coord: tuple[int, int],
         size: tuple[int, int],
-        max_diff=0.3
-) -> bool:
-    """
-    检查大图的指定区域内是否包含带透明背景的模板图，使用 TM_SQDIFF_NORMED 方法，
-    并在匹配前将模板缩放到 ROI 的大小。
-
-    参数:
-    ...
-    size (tuple): 待检查区域的宽度和高度 (width, height)。
-    max_diff (float): 允许的最大差异值 (0.0 到 1.0)。
-    """
-    if not os.path.exists(large_image_path) or not os.path.exists(template_path):
-        print("错误：找不到图像文件。")
-        return False
-
-    # 1. 加载图像（带透明度）
-    template_img_4channel = cv2.imread(template_path, cv2.IMREAD_UNCHANGED)
-    large_img = cv2.imread(large_image_path)
-
-    if template_img_4channel is None or large_img is None:
-        print("错误：无法加载图像文件。")
-        return False
-
-    w_roi, h_roi = size  # 待检查区域的宽度和高度 (114, 114)
-
-    # --- 关键修正：根据 ROI 尺寸缩放模板 ---
-
-    # 缩放模板到 ROI 的尺寸 (128x128 -> 114x114)
-    # INTER_AREA 通常是缩小图像的首选方法
-    template_resized = cv2.resize(
-        template_img_4channel,
-        (w_roi, h_roi),
-        interpolation=cv2.INTER_AREA
-    )
-
-    # 分离 BGR 和 Alpha 通道
-    if template_resized.shape[2] == 4:
-        template_to_match = template_resized[:, :, :3]
-        template_mask = template_resized[:, :, 3]
-    else:
-        template_to_match = template_resized
-        template_mask = None
-
-    # 2. 裁剪指定区域
-    x, y = top_left_coord
-
-    # 裁剪区域 (ROI)
-    # 确保裁剪区域在大图范围内
-    if x < 0 or y < 0 or x + w_roi > large_img.shape[1] or y + h_roi > large_img.shape[0]:
-        print(f"错误：指定区域 ({x}, {y}, {w_roi}, {h_roi}) 超出大图边界。")
-        return False
-
-    roi = large_img[y: y + h_roi, x: x + w_roi]
-
-    # 3. 执行模板匹配：使用 TM_SQDIFF_NORMED
-    method = cv2.TM_SQDIFF_NORMED
-
-    # 此时模板和 ROI 尺寸相同 (114x114)，Assertion 检查将通过
-    result = cv2.matchTemplate(roi, template_to_match, method, mask=template_mask)
-
-    # 4. 处理 nan 值 (替换为最差值 1.0)
-    if np.isnan(result).any():
-        result = np.nan_to_num(result, nan=1.0)
-
-    # 5. 找到最佳匹配值 (最小值)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-
-    # 6. 检查是否小于等于允许的最大差异值
-    if min_val <= max_diff:
-        # print(f"匹配成功：最小相似度为 {min_val:.4f} (需小于最大差异: {max_diff:.4f})")
-        return True
-    else:
-        # print(f"匹配失败：最小相似度为 {min_val:.4f} (大于最大差异: {max_diff:.4f})")
-        return False
-
-
-def check_template_in_region_grayscale(large_image_path, template_path, top_left_coord, size, max_diff=0.3):
+) -> float:
     """
     检查大图的指定区域内是否包含带透明背景的模板图，使用 TM_SQDIFF_NORMED 方法，
     并在匹配前将模板缩放到 ROI 的大小。
@@ -530,8 +462,10 @@ def check_template_in_region_grayscale(large_image_path, template_path, top_left
     template_gray = cv2.cvtColor(template_final_bgr, cv2.COLOR_BGR2GRAY)  # 使用处理后的模板
 
     # 2. 强制转换为 np.float32
-    roi_to_match = roi_gray.astype(np.float32)
-    template_to_match = template_gray.astype(np.float32)
+    # roi_to_match = roi_gray.astype(np.float32)
+    # template_to_match = template_gray.astype(np.float32)
+    roi_to_match = roi_bgr.astype(np.float32)
+    template_to_match = template_final_bgr.astype(np.float32)
 
     # 3. 执行模板匹配：不再使用 mask 参数!
     method = cv2.TM_SQDIFF_NORMED
@@ -543,13 +477,24 @@ def check_template_in_region_grayscale(large_image_path, template_path, top_left
     else:
         min_val = result[0][0]
 
-    # 5. 检查是否小于等于允许的最大差异值
-    if min_val <= max_diff:
-        # print(f"匹配成功：最小相似度为 {min_val:.4f} (需小于最大差异: {max_diff:.4f})")
-        return True
-    else:
-        # print(f"匹配失败：最小相似度为 {min_val:.4f} (大于最大差异: {max_diff:.4f})")
-        return False
+    # print(f"最小相似度为 {min_val:.4f}")
+    return min_val
+
+
+def get_template_index_by_diff_in_region(
+        large_image_path: str,
+        template_path_list: list[str],
+        top_left_coord: tuple[int, int],
+        size: tuple[int, int]
+) -> int:
+    diff_list = [get_template_diff_in_region(
+        large_image_path=large_image_path,
+        template_path=template_path,
+        top_left_coord=top_left_coord,
+        size=size
+    ) for template_path in template_path_list]
+    index = next((i for i, diff in enumerate(diff_list) if diff == min(diff_list)))
+    return -1 if diff_list[index] >= 1.0 else index
 
 
 def to_hex_char(s: str) -> str:
@@ -571,8 +516,8 @@ def to_hex_char(s: str) -> str:
         return s  # 非数字字符串也返回原值
 
 
-def level_node_string(level: int, level_str: str) -> str:
-    return f"""  <level id="{level}">
+def level_node_string(level: int, level_str: str, attr_str: str = '') -> str:
+    return f"""  <level id="{level} {attr_str}">
     <![CDATA[
 {level_str}
     ]]>

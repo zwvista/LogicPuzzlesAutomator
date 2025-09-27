@@ -1,7 +1,7 @@
 import os
 
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, \
-    level_node_string, normalize_lines, check_template_in_region_optimized
+    level_node_string, normalize_lines, get_template_diff_in_region_rgb, get_template_index_by_diff_in_region
 
 TREE_PATH = '../../images/TileContent/tree.png'
 FLOWER_PATH = '../../images/TileContent/flower_blue.png'
@@ -11,14 +11,12 @@ def recognize_template(image_path, line_list, column_list):
     for row_idx, (y, h) in enumerate(column_list):
         row_result = []
         for col_idx, (x, w) in enumerate(line_list):
-            index = next((
-                i for i, template_path in enumerate([TREE_PATH, FLOWER_PATH])
-                if check_template_in_region_optimized(
-                    large_image_path=image_path,
-                    template_path=template_path,
-                    top_left_coord=(x, y),
-                    size=(w, h)
-                )), -1)
+            index = get_template_index_by_diff_in_region(
+                large_image_path=image_path,
+                template_path_list=[TREE_PATH, FLOWER_PATH],
+                top_left_coord=(x, y),
+                size=(w, h)
+            )
             ch = ' ' if index == -1 else 'TF'[index]
             row_result.append(ch)
         result.append(row_result)
@@ -47,8 +45,8 @@ def get_level_str_from_image(image_path: str) -> str:
 
 
 def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Landscaper/")
-    for i in range(13, 36):
+    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/Landscaper/")
+    for i in range(1, 72):
         # 图像信息
         image_path = f'{level_image_path}Level_{i:03d}.png'
         print("正在处理图片 " + image_path)

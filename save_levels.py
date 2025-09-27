@@ -65,8 +65,8 @@ def get_window_info():
 
 def create_screenshot_dir():
     """创建截图目录"""
-    desktop_path = os.path.expanduser("~/Desktop")
-    screenshot_dir = os.path.join(desktop_path, "100LG_Screenshots")
+    desktop_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels")
+    screenshot_dir = os.path.join(desktop_path, "CoffeeAndSugar")
 
     try:
         os.makedirs(screenshot_dir, exist_ok=True)
@@ -299,7 +299,7 @@ def main():
 
     # 配置处理参数
     START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 111  # 结束关卡号
+    END_LEVEL = 200  # 结束关卡号
 
     print(f"\n配置参数:")
     print(f"起始关卡: 第{START_LEVEL:03d}关")

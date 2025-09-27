@@ -1,24 +1,27 @@
 import os
 
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, \
-    level_node_string, normalize_lines, get_template_index_by_diff_in_region
+    level_node_string, normalize_lines, get_template_index_by_diff_in_region, recognize_text
 
-HOME_PATH = '../../images/TileContent/home.png'
-SHOP_PATH = '../../images/TileContent/shoppingcart.png'
-GAS_PATH = '../../images/TileContent/gauge.png'
+CUP_PATH = '../../images/TileContent/cup.png'
+SUGAR_PATH = '../../images/TileContent/cube_white.png'
 
-def recognize_template(image_path, line_list, column_list):
+def recognize_template(
+        image_path: str,
+        line_list: list[tuple[int, int]],
+        column_list: list[tuple[int, int]]
+) -> list[list[str]]:
     result = []
     for row_idx, (y, h) in enumerate(column_list):
         row_result = []
         for col_idx, (x, w) in enumerate(line_list):
             index = get_template_index_by_diff_in_region(
                 large_image_path=image_path,
-                template_path_list=[HOME_PATH, SHOP_PATH, GAS_PATH],
+                template_path_list=[CUP_PATH, SUGAR_PATH],
                 top_left_coord=(x, y),
-                size=(w, h),
+                size=(w, h)
             )
-            ch = ' ' if index == -1 else 'HSG'[index]
+            ch = ' ' if index == -1 else 'CS'[index]
             row_result.append(ch)
         result.append(row_result)
     return result
@@ -29,7 +32,6 @@ def format_template_matrix(matrix):
         line = ''.join(row)
         lines.append(line + '`')
 
-    # 合并为多行字符串
     result = '\n'.join(lines)
     return result
 
@@ -44,11 +46,14 @@ def get_level_str_from_image(image_path: str) -> str:
     level_str = format_template_matrix(template_matrix)
     return level_str
 
+# def recognize_variant(image_path: str) -> bool:
+#     recognize_text(image_path, )
+#     return True
 
 def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/ShopAndGas/")
+    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/CoffeeAndSugar/")
     START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 36  # 结束关卡号
+    END_LEVEL = 6  # 结束关卡号
     with open(f"Levels.txt", "w") as text_file:
         for i in range(START_LEVEL, END_LEVEL+1):
             # 图像信息

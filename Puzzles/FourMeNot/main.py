@@ -1,7 +1,7 @@
 import os
 
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, \
-    level_node_string, normalize_lines, check_template_in_region_optimized, recognize_blocks
+    level_node_string, normalize_lines, recognize_blocks, get_template_index_by_diff_in_region
 
 FLOWER_PATH = '../../images/TileContent/flower_blue.png'
 MAX_DIFFERENCE = 0.3
@@ -12,14 +12,13 @@ def recognize_template(image_path, line_list, column_list):
     for row_idx, (y, h) in enumerate(column_list):
         row_result = []
         for col_idx, (x, w) in enumerate(line_list):
-            found_flower = check_template_in_region_optimized(
+            index = get_template_index_by_diff_in_region(
                 large_image_path=image_path,
-                template_path=FLOWER_PATH,
+                template_path_list=[FLOWER_PATH],
                 top_left_coord=(x, y),
                 size=(w, h),
-                max_diff=MAX_DIFFERENCE
             )
-            ch = 'F' if found_flower else ' '
+            ch = ' ' if index == -1 else 'F'
             row_result.append(ch)
         result.append(row_result)
     return result
