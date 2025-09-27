@@ -1,7 +1,7 @@
 import os
 
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, \
-    level_node_string, normalize_lines, check_template_list_in_region
+    level_node_string, normalize_lines, check_template_in_region_grayscale
 
 HOME_PATH = '../../images/TileContent/home.png'
 SHOP_PATH = '../../images/TileContent/shoppingcart.png'
@@ -12,12 +12,15 @@ def recognize_template(image_path, line_list, column_list):
     for row_idx, (y, h) in enumerate(column_list):
         row_result = []
         for col_idx, (x, w) in enumerate(line_list):
-            index = check_template_list_in_region(
-                large_image_path=image_path,
-                template_path_list=[HOME_PATH, SHOP_PATH, GAS_PATH],
-                top_left_coord=(x, y),
-                size=(w, h)
-            )
+            index = next((
+                i for i, template_path in enumerate([HOME_PATH, SHOP_PATH, GAS_PATH])
+                if check_template_in_region_grayscale(
+                    large_image_path=image_path,
+                    template_path=template_path,
+                    top_left_coord=(x, y),
+                    size=(w, h),
+                    max_diff=.75
+                )), -1)
             ch = ' ' if index == -1 else 'HSG'[index]
             row_result.append(ch)
         result.append(row_result)
