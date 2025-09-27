@@ -517,7 +517,7 @@ def to_hex_char(s: str) -> str:
 
 
 def level_node_string(level: int, level_str: str, attr_str: str = '') -> str:
-    return f"""  <level id="{level} {attr_str}">
+    return f"""  <level id="{level}"{attr_str}>
     <![CDATA[
 {level_str}
     ]]>

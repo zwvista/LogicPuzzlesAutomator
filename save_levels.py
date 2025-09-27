@@ -66,7 +66,7 @@ def get_window_info():
 def create_screenshot_dir():
     """创建截图目录"""
     desktop_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels")
-    screenshot_dir = os.path.join(desktop_path, "CoffeeAndSugar")
+    screenshot_dir = os.path.join(desktop_path, "DesertDunes")
 
     try:
         os.makedirs(screenshot_dir, exist_ok=True)

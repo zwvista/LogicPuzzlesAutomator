@@ -46,21 +46,22 @@ def get_level_str_from_image(image_path: str) -> str:
     level_str = format_template_matrix(template_matrix)
     return level_str
 
-# def recognize_variant(image_path: str) -> bool:
-#     recognize_text(image_path, )
-#     return True
+def recognize_variant(image_path: str) -> bool:
+    text = recognize_text(image_path, 840, 56, 320, 34)
+    return text is not None
 
 def main():
     level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/CoffeeAndSugar/")
     START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 6  # 结束关卡号
+    END_LEVEL = 200  # 结束关卡号
     with open(f"Levels.txt", "w") as text_file:
         for i in range(START_LEVEL, END_LEVEL+1):
             # 图像信息
             image_path = f'{level_image_path}Level_{i:03d}.png'
             print("正在处理图片 " + image_path)
             level_str = get_level_str_from_image(image_path)
-            node = level_node_string(i, level_str)
+            attr_str = ' DoubleEspressoVariant="1"' if recognize_variant(image_path) else ''
+            node = level_node_string(i, level_str, attr_str)
             text_file.write(node)
 
 # --- 主程序 ---

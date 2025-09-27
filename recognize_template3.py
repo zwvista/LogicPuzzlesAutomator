@@ -82,12 +82,12 @@ def check_template_in_region_rgb(large_image_path, template_path, top_left_coord
 
 # --- 运行验证 ---
 
-LARGE_IMAGE_PATH = 'Puzzles/CoffeeAndSugar/Level_001.png'
+LARGE_IMAGE_PATH = 'Puzzles/CoffeeAndSugar/Level_015.png'
 TEMPLATE1_PATH = 'images/TileContent/cup.png'
 TEMPLATE2_PATH = 'images/TileContent/cube_white.png'
-size = (236, 236)
+size = (196, 196)
 MAX_DIFFERENCE = 0.86
-list_coords = [(472, 200), (708, 200), (944, 200)]
+list_coords = [(0, 984), (588, 984)]
 
 print(f"--- 验证开始 (使用 TM_SQDIFF_NORMED, 最大差异: {MAX_DIFFERENCE}) ---")
 
