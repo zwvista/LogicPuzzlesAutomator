@@ -44,6 +44,8 @@ def get_processed_lines(image_path: str):
     for idx, x in enumerate(x_list):
         if idx == 0 or x - x_list[idx - 1] > 10:
             x_list2.append(x)
+    if (1181 - x_list2[-1]) > 100:
+        x_list2.append(1181)
 
     processed_vertical_lines = []
     for idx, y in enumerate(y_list2):
@@ -62,12 +64,8 @@ def recognize_digits2(
 ) -> list[list[str]]:
     # 读取图像
     img = cv2.imread(image_path)
-    # 生成mask：完全等于(255,255,255)的地方设为True
-    mask = np.all(img == [255, 255, 255], axis=-1)
-    # 创建新图像，初始化为黑色
-    img_result = np.zeros_like(img)
-    # 白色像素保留
-    img_result[mask] = [255, 255, 255]
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
 
     result = []
     reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
@@ -78,10 +76,10 @@ def recognize_digits2(
             roi = img_result[y:y + h, x:x + w]
             roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
-            output = reader.readtext(roi_large)
-            if output and output[0][1] == '22':
-                output = reader.readtext(roi)
-            text = ' ' if not output else output[0][1]
+            output = reader.readtext(roi_large, detail=0)
+            if output and output[0] == '22':
+                output = reader.readtext(roi, detail=0)
+            text = ' ' if not output else output[0]
 
             # 将识别的结果添加到当前行的结果列表中
             row_result.append(text)

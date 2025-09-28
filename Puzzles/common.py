@@ -285,8 +285,8 @@ def recognize_text(image_path: str, x: int, y: int, w: int, h: int) -> str | Non
     roi = img[y:y + h, x:x + w]
     roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
-    output = reader.readtext(roi_large)
-    return output[0][1] if output else None
+    output = reader.readtext(roi_large, detail=0)
+    return output[0] if output else None
 
 def recognize_digits(
         image_path: str,
@@ -318,8 +318,8 @@ def recognize_digits(
             roi = img[y:y + h, x:x + w]
             roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
-            output = reader.readtext(roi_large)
-            text = ' ' if not output else output[0][1]
+            output = reader.readtext(roi_large, detail=0)
+            text = ' ' if not output else output[0]
 
             # # 图像预处理（可选但推荐）
             # gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
