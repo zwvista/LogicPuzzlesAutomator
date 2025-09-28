@@ -19,7 +19,8 @@ def recognize_template(
                 large_image_path=image_path,
                 template_path_list=[CUP_PATH, SUGAR_PATH],
                 top_left_coord=(x, y),
-                size=(w, h)
+                size=(w, h),
+                tweak=lambda diff_list: [diff_list[0] + 0.03, diff_list[1]],
             )
             ch = ' ' if index == -1 else 'CS'[index]
             row_result.append(ch)

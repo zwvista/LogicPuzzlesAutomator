@@ -485,7 +485,8 @@ def get_template_index_by_diff_in_region(
         large_image_path: str,
         template_path_list: list[str],
         top_left_coord: tuple[int, int],
-        size: tuple[int, int]
+        size: tuple[int, int],
+        tweak=None
 ) -> int:
     diff_list = [get_template_diff_in_region(
         large_image_path=large_image_path,
@@ -493,6 +494,8 @@ def get_template_index_by_diff_in_region(
         top_left_coord=top_left_coord,
         size=size
     ) for template_path in template_path_list]
+    if tweak:
+        diff_list = tweak(diff_list)
     index = next((i for i, diff in enumerate(diff_list) if diff == min(diff_list)))
     return -1 if diff_list[index] >= 1.0 else index
 
