@@ -59,8 +59,8 @@ def get_processed_lines(image_path: str):
 
 def recognize_digits2(
         image_path: str,
-        line_list: list[tuple[int, int]],
-        column_list: list[tuple[int, int]]
+        horizontal_line_list: list[tuple[int, int]],
+        vertical_line_list: list[tuple[int, int]]
 ) -> list[list[str]]:
     # 读取图像
     img = cv2.imread(image_path)
@@ -69,9 +69,9 @@ def recognize_digits2(
 
     result = []
     reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
-    for row_idx, (y, h) in enumerate(column_list):
+    for row_idx, (y, h) in enumerate(vertical_line_list):
         row_result = []
-        for col_idx, (x, w) in enumerate(line_list):
+        for col_idx, (x, w) in enumerate(horizontal_line_list):
             # 裁剪感兴趣区域(ROI)
             roi = img_result[y:y + h, x:x + w]
             roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)

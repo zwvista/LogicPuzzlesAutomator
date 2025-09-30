@@ -7,11 +7,11 @@ FLOWER_PATH = '../../images/TileContent/flower_blue.png'
 MAX_DIFFERENCE = 0.3
 block_color = (170, 170, 170, 255)
 
-def recognize_template(image_path, line_list, column_list):
+def recognize_template(image_path, horizontal_line_list, vertical_line_list):
     result = []
-    for row_idx, (y, h) in enumerate(column_list):
+    for row_idx, (y, h) in enumerate(vertical_line_list):
         row_result = []
-        for col_idx, (x, w) in enumerate(line_list):
+        for col_idx, (x, w) in enumerate(horizontal_line_list):
             index = get_template_index_by_diff_in_region(
                 large_image_path=image_path,
                 template_path_list=[FLOWER_PATH],

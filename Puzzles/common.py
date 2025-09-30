@@ -1,9 +1,6 @@
 import math
-import os
-
 import cv2
 import easyocr
-from PIL import Image
 import numpy as np
 
 
@@ -25,7 +22,7 @@ class PixelStreak:
 
 
 def analyze_horizontal_line(
-        image_path: str,
+        large_img: np.ndarray,
         y_coord: int,
         start_x: int,
         end_x: int,
@@ -35,7 +32,7 @@ def analyze_horizontal_line(
     分析图像中指定的一行像素，并将连续的像素块信息存储到 PixelStreak 对象列表中。
 
     参数:
-    image_path (str): 图像文件的路径。
+    large_img (np.ndarray): 使用 cv2.imread 读取的图像数组。
     y_coord (int): 要分析的像素行的Y坐标。
     start_x (int): 分析的起始X坐标。
     end_x (int): 分析的结束X坐标。
@@ -45,59 +42,55 @@ def analyze_horizontal_line(
           如果发生错误，返回 None。
     """
     try:
-        with Image.open(image_path) as img:
-            width, height = img.size
-            if not (0 <= y_coord < height and 0 <= start_x <= end_x < width):
-                print(f"错误：请求的坐标范围超出了图像尺寸 ({width}x{height})。")
-                return None
+        height, width, _ = large_img.shape
+        if not (0 <= y_coord < height and 0 <= start_x <= end_x < width):
+            print(f"错误：请求的坐标范围超出了图像尺寸 ({width}x{height})。")
+            return None
 
-            pixels = img.load()
-            results = []
+        results = []
 
-            current_streak_color = None
-            current_streak_count = 0
-            current_streak_start_x = start_x
+        current_streak_color = None
+        current_streak_count = 0
+        current_streak_start_x = start_x
 
-            for x in range(start_x, end_x + 1):
-                current_pixel_color = pixels[x, y_coord]
-                if tweak:
-                    current_pixel_color = tweak(current_pixel_color)
+        for x in range(start_x, end_x + 1):
+            current_pixel_color = tuple(large_img[y_coord, x])
 
-                if current_streak_color is None:
-                    current_streak_color = current_pixel_color
-                    current_streak_count = 1
-                    current_streak_start_x = x
-                elif current_pixel_color == current_streak_color:
-                    current_streak_count += 1
-                else:
-                    results.append(PixelStreak(
-                        position=(current_streak_start_x, y_coord),
-                        color=current_streak_color,
-                        count=current_streak_count
-                    ))
-                    current_streak_color = current_pixel_color
-                    current_streak_count = 1
-                    current_streak_start_x = x
+            if tweak:
+                current_pixel_color = tweak(current_pixel_color)
 
-            if current_streak_count > 0:
+            if current_streak_color is None:
+                current_streak_color = current_pixel_color
+                current_streak_count = 1
+                current_streak_start_x = x
+            elif current_pixel_color == current_streak_color:
+                current_streak_count += 1
+            else:
                 results.append(PixelStreak(
                     position=(current_streak_start_x, y_coord),
                     color=current_streak_color,
                     count=current_streak_count
                 ))
+                current_streak_color = current_pixel_color
+                current_streak_count = 1
+                current_streak_start_x = x
 
-            return results
+        if current_streak_count > 0:
+            results.append(PixelStreak(
+                position=(current_streak_start_x, y_coord),
+                color=current_streak_color,
+                count=current_streak_count
+            ))
 
-    except FileNotFoundError:
-        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
-        return None
+        return results
+
     except Exception as e:
         print(f"发生了未知错误: {e}")
         return None
 
 
 def analyze_vertical_line(
-        image_path: str,
+        large_img: np.ndarray,
         x_coord: int,
         start_y: int,
         end_y: int,
@@ -107,7 +100,7 @@ def analyze_vertical_line(
     分析图像中指定的一列像素，并将连续的像素块信息存储到 PixelStreak 对象列表中。
 
     参数:
-    image_path (str): 图像文件的路径。
+    large_img (np.ndarray): 使用 cv2.imread 读取的图像数组。
     x_coord (int): 要分析的像素列的X坐标。
     start_y (int): 分析的起始Y坐标。
     end_y (int): 分析的结束Y坐标。
@@ -117,52 +110,48 @@ def analyze_vertical_line(
           如果发生错误，返回 None。
     """
     try:
-        with Image.open(image_path) as img:
-            width, height = img.size
-            if not (0 <= x_coord < width and 0 <= start_y <= end_y < height):
-                print(f"错误：请求的坐标范围超出了图像尺寸 ({width}x{height})。")
-                return None
+        height, width, _ = large_img.shape
+        if not (0 <= x_coord < width and 0 <= start_y <= end_y < height):
+            print(f"错误：请求的坐标范围超出了图像尺寸 ({width}x{height})。")
+            return None
 
-            pixels = img.load()
-            results = []
+        results = []
 
-            current_streak_color = None
-            current_streak_count = 0
-            current_streak_start_y = start_y
+        current_streak_color = None
+        current_streak_count = 0
+        current_streak_start_y = start_y
 
-            for y in range(start_y, end_y + 1):
-                current_pixel_color = pixels[x_coord, y]
-                if tweak:
-                    current_pixel_color = tweak(current_pixel_color)
+        for y in range(start_y, end_y + 1):
+            current_pixel_color = tuple(large_img[y, x_coord])
 
-                if current_streak_color is None:
-                    current_streak_color = current_pixel_color
-                    current_streak_count = 1
-                    current_streak_start_y = y
-                elif current_pixel_color == current_streak_color:
-                    current_streak_count += 1
-                else:
-                    results.append(PixelStreak(
-                        position=(x_coord, current_streak_start_y),
-                        color=current_streak_color,
-                        count=current_streak_count
-                    ))
-                    current_streak_color = current_pixel_color
-                    current_streak_count = 1
-                    current_streak_start_y = y
+            if tweak:
+                current_pixel_color = tweak(current_pixel_color)
 
-            if current_streak_count > 0:
+            if current_streak_color is None:
+                current_streak_color = current_pixel_color
+                current_streak_count = 1
+                current_streak_start_y = y
+            elif current_pixel_color == current_streak_color:
+                current_streak_count += 1
+            else:
                 results.append(PixelStreak(
                     position=(x_coord, current_streak_start_y),
                     color=current_streak_color,
                     count=current_streak_count
                 ))
+                current_streak_color = current_pixel_color
+                current_streak_count = 1
+                current_streak_start_y = y
 
-            return results
+        if current_streak_count > 0:
+            results.append(PixelStreak(
+                position=(x_coord, current_streak_start_y),
+                color=current_streak_color,
+                count=current_streak_count
+            ))
 
-    except FileNotFoundError:
-        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
-        return None
+        return results
+
     except Exception as e:
         print(f"发生了未知错误: {e}")
         return None
@@ -265,11 +254,11 @@ def process_pixel_short_results(
 
 
 def normalize_lines(
-        line_list: list[tuple[int, int]],
+        horizontal_line_list: list[tuple[int, int]],
         start_position: int,
         grid_length: int = 1180
 ) -> list[tuple[int, int]]:
-    cell_length = max(line_list, key=lambda x: x[1])[1] + 4
+    cell_length = max(horizontal_line_list, key=lambda x: x[1])[1] + 4
     cell_count = math.floor(grid_length / cell_length + .5)
     cell_length = int(grid_length / cell_count)
     position = start_position
@@ -280,42 +269,39 @@ def normalize_lines(
     return result
 
 
-def recognize_text(image_path: str, x: int, y: int, w: int, h: int) -> str | None:
-    img = cv2.imread(image_path)
-    roi = img[y:y + h, x:x + w]
+def recognize_text(reader: easyocr.Reader, large_img: np.ndarray, x: int, y: int, w: int, h: int) -> str | None:
+    roi = large_img[y:y + h, x:x + w]
     roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-    reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
     output = reader.readtext(roi_large, detail=0)
     return output[0] if output else None
 
+
 def recognize_digits(
-        image_path: str,
-        line_list: list[tuple[int, int]],
-        column_list: list[tuple[int, int]]
+        reader: easyocr.Reader,
+        large_img: np.ndarray,
+        horizontal_line_list: list[tuple[int, int]],
+        vertical_line_list: list[tuple[int, int]]
 ) -> list[list[str]]:
     """
     读取图片中多个区域的数字，不进行图像预处理。
 
     参数:
         image_path: 图片路径
-        line_list: [(x1, w1), (x2, w2), ...] 水平列（x坐标和宽度）
-        column_list: [(y1, h1), (y2, h2), ...] 垂直行（y坐标和高度）
+        horizontal_line_list: [(x1, w1), (x2, w2), ...] 水平列（x坐标和宽度）
+        vertical_line_list: [(y1, h1), (y2, h2), ...] 垂直行（y坐标和高度）
 
     返回:
         二维列表，每个元素是识别出的字符或空格
     """
-    # 读取图像
-    img = cv2.imread(image_path)
 
     # 存储识别结果
     result = []
 
-    reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
-    for row_idx, (y, h) in enumerate(column_list):
+    for row_idx, (y, h) in enumerate(vertical_line_list):
         row_result = []
-        for col_idx, (x, w) in enumerate(line_list):
+        for col_idx, (x, w) in enumerate(horizontal_line_list):
             # 裁剪感兴趣区域(ROI)
-            roi = img[y:y + h, x:x + w]
+            roi = large_img[y:y + h, x:x + w]
             roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
             output = reader.readtext(roi_large, detail=0)
@@ -341,47 +327,37 @@ def recognize_digits(
 
 
 def recognize_blocks(
-        image_path:str,
-        line_list: list[tuple[int, int]],
-        column_list: list[tuple[int, int]],
+        large_img: np.ndarray,
+        horizontal_line_list: list[tuple[int, int]],
+        vertical_line_list: list[tuple[int, int]],
         is_white
 ) -> set[tuple[int, int]] | None:
     result = set()
-    try:
-        with Image.open(image_path) as img:
-            pixels = img.load()
-            for row_idx, (y, h) in enumerate(column_list):
-                for col_idx, (x, w) in enumerate(line_list):
-                    color = pixels[x + 20, y + 20]
-                    if is_white(color):
-                        result.add((row_idx, col_idx))
-        return result
-
-    except FileNotFoundError:
-        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
-        return None
-    except Exception as e:
-        print(f"发生了未知错误: {e}")
-        return None
+    for row_idx, (y, h) in enumerate(vertical_line_list):
+        for col_idx, (x, w) in enumerate(horizontal_line_list):
+            color = large_img[y + 20, x + 20]
+            if is_white(color):
+                result.add((row_idx, col_idx))
+    return result
 
 
 def recognize_walls(
-        image_path:str,
-        line_list: list[tuple[int, int]],
-        column_list: list[tuple[int, int]]
+        large_img: np.ndarray,
+        horizontal_line_list: list[tuple[int, int]],
+        vertical_line_list: list[tuple[int, int]]
 ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]] | None:
     row_walls = set()
     col_walls = set()
     try:
-        for col_idx, (x, w) in enumerate(line_list):
-            vertical_line_results = analyze_vertical_line(image_path, x_coord=x+10, start_y=200, end_y=1380)
+        for col_idx, (x, w) in enumerate(horizontal_line_list):
+            vertical_line_results = analyze_vertical_line(large_img, x_coord=x+10, start_y=200, end_y=1380)
             processed_column_grid = process_pixel_short_results(vertical_line_results, is_horizontal=False)
             for row_idx, (y, h) in enumerate(processed_column_grid):
                 if row_idx == 0 or row_idx == len(processed_column_grid) - 1 or h > 4:
                     row_walls.add((row_idx, col_idx))
 
-        for row_idx, (y, h) in enumerate(column_list):
-            horizontal_line_results = analyze_horizontal_line(image_path, y_coord=y+10, start_x=0, end_x=1180)
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            horizontal_line_results = analyze_horizontal_line(large_img, y_coord=y+10, start_x=0, end_x=1180)
             processed_line_grid = process_pixel_short_results(horizontal_line_results, is_horizontal=True)
             for col_idx, (x, w) in enumerate(processed_line_grid):
                 if col_idx == 0 or col_idx == len(processed_line_grid) - 1 or w > 4:
@@ -398,30 +374,22 @@ def recognize_walls(
 
 
 def get_template_diff_in_region(
-        large_image_path: str,
-        template_path: str,
+        large_img: np.ndarray,
+        template_img_4channel: np.ndarray,
         top_left_coord: tuple[int, int],
         size: tuple[int, int],
 ) -> float:
     """
     检查大图的指定区域内是否包含带透明背景的模板图，使用 TM_SQDIFF_NORMED 方法，
     并在匹配前将模板缩放到 ROI 的大小。
+    最终且最稳定的版本：移除 cv2.matchTemplate 的 mask 参数，通过图像操作处理透明背景。
+    并使用灰度图和 float32 确保计算的稳定性。
 
     参数:
     ...
     size (tuple): 待检查区域的宽度和高度 (width, height)。
     max_diff (float): 允许的最大差异值 (0.0 到 1.0)。
     """
-    """
-    最终且最稳定的版本：移除 cv2.matchTemplate 的 mask 参数，通过图像操作处理透明背景。
-    并使用灰度图和 float32 确保计算的稳定性。
-    """
-    if not os.path.exists(large_image_path) or not os.path.exists(template_path):
-        print("错误：找不到图像文件。")
-        return False
-
-    large_img = cv2.imread(large_image_path, cv2.IMREAD_COLOR)
-    template_img_4channel = cv2.imread(template_path, cv2.IMREAD_UNCHANGED)
 
     if template_img_4channel is None or large_img is None:
         print("错误：无法加载图像文件。")
@@ -482,18 +450,18 @@ def get_template_diff_in_region(
 
 
 def get_template_index_by_diff_in_region(
-        large_image_path: str,
-        template_path_list: list[str],
+        large_img: np.ndarray,
+        template_img_4channel_list: list[np.ndarray],
         top_left_coord: tuple[int, int],
         size: tuple[int, int],
         tweak=None
 ) -> int:
     diff_list = [get_template_diff_in_region(
-        large_image_path=large_image_path,
-        template_path=template_path,
+        large_img=large_img,
+        template_img_4channel=template_img_4channel,
         top_left_coord=top_left_coord,
         size=size
-    ) for template_path in template_path_list]
+    ) for template_img_4channel in template_img_4channel_list]
     if tweak:
         diff_list = tweak(diff_list)
     index = next((i for i, diff in enumerate(diff_list) if diff == min(diff_list)))

@@ -63,10 +63,10 @@ def get_window_info():
         return None
 
 
-def create_screenshot_dir():
+def create_screenshot_dir(puzzle_name):
     """创建截图目录"""
     desktop_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels")
-    screenshot_dir = os.path.join(desktop_path, "DesertDunes")
+    screenshot_dir = os.path.join(desktop_path, puzzle_name)
 
     try:
         os.makedirs(screenshot_dir, exist_ok=True)
@@ -77,8 +77,29 @@ def create_screenshot_dir():
         return None
 
 
-def take_window_screenshot(window_info, level_number, screenshot_dir):
-    """截取窗口截图"""
+def take_page_window_screenshot(window_info, page_number, screenshot_dir):
+    """截取选关窗口截图"""
+    try:
+        page_str = f"{page_number + 1:02d}"
+        screenshot_path = os.path.join(screenshot_dir, f"Page_{page_str}.png")
+
+        cmd = [
+            "screencapture", "-x",
+            "-R", f"{window_info['x']},{window_info['y']},{window_info['width']},{window_info['height']}",
+            screenshot_path
+        ]
+
+        subprocess.run(cmd, check=True)
+        print(f"截图已保存: Page_{page_str}.png")
+        return True
+
+    except subprocess.CalledProcessError as e:
+        print(f"截图失败: {e}")
+        return False
+
+
+def take_level_window_screenshot(window_info, level_number, screenshot_dir):
+    """截取关卡窗口截图"""
     try:
         level_str = f"{level_number:03d}"
         screenshot_path = os.path.join(screenshot_dir, f"Level_{level_str}.png")
@@ -190,7 +211,7 @@ def navigate_to_level(window_info, start_level):
     return True
 
 
-def process_level_range(start_level, end_level, window_info, screenshot_dir):
+def process_level_range(start_level, end_level, window_info, screenshot_dir, need_page_screenshot=True, need_level_screenshot=True):
     """
     处理指定范围的关卡
 
@@ -214,6 +235,10 @@ def process_level_range(start_level, end_level, window_info, screenshot_dir):
     current_level = start_level
     current_page = (start_level - 1) // 36  # 当前页面 (0-based)
 
+    # 截图
+    if need_page_screenshot:
+        take_page_window_screenshot(window_info, current_page, screenshot_dir)
+
     while current_level <= end_level:
         # 检查是否需要翻页
         level_in_page = ((current_level - 1) % 36) + 1
@@ -228,6 +253,9 @@ def process_level_range(start_level, end_level, window_info, screenshot_dir):
                 new_window_info = get_window_info()
                 if new_window_info:
                     window_info.update(new_window_info)
+                    # 截图
+                    if need_page_screenshot:
+                        take_page_window_screenshot(window_info, current_page, screenshot_dir)
                 else:
                     print("翻页后无法获取窗口信息，停止处理")
                     break
@@ -237,32 +265,33 @@ def process_level_range(start_level, end_level, window_info, screenshot_dir):
 
         print(f"\n[第{current_page + 1}页] 处理关卡 {current_level:03d} (位置{level_in_page}/36)")
 
-        # 处理当前关卡
-        try:
-            # 点击关卡按钮
-            button_x, button_y = calculate_button_position(window_info, current_level)
-            if not click_at_position(button_x, button_y, f"关卡{current_level:03d}"):
-                print(f"点击关卡{current_level:03d}失败，跳过")
-                current_level += 1
-                continue
+        if need_level_screenshot:
+            # 处理当前关卡
+            try:
+                # 点击关卡按钮
+                button_x, button_y = calculate_button_position(window_info, current_level)
+                if not click_at_position(button_x, button_y, f"关卡{current_level:03d}"):
+                    print(f"点击关卡{current_level:03d}失败，跳过")
+                    current_level += 1
+                    continue
 
-            # 等待游戏加载
-            time.sleep(4)
+                # 等待游戏加载
+                time.sleep(4)
 
-            # 截图
-            take_window_screenshot(window_info, current_level, screenshot_dir)
+                # 截图
+                take_level_window_screenshot(window_info, current_level, screenshot_dir)
 
-            # 点击返回按钮
-            back_x, back_y = calculate_back_button_position(window_info)
-            click_at_position(back_x, back_y, "返回")
+                # 点击返回按钮
+                back_x, back_y = calculate_back_button_position(window_info)
+                click_at_position(back_x, back_y, "返回")
 
-            # 等待返回完成
-            time.sleep(2)
+                # 等待返回完成
+                time.sleep(2)
 
-            print(f"✓ 关卡 {current_level:03d} 处理完成")
+                print(f"✓ 关卡 {current_level:03d} 处理完成")
 
-        except Exception as e:
-            print(f"处理关卡 {current_level:03d} 时出错: {e}")
+            except Exception as e:
+                print(f"处理关卡 {current_level:03d} 时出错: {e}")
 
         current_level += 1
 
@@ -270,7 +299,7 @@ def process_level_range(start_level, end_level, window_info, screenshot_dir):
     print(f"\n关卡范围处理完成: {start_level:03d} - {completed_level:03d}")
 
 
-def main():
+def process_puzzle(puzzle_name, start_level, end_level, need_page_screenshot=True, need_level_screenshot=True):
     """主函数"""
     print("=== 100 LG 自动化截图脚本 (坐标点击版) ===")
 
@@ -284,7 +313,7 @@ def main():
         return
 
     # 创建截图目录
-    screenshot_dir = create_screenshot_dir()
+    screenshot_dir = create_screenshot_dir(puzzle_name)
     if not screenshot_dir:
         return
 
@@ -298,8 +327,8 @@ def main():
     print(f"窗口大小: {window_info['width']}x{window_info['height']}")
 
     # 配置处理参数
-    START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 200  # 结束关卡号
+    START_LEVEL = start_level  # 起始关卡: 从1开始
+    END_LEVEL = end_level  # 结束关卡号
 
     print(f"\n配置参数:")
     print(f"起始关卡: 第{START_LEVEL:03d}关")
@@ -310,7 +339,7 @@ def main():
     print("\n开始处理...")
     print("=" * 50)
 
-    process_level_range(START_LEVEL, END_LEVEL, window_info, screenshot_dir)
+    process_level_range(START_LEVEL, END_LEVEL, window_info, screenshot_dir, need_page_screenshot, need_level_screenshot)
 
     print("=" * 50)
     print("=== 自动化完成 ===")
@@ -332,4 +361,10 @@ if __name__ == "__main__":
         print("请先安装依赖: pip3 install pyautogui")
         sys.exit(1)
 
-    main()
+    process_puzzle(
+        puzzle_name="Parks",
+        start_level=36,
+        end_level=37,
+        need_page_screenshot=True,
+        need_level_screenshot=False
+    )

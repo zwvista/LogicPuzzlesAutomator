@@ -8,13 +8,13 @@ SUGAR_PATH = '../../images/TileContent/cube_white.png'
 
 def recognize_template(
         image_path: str,
-        line_list: list[tuple[int, int]],
-        column_list: list[tuple[int, int]]
+        horizontal_line_list: list[tuple[int, int]],
+        vertical_line_list: list[tuple[int, int]]
 ) -> list[list[str]]:
     result = []
-    for row_idx, (y, h) in enumerate(column_list):
+    for row_idx, (y, h) in enumerate(vertical_line_list):
         row_result = []
-        for col_idx, (x, w) in enumerate(line_list):
+        for col_idx, (x, w) in enumerate(horizontal_line_list):
             index = get_template_index_by_diff_in_region(
                 large_image_path=image_path,
                 template_path_list=[CUP_PATH, SUGAR_PATH],
