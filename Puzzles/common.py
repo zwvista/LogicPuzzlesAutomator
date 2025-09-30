@@ -269,6 +269,56 @@ def normalize_lines(
     return result
 
 
+def recognize_grid_lines(large_img: np.ndarray) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
+    yoffset = 198
+    roi = large_img[yoffset:1385, 0:1182]
+    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    edges = cv2.Canny(blur, 50, 150)
+    linesP = cv2.HoughLinesP(
+        edges,
+        1,
+        np.pi / 180,
+        500,
+        minLineLength=500,
+        maxLineGap=300
+    )
+    y_list = []
+    x_list = []
+    if linesP is not None:
+        for line in linesP:
+            x1, y1, x2, y2 = line[0]
+            y1 += yoffset
+            y2 += yoffset
+            if abs(y2 - y1) < 10:  # horizontal
+                y_list.append(int((y1 + y2) / 2))
+            elif abs(x2 - x1) < 10:  # vertical
+                x_list.append(int((x1 + x2) / 2))
+
+    y_list = sorted(set(y_list))
+    x_list = sorted(set(x_list))
+    y_list2 = []
+    x_list2 = []
+    for idx, y in enumerate(y_list):
+        if idx == 0 or y - y_list[idx - 1] > 10:
+            y_list2.append(y)
+    for idx, x in enumerate(x_list):
+        if idx == 0 or x - x_list[idx - 1] > 10:
+            x_list2.append(x)
+    if (1181 - x_list2[-1]) > 100:
+        x_list2.append(1181)
+
+    processed_vertical_lines = []
+    for idx, y in enumerate(y_list2):
+        if idx < len(y_list2) - 1:
+            processed_vertical_lines.append((y, y_list2[idx + 1] - y))
+    processed_horizontal_lines = []
+    for idx, x in enumerate(x_list2):
+        if idx < len(x_list2) - 1:
+            processed_horizontal_lines.append((x, x_list2[idx + 1] - x))
+    return processed_horizontal_lines, processed_vertical_lines
+
+
 def recognize_text(reader: easyocr.Reader, large_img: np.ndarray, x: int, y: int, w: int, h: int) -> str | None:
     roi = large_img[y:y + h, x:x + w]
     roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
