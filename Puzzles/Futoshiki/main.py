@@ -32,22 +32,34 @@ def recognize_template(large_img, horizontal_line_list, vertical_line_list):
             elif is_op_row:
                 horizontal_line_results = analyze_horizontal_line(large_img, y_coord=y + h // 2, start_x=x, end_x=x+w)
                 processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-                index = -1 if len(processed_horizontal_lines) == 1 else get_template_index_by_diff_in_region(
-                    large_img=large_img,
-                    template_img_4channel_list=template_img_4channel_list_row,
-                    top_left_coord=(x, y),
-                    size=(w, h),
-                )
+                if len(processed_horizontal_lines) == 1:
+                    index = -1
+                else:
+                    h2 = w2 = h // 2 * 2
+                    x2 = x + w // 2 - w2 // 2
+                    y2 = y + h // 2 - h2 // 2
+                    index = get_template_index_by_diff_in_region(
+                        large_img=large_img,
+                        template_img_4channel_list=template_img_4channel_list_row,
+                        top_left_coord=(x2, y2),
+                        size=(w2, h2),
+                    )
                 ch = ' ' if index == -1 else '^v-'[index]
             else: # is_op_col
                 vertical_line_results = analyze_vertical_line(large_img, x_coord=x + w // 2, start_y=y, end_y=y+h)
                 processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
-                index = -1 if len(processed_vertical_lines) == 1 else get_template_index_by_diff_in_region(
-                    large_img=large_img,
-                    template_img_4channel_list=template_img_4channel_list_col,
-                    top_left_coord=(x, y),
-                    size=(w, h),
-                )
+                if len(processed_vertical_lines) == 1:
+                    index = -1
+                else:
+                    h2 = w2 = w // 2 * 2
+                    x2 = x + w // 2 - w2 // 2
+                    y2 = y + h // 2 - h2 // 2
+                    index = get_template_index_by_diff_in_region(
+                        large_img=large_img,
+                        template_img_4channel_list=template_img_4channel_list_col,
+                        top_left_coord=(x2, y2),
+                        size=(w2, h2),
+                    )
                 ch = ' ' if index == -1 else '<>|'[index]
             row_result.append(ch)
         result.append(row_result)
@@ -65,9 +77,9 @@ def format_template_matrix(matrix):
 
 def get_level_str_from_image(large_img: np.ndarray) -> str:
     horizontal_line_results = analyze_horizontal_line(large_img, y_coord=210, start_x=0, end_x=1180)
-    processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
+    processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True, threshold=40)
     vertical_line_results = analyze_vertical_line(large_img, x_coord=10, start_y=200, end_y=1380)
-    processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
+    processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False, threshold=40)
     template_matrix = recognize_template(large_img, processed_horizontal_lines, processed_vertical_lines)
     level_str = format_template_matrix(template_matrix)
     return level_str
@@ -77,7 +89,7 @@ def main():
     with open(f"Levels.txt", "w"):
         pass
     level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/Futoshiki/")
-    START_LEVEL = 66  # 起始关卡: 从1开始
+    START_LEVEL = 1  # 起始关卡: 从1开始
     END_LEVEL = 190  # 结束关卡号
     for i in range(START_LEVEL, END_LEVEL+1):
         # 图像信息
