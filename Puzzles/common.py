@@ -1,4 +1,7 @@
 import math
+import os
+from typing import Callable
+
 import cv2
 import easyocr
 import numpy as np
@@ -216,7 +219,7 @@ def process_pixel_long_results(
 def process_pixel_short_results(
         results: list[PixelStreak],
         is_horizontal: bool,
-        threshold: int = 10
+        threshold: int = 15
 ) -> list[tuple[int, int]]:
     """
     筛选像素块结果，只保留连续一段重复次数低于阈值的，并返回它们的起始X坐标和长度。
@@ -254,18 +257,21 @@ def process_pixel_short_results(
 
 
 def normalize_lines(
-        horizontal_line_list: list[tuple[int, int]],
+        processed_line_list: list[tuple[int, int]],
         start_position: int,
-        grid_length: int = 1180
+        grid_length: int = 1178
 ) -> list[tuple[int, int]]:
-    cell_length = max(horizontal_line_list, key=lambda x: x[1])[1] + 4
+    cell_count = len(processed_line_list) - 1
+    cell_length = grid_length // cell_count
+    cell_length = min(processed_line_list, key=lambda x: abs(x[1] - cell_length))[1] + 4
     cell_count = math.floor(grid_length / cell_length + .5)
-    cell_length = int(grid_length / cell_count)
+    cell_length = grid_length // cell_count
     position = start_position
     result = []
     for i in range(cell_count):
         result.append((position, cell_length))
         position += cell_length
+    result[-1] = result[-1][0], start_position + grid_length - result[-1][0]
     return result
 
 
@@ -355,7 +361,9 @@ def recognize_digits(
             roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
             output = reader.readtext(roi_large, detail=0)
-            text = ' ' if not output else output[0]
+            if output and output[0] == '22':
+                output = reader.readtext(roi, detail=0)
+            text = output[0] if output else ' '
 
             # # 图像预处理（可选但推荐）
             # gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
@@ -545,3 +553,35 @@ def level_node_string(level: int, level_str: str, attr_str: str = '') -> str:
   </level>
 """
 
+
+def get_levels_str_from_puzzle(
+        puzzle_name: str,
+        start_level: int,
+        end_level: int,
+        get_level_str_from_image: Callable[[np.ndarray], str],
+) -> None:
+    '''
+
+    Args:
+        puzzle_name:
+        start_level: 起始关卡: 从1开始
+        end_level: 结束关卡号
+        get_level_str_from_image:
+    Returns:
+
+    '''
+    with open(f"Levels.txt", "w"):
+        pass
+    level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{puzzle_name}/")
+    for i in range(start_level, end_level+1):
+        # 图像信息
+        image_path = f'{level_image_path}Level_{i:03d}.png'
+        print("正在处理图片 " + image_path)
+        large_img = cv2.imread(image_path, cv2.IMREAD_COLOR)
+        if large_img is None:
+            print(f"错误：无法加载图像文件。{image_path}")
+            continue
+        level_str = get_level_str_from_image(large_img)
+        node = level_node_string(i, level_str)
+        with open(f"Levels.txt", "a") as text_file:
+            text_file.write(node)

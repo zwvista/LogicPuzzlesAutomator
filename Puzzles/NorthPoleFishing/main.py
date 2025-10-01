@@ -5,13 +5,13 @@ import easyocr
 import numpy as np
 
 from Puzzles.common import analyze_horizontal_line, process_pixel_long_results, \
-    level_node_string, get_template_index_by_diff_in_region, recognize_grid_lines
+    level_node_string, get_template_index_by_diff_in_region, recognize_grid_lines, normalize_lines
 
 CUBE_PATH = '../../images/128/128_icecube.png'
 HOLE_PATH = '../../images/TileContent/ice_hole.png'
 template_img_4channel_list = [cv2.imread(path, cv2.IMREAD_UNCHANGED) for path in [CUBE_PATH, HOLE_PATH]]
 
-reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
+# reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
 
 def recognize_template(large_img, horizontal_line_list, vertical_line_list):
     result = []
@@ -46,7 +46,9 @@ def format_template_matrix(matrix):
 
 def get_level_str_from_image(large_img: np.ndarray) -> str:
     processed_horizontal_lines, processed_vertical_lines = recognize_grid_lines(large_img)
-    template_matrix = recognize_template(large_img, processed_horizontal_lines, processed_vertical_lines)
+    processed_horizontal_lines2 = normalize_lines(processed_horizontal_lines, 2)
+    processed_vertical_lines2 = normalize_lines(processed_vertical_lines, 200)
+    template_matrix = recognize_template(large_img, processed_horizontal_lines2, processed_vertical_lines2)
     level_str = format_template_matrix(template_matrix)
     return level_str
 
@@ -55,7 +57,7 @@ def main():
     with open(f"Levels.txt", "w"):
         pass
     level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/NorthPoleFishing/")
-    START_LEVEL = 1  # 起始关卡: 从1开始
+    START_LEVEL = 181  # 起始关卡: 从1开始
     END_LEVEL = 200  # 结束关卡号
     for i in range(START_LEVEL, END_LEVEL+1):
         # 图像信息

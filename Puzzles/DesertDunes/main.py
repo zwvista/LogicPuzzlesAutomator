@@ -5,21 +5,19 @@ import easyocr
 import numpy as np
 
 from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, \
-    level_node_string, to_hex_char, normalize_lines
+    level_node_string, to_hex_char, normalize_lines, recognize_grid_lines, get_levels_str_from_puzzle
 
+reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
 
-def recognize_digits2(
-        image_path: str,
+def _recognize_digits(
+        large_img: np.ndarray,
         horizontal_line_list: list[tuple[int, int]],
         vertical_line_list: list[tuple[int, int]]
 ) -> list[list[str]]:
-    # 读取图像
-    img = cv2.imread(image_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(large_img, cv2.COLOR_BGR2GRAY)
     _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
 
     result = []
-    reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
     for row_idx, (y, h) in enumerate(vertical_line_list):
         row_result = []
         for col_idx, (x, w) in enumerate(horizontal_line_list):
@@ -30,7 +28,7 @@ def recognize_digits2(
             output = reader.readtext(roi_large, detail=0)
             if output and output[0] == '22':
                 output = reader.readtext(roi, detail=0)
-            text = ' ' if not output else output[0]
+            text = output[0] if output else ' '
 
             # 将识别的结果添加到当前行的结果列表中
             row_result.append(text)
@@ -41,7 +39,7 @@ def recognize_digits2(
     return result
 
 
-def format_digit_matrix(matrix):
+def _format_digit_matrix(matrix):
     lines = []
     for row_str in matrix:
         line = ''
@@ -52,26 +50,11 @@ def format_digit_matrix(matrix):
     return result
 
 
-def get_level_str_from_image(image_path: str) -> str:
-    processed_horizontal_lines, processed_vertical_lines = recognize_grid_lines(image_path)
-    digits_matrix = recognize_digits2(image_path, processed_horizontal_lines, processed_vertical_lines)
-    level_str = format_digit_matrix(digits_matrix)
+def _get_level_str_from_image(large_img: np.ndarray) -> str:
+    processed_horizontal_lines, processed_vertical_lines = recognize_grid_lines(large_img)
+    digits_matrix = _recognize_digits(large_img, processed_horizontal_lines, processed_vertical_lines)
+    level_str = _format_digit_matrix(digits_matrix)
     return level_str
 
-def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/DesertDunes/")
-    START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 200  # 结束关卡号
-    with open(f"Levels.txt", "w") as text_file:
-        for i in range(START_LEVEL, END_LEVEL+1):
-            # 图像信息
-            image_path = f'{level_image_path}Level_{i:03d}.png'
-            print("正在处理图片 " + image_path)
-            level_str = get_level_str_from_image(image_path)
-            node = level_node_string(i, level_str)
-            text_file.write(node)
 
-
-# --- 主程序 ---
-if __name__ == "__main__":
-    main()
+get_levels_str_from_puzzle("DesertDunes", 1, 200, _get_level_str_from_image)
