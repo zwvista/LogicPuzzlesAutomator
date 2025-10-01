@@ -144,7 +144,7 @@ def calculate_button_position(window_info, level_number):
 def calculate_more_button_position(window_info):
     """计算More按钮的位置"""
     more_offset_x = 225  # More按钮相对窗口的X坐标
-    more_offset_y = 768  # More按钮相对窗口的Y坐标
+    more_offset_y = 790  # More按钮相对窗口的Y坐标
 
     more_x = window_info['x'] + more_offset_x
     more_y = window_info['y'] + more_offset_y
@@ -362,9 +362,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     process_puzzle(
-        puzzle_name="NorthPoleFishing",
+        puzzle_name="Thermometers",
         start_level=1,
-        end_level=200,
+        end_level=100,
         need_page_screenshot=True,
         need_level_screenshot=True
     )

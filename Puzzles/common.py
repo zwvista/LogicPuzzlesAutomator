@@ -1,3 +1,4 @@
+import collections
 import math
 import os
 from typing import Callable
@@ -256,23 +257,19 @@ def process_pixel_short_results(
     return processed_list
 
 
-def normalize_lines(
-        processed_line_list: list[tuple[int, int]],
-        start_position: int,
-        grid_length: int = 1178
-) -> list[tuple[int, int]]:
-    cell_count = len(processed_line_list) - 1
-    cell_length = grid_length // cell_count
-    cell_length = min(processed_line_list, key=lambda x: abs(x[1] - cell_length))[1] + 4
+def get_normalized_lines(cell_length: int) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
+    grid_length = 1180
     cell_count = math.floor(grid_length / cell_length + .5)
-    cell_length = grid_length // cell_count
-    position = start_position
-    result = []
-    for i in range(cell_count):
-        result.append((position, cell_length))
-        position += cell_length
-    result[-1] = result[-1][0], start_position + grid_length - result[-1][0]
-    return result
+    cell_length2 = 1180 // cell_count
+    def get_normalized_lines2(start_position: int) -> list[tuple[int, int]]:
+        result = []
+        position = start_position
+        for i in range(cell_count):
+            result.append((position, cell_length2))
+            position += cell_length2
+        result[-1] = result[-1][0], start_position + grid_length - result[-1][0]
+        return result
+    return get_normalized_lines2(0), get_normalized_lines2(200)
 
 
 def recognize_grid_lines(large_img: np.ndarray) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
@@ -329,6 +326,8 @@ def recognize_text(reader: easyocr.Reader, large_img: np.ndarray, x: int, y: int
     roi = large_img[y:y + h, x:x + w]
     roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     output = reader.readtext(roi_large, detail=0)
+    if output and output[0] == '22':
+        output = reader.readtext(roi, detail=0)
     return output[0] if output else None
 
 
@@ -406,29 +405,21 @@ def recognize_walls(
 ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]] | None:
     row_walls = set()
     col_walls = set()
-    try:
-        for col_idx, (x, w) in enumerate(horizontal_line_list):
-            vertical_line_results = analyze_vertical_line(large_img, x_coord=x+10, start_y=200, end_y=1380)
-            processed_column_grid = process_pixel_short_results(vertical_line_results, is_horizontal=False)
-            for row_idx, (y, h) in enumerate(processed_column_grid):
-                if row_idx == 0 or row_idx == len(processed_column_grid) - 1 or h > 4:
-                    row_walls.add((row_idx, col_idx))
+    for col_idx, (x, w) in enumerate(horizontal_line_list):
+        vertical_line_results = analyze_vertical_line(large_img, x_coord=x+10, start_y=200, end_y=1380)
+        processed_column_grid = process_pixel_short_results(vertical_line_results, is_horizontal=False)
+        for row_idx, (y, h) in enumerate(processed_column_grid):
+            if row_idx == 0 or row_idx == len(processed_column_grid) - 1 or h > 4:
+                row_walls.add((row_idx, col_idx))
 
-        for row_idx, (y, h) in enumerate(vertical_line_list):
-            horizontal_line_results = analyze_horizontal_line(large_img, y_coord=y+10, start_x=0, end_x=1180)
-            processed_line_grid = process_pixel_short_results(horizontal_line_results, is_horizontal=True)
-            for col_idx, (x, w) in enumerate(processed_line_grid):
-                if col_idx == 0 or col_idx == len(processed_line_grid) - 1 or w > 4:
-                    col_walls.add((row_idx, col_idx))
+    for row_idx, (y, h) in enumerate(vertical_line_list):
+        horizontal_line_results = analyze_horizontal_line(large_img, y_coord=y+10, start_x=0, end_x=1180)
+        processed_line_grid = process_pixel_short_results(horizontal_line_results, is_horizontal=True)
+        for col_idx, (x, w) in enumerate(processed_line_grid):
+            if col_idx == 0 or col_idx == len(processed_line_grid) - 1 or w > 4:
+                col_walls.add((row_idx, col_idx))
 
-        return row_walls, col_walls
-
-    except FileNotFoundError:
-        print(f"错误：找不到文件 '{image_path}'。请确保路径正确。")
-        return None
-    except Exception as e:
-        print(f"发生了未知错误: {e}")
-        return None
+    return row_walls, col_walls
 
 
 def get_template_diff_in_region(
