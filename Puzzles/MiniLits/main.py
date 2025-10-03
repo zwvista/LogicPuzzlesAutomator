@@ -153,9 +153,9 @@ def _create_grid_string(coded_matrix):
     return "\n".join(output_lines)
 
 def _get_level_str_from_image(large_img: np.ndarray) -> str:
-    horizontal_line_results = analyze_horizontal_line(large_img, y_coord=300, start_x=0, end_x=1180)
+    horizontal_line_results = analyze_horizontal_line(large_img, y_coord=210, start_x=0, end_x=1180)
     processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-    vertical_line_results = analyze_vertical_line(large_img, x_coord=100, start_y=200, end_y=1380)
+    vertical_line_results = analyze_vertical_line(large_img, x_coord=10, start_y=200, end_y=1380)
     processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
     combined_colors = _get_combined_pixel_colors(large_img, processed_horizontal_lines, processed_vertical_lines)
     coded_matrix = _compress_colors_to_codes(combined_colors)
