@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}",  // 关键设置：工作目录为当前文件所在目录
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}" // 可选：确保项目根目录在Python路径中
+            }
+        }
+    ]
+}
