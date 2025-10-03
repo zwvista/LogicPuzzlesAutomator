@@ -550,7 +550,7 @@ def get_levels_str_from_puzzle(
         start_level: int,
         end_level: int,
         get_level_str_from_image: Callable[[np.ndarray], str],
-        get_attr_str_from_image: Callable[[np.ndarray], str] | None = None,
+        get_attr_str_from_image: Callable[[np.ndarray, str], str] | None = None,
 ) -> None:
     '''
 
@@ -575,7 +575,7 @@ def get_levels_str_from_puzzle(
             print(f"错误：无法加载图像文件。{image_path}")
             continue
         level_str = get_level_str_from_image(large_img)
-        attr_str = get_attr_str_from_image(large_img) if get_attr_str_from_image else ''
+        attr_str = get_attr_str_from_image(large_img, level_str) if get_attr_str_from_image else ''
         node = level_node_string(i, level_str, attr_str)
         with open(f"Levels.txt", "a") as text_file:
             text_file.write(node)
