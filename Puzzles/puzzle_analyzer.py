@@ -26,13 +26,18 @@ class PixelStreak:
 
 class PuzzleAnalyzer:
 
-    def __init__(self: Self, puzzle_name: str, need_ocr_reader: bool = False):
+    def __init__(self: Self, puzzle_name: str, need_ocr_reader: bool):
         self.puzzle_name = puzzle_name
         self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
         # large_img (np.ndarray): 使用 cv2.imread 读取的图像数组。
         self.large_img = None
         self.level_str = ''
         self.attr_str = ''
+
+
+    @staticmethod
+    def get_template_img_4channel_list(path_list: list[str]) -> list[np.ndarray]:
+        return [cv2.imread(path, cv2.IMREAD_UNCHANGED) for path in path_list]
 
 
     def analyze_horizontal_line(
@@ -458,7 +463,6 @@ class PuzzleAnalyzer:
             diff_list = tweak(diff_list)
         index = next((i for i, diff in enumerate(diff_list) if diff == min(diff_list)))
         return -1 if diff_list[index] >= 1.0 else index
-
 
 
     def get_level_str_from_image(self: Self) -> str:

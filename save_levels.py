@@ -362,7 +362,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     process_puzzle(
-        puzzle_name="Thermometers",
+        puzzle_name="SheepAndWolves",
         start_level=1,
         end_level=100,
         need_page_screenshot=True,
