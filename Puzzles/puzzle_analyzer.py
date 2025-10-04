@@ -27,7 +27,7 @@ class PixelStreak:
 
 class PuzzleAnalyzer:
 
-    def __init__(self: Self, puzzle_name: str, need_ocr_reader: bool):
+    def __init__(self: Self, puzzle_name: str, level_to_cell_count: list[tuple[int, int]], need_ocr_reader: bool):
         self.puzzle_name = puzzle_name
         self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
         # large_img_bgr (np.ndarray): 使用 cv2.imread 读取的图像数组。
@@ -35,11 +35,24 @@ class PuzzleAnalyzer:
         self.large_img_rgb = None
         self.level_str = ''
         self.attr_str = ''
+        self.current_level = 0
+        self.cell_count = 0
+
+        self.levels_to_cell_count: list[tuple[int, int, int]] = []
+        n = len(level_to_cell_count) - 1
+        for i in range(0, n):
+            self.levels_to_cell_count.append((level_to_cell_count[i][0], level_to_cell_count[i + 1][0] - 1, level_to_cell_count[i][1]))
+        self.levels_to_cell_count.append((level_to_cell_count[n][0], 400, level_to_cell_count[n][1]))
+        pass
 
 
     @staticmethod
     def get_template_img_4channel_list(path_list: list[str]) -> list[np.ndarray]:
         return [cv2.imread(path, cv2.IMREAD_UNCHANGED) for path in path_list]
+
+
+    def get_cell_count(self: Self, level: int) -> int:
+        return next(count for start, end, count in self.levels_to_cell_count if level >= start and level <= end)
 
 
     def analyze_horizontal_line(
@@ -252,7 +265,9 @@ class PuzzleAnalyzer:
 
     @staticmethod
     def get_normalized_lines(
-            cell_length: int
+            cell_length: int,
+            start_x: int = 0,
+            start_y: int = 200,
     ) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
         grid_length = 1180
         cell_count = math.floor(grid_length / cell_length + .5)
@@ -265,7 +280,7 @@ class PuzzleAnalyzer:
                 position += cell_length2
             result[-1] = result[-1][0], start_position + grid_length - result[-1][0]
             return result
-        return get_normalized_lines2(0), get_normalized_lines2(200)
+        return get_normalized_lines2(start_x), get_normalized_lines2(start_y)
 
 
     def recognize_grid_lines(self: Self) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
@@ -548,6 +563,8 @@ class PuzzleAnalyzer:
             pass
         level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{self.puzzle_name}/")
         for i in range(start_level, end_level+1):
+            self.current_level = i
+            self.cell_count = self.get_cell_count(self.current_level)
             # 图像信息
             image_path = f'{level_image_path}Level_{i:03d}.png'
             print("正在处理图片 " + image_path)
