@@ -1,6 +1,7 @@
 import math
 import os
-from typing import Self
+import string
+from typing import Self, Callable
 
 import cv2
 import easyocr
@@ -29,8 +30,9 @@ class PuzzleAnalyzer:
     def __init__(self: Self, puzzle_name: str, need_ocr_reader: bool):
         self.puzzle_name = puzzle_name
         self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
-        # large_img (np.ndarray): 使用 cv2.imread 读取的图像数组。
-        self.large_img = None
+        # large_img_bgr (np.ndarray): 使用 cv2.imread 读取的图像数组。
+        self.large_img_bgr = None
+        self.large_img_rgb = None
         self.level_str = ''
         self.attr_str = ''
 
@@ -60,7 +62,7 @@ class PuzzleAnalyzer:
               如果发生错误，返回 None。
         """
         try:
-            height, width, _ = self.large_img.shape
+            height, width, _ = self.large_img_bgr.shape
             if not (0 <= y_coord < height and 0 <= start_x <= end_x < width):
                 print(f"错误：请求的坐标范围超出了图像尺寸 ({width}x{height})。")
                 return None
@@ -72,7 +74,7 @@ class PuzzleAnalyzer:
             current_streak_start_x = start_x
 
             for x in range(start_x, end_x + 1):
-                current_pixel_color = tuple(self.large_img[y_coord, x])
+                current_pixel_color = tuple(self.large_img_bgr[y_coord, x])
 
                 if tweak:
                     current_pixel_color = tweak(current_pixel_color)
@@ -127,7 +129,7 @@ class PuzzleAnalyzer:
               如果发生错误，返回 None。
         """
         try:
-            height, width, _ = self.large_img.shape
+            height, width, _ = self.large_img_bgr.shape
             if not (0 <= x_coord < width and 0 <= start_y <= end_y < height):
                 print(f"错误：请求的坐标范围超出了图像尺寸 ({width}x{height})。")
                 return None
@@ -139,7 +141,7 @@ class PuzzleAnalyzer:
             current_streak_start_y = start_y
 
             for y in range(start_y, end_y + 1):
-                current_pixel_color = tuple(self.large_img[y, x_coord])
+                current_pixel_color = tuple(self.large_img_bgr[y, x_coord])
 
                 if tweak:
                     current_pixel_color = tweak(current_pixel_color)
@@ -268,7 +270,7 @@ class PuzzleAnalyzer:
 
     def recognize_grid_lines(self: Self) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
         yoffset = 198
-        roi = self.large_img[yoffset:1385, 0:1182]
+        roi = self.large_img_bgr[yoffset:1385, 0:1182]
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
         edges = cv2.Canny(blur, 50, 150)
@@ -321,15 +323,37 @@ class PuzzleAnalyzer:
             x: int,
             y: int,
             w: int,
+            h: int,
+            allowlist=None,
+            get_roi_large: Callable[[np.ndarray], np.ndarray] = None,
+    ):
+        roi = self.large_img_rgb[y:y + h, x:x + w]
+        roi_large = get_roi_large(roi) if get_roi_large else roi
+        output = self.reader.readtext(roi_large, allowlist=allowlist)
+        return output[0] if output else None
+
+
+    def recognize_digit(
+            self: Self,
+            x: int,
+            y: int,
+            w: int,
             h: int
     ) -> str | None:
-        roi = self.large_img[y:y + h, x:x + w]
-        scale = 1 if w > 220 else 2 if w > 130 else 4
-        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-        output = self.reader.readtext(roi_large, detail=0)
-        if output and output[0] == '22':
-            output = self.reader.readtext(roi, detail=0)
-        return output[0] if output else None
+        def get_roi_large(roi: np.ndarray) -> np.ndarray:
+            scale = 1 if w > 220 else 2 if w > 130 else 3
+            roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            return roi_large
+
+        output = self.recognize_text(x, y, w, h, allowlist=string.digits, get_roi_large=get_roi_large)
+        if not output:
+            return None
+        else:
+            _, text, prob = output
+            if text == "22":
+                if prob < 0.99:
+                    text = "2"
+            return text
 
 
     def recognize_blocks(
@@ -341,7 +365,7 @@ class PuzzleAnalyzer:
         result = set()
         for row_idx, (y, h) in enumerate(vertical_line_list):
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                color = self.large_img[y + 20, x + 20]
+                color = self.large_img_bgr[y + 20, x + 20]
                 if is_white(color):
                     result.add((row_idx, col_idx))
         return result
@@ -389,7 +413,7 @@ class PuzzleAnalyzer:
         max_diff (float): 允许的最大差异值 (0.0 到 1.0)。
         """
 
-        if template_img_4channel is None or self.large_img is None:
+        if template_img_4channel is None or self.large_img_bgr is None:
             print("错误：无法加载图像文件。")
             return False
 
@@ -416,11 +440,11 @@ class PuzzleAnalyzer:
 
         # --- B. 裁剪 ROI ---
         x, y = top_left_coord
-        if x < 0 or y < 0 or x + w_roi > self.large_img.shape[1] or y + h_roi > self.large_img.shape[0]:
+        if x < 0 or y < 0 or x + w_roi > self.large_img_bgr.shape[1] or y + h_roi > self.large_img_bgr.shape[0]:
             print(f"错误：指定区域 ({x}, {y}, {w_roi}, {h_roi}) 超出大图边界。")
             return False
 
-        roi_bgr = self.large_img[y: y + h_roi, x: x + w_roi]
+        roi_bgr = self.large_img_bgr[y: y + h_roi, x: x + w_roi]
 
         # --- C. 核心优化：灰度化和强制浮点数 ---
         # 1. 转换为灰度图
@@ -527,10 +551,12 @@ class PuzzleAnalyzer:
             # 图像信息
             image_path = f'{level_image_path}Level_{i:03d}.png'
             print("正在处理图片 " + image_path)
-            self.large_img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-            if self.large_img is None:
+            self.large_img_bgr = cv2.imread(image_path, cv2.IMREAD_COLOR)
+            if self.large_img_bgr is None:
                 print(f"错误：无法加载图像文件。{image_path}")
                 continue
+            if self.reader:
+                self.large_img_rgb = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2RGB)
             self.level_str = self.get_level_str_from_image()
             self.attr_str = self.get_attr_str_from_image()
             node = self.level_node_string(i, self.level_str, self.attr_str)
