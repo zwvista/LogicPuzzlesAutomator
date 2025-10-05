@@ -362,9 +362,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     process_puzzle(
-        puzzle_name="CastleBailey",
+        puzzle_name="TierraDelFuego",
         start_level=1,
-        end_level=200,
+        end_level=82,
         need_page_screenshot=True,
         need_level_screenshot=True
     )

@@ -87,7 +87,8 @@ class PuzzleAnalyzer:
             current_streak_start_x = start_x
 
             for x in range(start_x, end_x + 1):
-                current_pixel_color = tuple(self.large_img_bgr[y_coord, x])
+                b, g, r = self.large_img_bgr[y_coord, x]
+                current_pixel_color = int(b), int(g), int(r)
 
                 if tweak:
                     current_pixel_color = tweak(current_pixel_color)
@@ -154,7 +155,8 @@ class PuzzleAnalyzer:
             current_streak_start_y = start_y
 
             for y in range(start_y, end_y + 1):
-                current_pixel_color = tuple(self.large_img_bgr[y, x_coord])
+                b, g, r = self.large_img_bgr[y, x_coord]
+                current_pixel_color = int(b), int(g), int(r)
 
                 if tweak:
                     current_pixel_color = tweak(current_pixel_color)
@@ -270,7 +272,7 @@ class PuzzleAnalyzer:
             start_y: int = 200,
     ) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
         grid_length = 1180
-        cell_count = math.floor(grid_length / cell_length + .5)
+        cell_count = math.floor(grid_length / cell_length + .3)
         cell_length2 = 1180 // cell_count
         def get_normalized_lines2(start_position: int) -> list[tuple[int, int]]:
             result = []
