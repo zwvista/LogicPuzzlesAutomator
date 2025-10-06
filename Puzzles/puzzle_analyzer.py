@@ -7,6 +7,8 @@ import cv2
 import easyocr
 import numpy as np
 
+from Puzzles.puzzle_snapshot_automator import take_snapshot_puzzle
+
 
 class PixelStreak:
     """
@@ -27,8 +29,15 @@ class PixelStreak:
 
 class PuzzleAnalyzer:
 
-    def __init__(self: Self, puzzle_name: str, level_to_cell_count: list[tuple[int, int]], need_ocr_reader: bool):
+    def __init__(
+            self: Self,
+            puzzle_name: str,
+            level_count: int,
+            level_to_cell_count: list[tuple[int, int]],
+            need_ocr_reader: bool
+    ):
         self.puzzle_name = puzzle_name
+        self.level_count = level_count
         self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
         # large_img_bgr (np.ndarray): 使用 cv2.imread 读取的图像数组。
         self.large_img_bgr = None
@@ -43,7 +52,17 @@ class PuzzleAnalyzer:
         for i in range(0, n):
             self.levels_to_cell_count.append((level_to_cell_count[i][0], level_to_cell_count[i + 1][0] - 1, level_to_cell_count[i][1]))
         self.levels_to_cell_count.append((level_to_cell_count[n][0], 400, level_to_cell_count[n][1]))
-        pass
+
+
+    def take_snapshot(
+            self: Self,
+            start_level: int = 1,
+            end_level: int | None = None,
+            need_page_screenshot: bool = True,
+            need_level_screenshot: bool = True
+    ) -> None:
+        end_level = end_level or self.level_count
+        take_snapshot_puzzle(start_level, end_level, need_page_screenshot, need_level_screenshot)
 
 
     @staticmethod
@@ -550,8 +569,8 @@ class PuzzleAnalyzer:
 
     def get_levels_str_from_puzzle(
             self: Self,
-            start_level: int,
-            end_level: int,
+            start_level: int = 1,
+            end_level: int | None = None,
     ) -> None:
         '''
 
@@ -561,6 +580,7 @@ class PuzzleAnalyzer:
         Returns:
 
         '''
+        end_level = end_level or self.level_count
         with open(f"Levels.txt", "w"):
             pass
         level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{self.puzzle_name}/")

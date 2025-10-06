@@ -299,7 +299,7 @@ def process_level_range(start_level, end_level, window_info, screenshot_dir, nee
     print(f"\n关卡范围处理完成: {start_level:03d} - {completed_level:03d}")
 
 
-def process_puzzle(puzzle_name, start_level, end_level, need_page_screenshot=True, need_level_screenshot=True):
+def take_snapshot_puzzle(puzzle_name, start_level, end_level, need_page_screenshot=True, need_level_screenshot=True):
     """主函数"""
     print("=== 100 LG 自动化截图脚本 (坐标点击版) ===")
 
@@ -361,10 +361,10 @@ if __name__ == "__main__":
         print("请先安装依赖: pip3 install pyautogui")
         sys.exit(1)
 
-    process_puzzle(
-        puzzle_name="TierraDelFuego",
-        start_level=1,
-        end_level=82,
+    take_snapshot_puzzle(
+        puzzle_name="NumberCrossing",
+        start_level=152,
+        end_level=200,
         need_page_screenshot=True,
         need_level_screenshot=True
     )
