@@ -1,18 +1,3 @@
-# import sys
-# import os
-
-# # 获取项目根目录的绝对路径
-# current_file = os.path.abspath(__file__)
-# sentinels_dir = os.path.dirname(current_file)
-# puzzles_dir = os.path.dirname(sentinels_dir)
-# project_root = os.path.dirname(puzzles_dir)
-
-# # 添加项目根目录到 Python 路径
-# sys.path.insert(0, project_root)
-
-# print(f"Project root: {project_root}")
-# print(f"Python path: {sys.path}")
-
 import cv2
 import easyocr
 import numpy as np
