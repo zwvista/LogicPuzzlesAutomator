@@ -377,7 +377,8 @@ class PuzzleAnalyzer:
             h: int
     ) -> str | None:
         def get_roi_large(roi: np.ndarray) -> np.ndarray:
-            scale = 1 if w > 180 else 2 if w > 130 else 4
+            # scale = .5 if w > 220 else 1 if w > 180 else 1.5 if w > 130 else 2.5
+            scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3
             roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
             return roi_large
 
@@ -389,7 +390,30 @@ class PuzzleAnalyzer:
             if text == "22":
                 if prob < 0.99:
                     text = "2"
+            # elif text == "7":
+            #     if prob < 0.35:
+            #         text = "1"
             return text
+
+
+    def recognize_digits(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
+                if len(horizontal_line_results) == 1:
+                    ch = ' '
+                else:
+                    ch = self.recognize_digit(x, y, w, h) or ' '
+                    ch = self.to_hex_char(ch)
+                row_result.append(ch)
+            result.append(row_result)
+        return result
 
 
     def recognize_blocks(
@@ -411,18 +435,18 @@ class PuzzleAnalyzer:
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
-    ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]] | None:
+    ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
         row_walls = set()
         col_walls = set()
         for col_idx, (x, w) in enumerate(horizontal_line_list):
-            vertical_line_results = self.analyze_vertical_line(x_coord=x+10, start_y=200, end_y=1380)
+            vertical_line_results = self.analyze_vertical_line(x_coord=x+15, start_y=200, end_y=1380)
             processed_column_grid = self.process_pixel_short_results(vertical_line_results, is_horizontal=False)
             for row_idx, (y, h) in enumerate(processed_column_grid):
                 if row_idx == 0 or row_idx == len(processed_column_grid) - 1 or h > 4:
                     row_walls.add((row_idx, col_idx))
 
         for row_idx, (y, h) in enumerate(vertical_line_list):
-            horizontal_line_results = self.analyze_horizontal_line(y_coord=y+10, start_x=0, end_x=1180)
+            horizontal_line_results = self.analyze_horizontal_line(y_coord=y+15, start_x=0, end_x=1180)
             processed_line_grid = self.process_pixel_short_results(horizontal_line_results, is_horizontal=True)
             for col_idx, (x, w) in enumerate(processed_line_grid):
                 if col_idx == 0 or col_idx == len(processed_line_grid) - 1 or w > 4:

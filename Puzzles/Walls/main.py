@@ -13,25 +13,6 @@ class Analyzer(PuzzleAnalyzer):
             True
         )
 
-    def recognize_digits(
-            self: Self,
-            horizontal_line_list: list[tuple[int, int]],
-            vertical_line_list: list[tuple[int, int]]
-    ) -> list[list[str]]:
-        result = []
-        for row_idx, (y, h) in enumerate(vertical_line_list):
-            row_result = []
-            for col_idx, (x, w) in enumerate(horizontal_line_list):
-                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
-                if len(horizontal_line_results) == 1:
-                    ch = ' '
-                else:
-                    ch = self.recognize_digit(x, y, w, h) or ' '
-                    ch = self.to_hex_char(ch)
-                row_result.append(ch)
-            result.append(row_result)
-        return result
-
     @override
     def get_level_str_from_image(self: Self) -> str:
         cell_length = 1180 // self.cell_count
@@ -42,7 +23,4 @@ class Analyzer(PuzzleAnalyzer):
 
 
 analyzer = Analyzer()
-analyzer.get_levels_str_from_puzzle(
-    83,
-    83
-)
+analyzer.get_levels_str_from_puzzle()
