@@ -1,44 +1,48 @@
-import os
+from typing import Self, override
 
-from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, \
-    level_node_string, to_hex_char
-
-
-def format_digit_matrix(matrix):
-    lines = []
-    for row_str in matrix:
-        line = ''
-        for col_str in row_str:
-            line += to_hex_char(col_str)
-        lines.append(line + '`')
-    result = '\n'.join(lines)
-    return result
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer
 
 
-def get_level_str_from_image(image_path: str) -> str:
-    horizontal_line_results = analyze_horizontal_line(image_path, y_coord=210, start_x=0, end_x=1180)
-    processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-    vertical_line_results = analyze_vertical_line(image_path, x_coord=10, start_y=200, end_y=1380)
-    processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
-    digits_matrix = recognize_digits(image_path, processed_horizontal_lines, processed_vertical_lines)
-    level_str = format_digit_matrix(digits_matrix)
-    return level_str
+class Analyzer(PuzzleAnalyzer):
+
+    def __init__(self: Self):
+        super().__init__(
+            "Walls",
+            111,
+            [(1,6), (10,7), (29,8), (39,9), (48,10), (62,8), (72,9), (92,10)],
+            True
+        )
+
+    def recognize_digits(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
+                if len(horizontal_line_results) == 1:
+                    ch = ' '
+                else:
+                    ch = self.recognize_digit(x, y, w, h) or ' '
+                    ch = self.to_hex_char(ch)
+                row_result.append(ch)
+            result.append(row_result)
+        return result
+
+    @override
+    def get_level_str_from_image(self: Self) -> str:
+        cell_length = 1180 // self.cell_count
+        processed_horizontal_lines2, processed_vertical_lines2 = self.get_normalized_lines(cell_length)
+        matrix = self.recognize_digits(processed_horizontal_lines2, processed_vertical_lines2)
+        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        return level_str
 
 
-def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/Walls/")
-    START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 111  # 结束关卡号
-    for i in range(START_LEVEL, END_LEVEL+1):
-        # 图像信息
-        image_path = f'{level_image_path}Level_{i:03d}.png'
-        print("正在处理图片 " + image_path)
-        level_str = get_level_str_from_image(image_path)
-        node = level_node_string(i, level_str)
-        with open(f"Levels.txt", "a") as text_file:
-            text_file.write(node)
-
-
-# --- 主程序 ---
-if __name__ == "__main__":
-    main()
+analyzer = Analyzer()
+analyzer.get_levels_str_from_puzzle(
+    83,
+    83
+)

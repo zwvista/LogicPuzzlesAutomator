@@ -377,7 +377,7 @@ class PuzzleAnalyzer:
             h: int
     ) -> str | None:
         def get_roi_large(roi: np.ndarray) -> np.ndarray:
-            scale = 1 if w > 220 else 2 if w > 130 else 3
+            scale = 1 if w > 180 else 2 if w > 130 else 4
             roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
             return roi_large
 
