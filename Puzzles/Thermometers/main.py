@@ -20,7 +20,6 @@ class Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            "Thermometers",
             100,
             [(1,4), (11,5), (21,6), (31,7), (51,8), (71,9), (86,10)],
             True

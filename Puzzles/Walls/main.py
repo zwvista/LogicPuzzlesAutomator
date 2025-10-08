@@ -7,11 +7,17 @@ class Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            "Walls",
             111,
             [(1,6), (10,7), (29,8), (39,9), (48,10), (62,8), (72,9), (92,10)],
             True
         )
+
+    @override
+    def get_scale_for_digit_recognition(
+            self: Self,
+            w: int
+    ) -> float:
+        return .5 if w > 220 else 1 if w > 180 else 1.5 if w > 130 else 2.5
 
     @override
     def get_level_str_from_image(self: Self) -> str:

@@ -31,12 +31,14 @@ class PuzzleAnalyzer:
 
     def __init__(
             self: Self,
-            puzzle_name: str,
             level_count: int,
             level_to_cell_count: list[tuple[int, int]],
-            need_ocr_reader: bool
+            need_ocr_reader: bool,
+            puzzle_name: str | None = None,
     ):
         self.puzzle_name = puzzle_name
+        if not self.puzzle_name:
+            self.puzzle_name = os.path.split(os.getcwd())[-1]
         self.level_count = level_count
         self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
         # large_img_bgr (np.ndarray): 使用 cv2.imread 读取的图像数组。
@@ -369,6 +371,13 @@ class PuzzleAnalyzer:
         return output[0] if output else None
 
 
+    def get_scale_for_digit_recognition(
+            self: Self,
+            w: int
+    ) -> float:
+        return .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3
+
+
     def recognize_digit(
             self: Self,
             x: int,
@@ -376,17 +385,14 @@ class PuzzleAnalyzer:
             w: int,
             h: int
     ) -> str | None:
-        def get_roi_large(roi: np.ndarray) -> np.ndarray:
-            # scale = .5 if w > 220 else 1 if w > 180 else 1.5 if w > 130 else 2.5
-            scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3
-            roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-            return roi_large
-
-        output = self.recognize_text(x, y, w, h, allowlist=string.digits, get_roi_large=get_roi_large)
+        roi = self.large_img_rgb[y:y + h, x:x + w]
+        scale = self.get_scale_for_digit_recognition(w)
+        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        output = self.reader.readtext(roi_large, allowlist=string.digits)
         if not output:
             return None
         else:
-            _, text, prob = output
+            _, text, prob = output[0]
             if text == "22":
                 if prob < 0.99:
                     text = "2"

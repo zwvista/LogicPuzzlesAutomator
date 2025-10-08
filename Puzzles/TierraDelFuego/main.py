@@ -10,7 +10,6 @@ class Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            "TierraDelFuego",
             82
             [(1,5), (4,6), (13,7), (23,8), (35,9), (47,10), (59,11), (71,12)],
             True
