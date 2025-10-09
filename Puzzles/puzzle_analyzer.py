@@ -1,6 +1,6 @@
-import math
 import os
 import string
+from itertools import pairwise
 from typing import Self, Callable
 
 import cv2
@@ -27,6 +27,110 @@ class PixelStreak:
         return f"PixelStreak(position={self.position}, color={self.color}, count={self.count})"
 
 
+def process_pixel_long_results(
+        results: list[PixelStreak],
+        is_horizontal: bool,
+        threshold: int = 50
+) -> list[tuple[int, int]]:
+    """
+    筛选像素块结果，只保留重复次数超过阈值的，并返回它们的起始X坐标和长度。
+
+    参数:
+    results (list): analyze_horizontal_line 函数返回的 PixelStreak 对象列表。
+    is_horizontal: True 表示处理行，False 表示处理行
+    threshold (int): 重复次数的最低门槛。
+
+    返回:
+    list: 一个包含元组的列表，每个元组的格式为
+    is_horizontal 为True时 (起始X坐标, 长度)
+    is_horizontal False时 (起始Y坐标, 长度)。
+    """
+    if results is None:
+        return []
+
+    processed_list = []
+    for streak in results:
+        # 筛选：检查重复次数是否超过门槛
+        if streak.count >= threshold:
+            position = streak.position[0 if is_horizontal else 1]
+            # 添加到结果列表，格式为 (起始X坐标, 长度)
+            processed_list.append((position, streak.count))
+
+    return processed_list
+
+
+def process_pixel_short_results(
+        results: list[PixelStreak],
+        is_horizontal: bool,
+        threshold: int = 15
+) -> list[tuple[int, int]]:
+    """
+    筛选像素块结果，只保留连续一段重复次数低于阈值的，并返回它们的起始X坐标和长度。
+
+    参数:
+    results (list): analyze_horizontal_line 函数返回的 PixelStreak 对象列表。
+    is_horizontal: True 表示处理行，False 表示处理行
+    threshold (int): 重复次数的最低门槛。
+
+    返回:
+    list: 一个包含元组的列表，每个元组的格式为
+    is_horizontal 为True时 (起始X坐标, 长度)
+    is_horizontal False时 (起始Y坐标, 长度)。
+    """
+    if results is None:
+        return []
+
+    processed_list = []
+    count = 0
+    position = None
+    for streak in results:
+        # 筛选：检查重复次数是否超过门槛
+        if streak.count <= threshold:
+            # 添加到结果列表，格式为 (起始X坐标, 长度)
+            count += streak.count
+            if not position:
+                position = streak.position[0 if is_horizontal else 1]
+        else:
+            processed_list.append((position, count))
+            count = 0
+            position = None
+
+    processed_list.append((position, count))
+    return processed_list
+
+
+def to_hex_char(
+        s: str
+) -> str:
+    """
+    将表示 0~15 的数字字符串转换为对应的十六进制字符（大写）
+    空格保持不变
+    其他无效输入返回原字符串或报错（可按需调整）
+    """
+    if s == ' ':
+        return s  # 空格不转换
+
+    try:
+        num = int(s)
+        if 0 <= num <= 15:
+            return format(num, 'X')  # 转为大写十六进制字符，如 'A', 'F'
+        else:
+            return s  # 超出范围则返回原字符串
+    except ValueError:
+        return s  # 非数字字符串也返回原值
+
+
+def get_template_img_4channel_list(*paths: str) -> list[np.ndarray]:
+    return [cv2.imread(path, cv2.IMREAD_UNCHANGED) for path in paths]
+
+
+def get_level_str_from_matrix(
+        matrix: list[list[str]],
+        elem_func: Callable[[str], str] = lambda s: s,
+) -> str:
+    return '\n'.join(''.join(elem_func(s) for s in row) + '`' for row in matrix)
+
+
 class PuzzleAnalyzer:
 
     def __init__(
@@ -36,9 +140,7 @@ class PuzzleAnalyzer:
             need_ocr_reader: bool,
             puzzle_name: str | None = None,
     ):
-        self.puzzle_name = puzzle_name
-        if not self.puzzle_name:
-            self.puzzle_name = os.path.split(os.getcwd())[-1]
+        self.puzzle_name = puzzle_name or os.path.split(os.getcwd())[-1]
         self.level_count = level_count
         self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
         # large_img_bgr (np.ndarray): 使用 cv2.imread 读取的图像数组。
@@ -48,12 +150,13 @@ class PuzzleAnalyzer:
         self.attr_str = ''
         self.current_level = 0
         self.cell_count = 0
+        self.cell_length = 0
 
         self.levels_to_cell_count: list[tuple[int, int, int]] = []
-        n = len(level_to_cell_count) - 1
-        for i in range(0, n):
-            self.levels_to_cell_count.append((level_to_cell_count[i][0], level_to_cell_count[i + 1][0] - 1, level_to_cell_count[i][1]))
-        self.levels_to_cell_count.append((level_to_cell_count[n][0], 400, level_to_cell_count[n][1]))
+        for (l1, c1), (l2, c2) in pairwise(level_to_cell_count):
+            self.levels_to_cell_count.append((l1, l2 - 1, c1))
+        self.levels_to_cell_count.append((l2, self.level_count, c2))
+        pass
 
 
     def take_snapshot(
@@ -67,13 +170,8 @@ class PuzzleAnalyzer:
         take_snapshot_puzzle(start_level, end_level, need_page_screenshot, need_level_screenshot)
 
 
-    @staticmethod
-    def get_template_img_4channel_list(path_list: list[str]) -> list[np.ndarray]:
-        return [cv2.imread(path, cv2.IMREAD_UNCHANGED) for path in path_list]
-
-
     def get_cell_count(self: Self, level: int) -> int:
-        return next(count for start, end, count in self.levels_to_cell_count if level >= start and level <= end)
+        return next(count for start, end, count in self.levels_to_cell_count if start <= level <= end)
 
 
     def analyze_horizontal_line(
@@ -212,98 +310,21 @@ class PuzzleAnalyzer:
             return None
 
 
-    @staticmethod
-    def process_pixel_long_results(
-            results: list[PixelStreak],
-            is_horizontal: bool,
-            threshold: int = 50
-    ) -> list[tuple[int, int]]:
-        """
-        筛选像素块结果，只保留重复次数超过阈值的，并返回它们的起始X坐标和长度。
-
-        参数:
-        results (list): analyze_horizontal_line 函数返回的 PixelStreak 对象列表。
-        is_horizontal: True 表示处理行，False 表示处理行
-        threshold (int): 重复次数的最低门槛。
-
-        返回:
-        list: 一个包含元组的列表，每个元组的格式为
-        is_horizontal 为True时 (起始X坐标, 长度)
-        is_horizontal False时 (起始Y坐标, 长度)。
-        """
-        if results is None:
-            return []
-
-        processed_list = []
-        for streak in results:
-            # 筛选：检查重复次数是否超过门槛
-            if streak.count >= threshold:
-                position = streak.position[0 if is_horizontal else 1]
-                # 添加到结果列表，格式为 (起始X坐标, 长度)
-                processed_list.append((position, streak.count))
-
-        return processed_list
-
-
-    @staticmethod
-    def process_pixel_short_results(
-            results: list[PixelStreak],
-            is_horizontal: bool,
-            threshold: int = 15
-    ) -> list[tuple[int, int]]:
-        """
-        筛选像素块结果，只保留连续一段重复次数低于阈值的，并返回它们的起始X坐标和长度。
-
-        参数:
-        results (list): analyze_horizontal_line 函数返回的 PixelStreak 对象列表。
-        is_horizontal: True 表示处理行，False 表示处理行
-        threshold (int): 重复次数的最低门槛。
-
-        返回:
-        list: 一个包含元组的列表，每个元组的格式为
-        is_horizontal 为True时 (起始X坐标, 长度)
-        is_horizontal False时 (起始Y坐标, 长度)。
-        """
-        if results is None:
-            return []
-
-        processed_list = []
-        count = 0
-        position = None
-        for streak in results:
-            # 筛选：检查重复次数是否超过门槛
-            if streak.count <= threshold:
-                # 添加到结果列表，格式为 (起始X坐标, 长度)
-                count += streak.count
-                if not position:
-                    position = streak.position[0 if is_horizontal else 1]
-            else:
-                processed_list.append((position, count))
-                count = 0
-                position = None
-
-        processed_list.append((position, count))
-        return processed_list
-
-
-    @staticmethod
-    def get_normalized_lines(
-            cell_length: int,
+    def get_grid_lines_by_cell_count(
+            self: Self,
+            cell_count: int,
             start_x: int = 0,
             start_y: int = 200,
     ) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
-        grid_length = 1180
-        cell_count = math.floor(grid_length / cell_length + .3)
-        cell_length2 = 1180 // cell_count
-        def get_normalized_lines2(start_position: int) -> list[tuple[int, int]]:
+        self.cell_length = 1180 // cell_count
+        def get_grid_lines_by_cell_count2(start_position: int) -> list[tuple[int, int]]:
             result = []
             position = start_position
             for i in range(cell_count):
-                result.append((position, cell_length2))
-                position += cell_length2
-            result[-1] = result[-1][0], start_position + grid_length - result[-1][0]
+                result.append((position, self.cell_length))
+                position += self.cell_length
             return result
-        return get_normalized_lines2(start_x), get_normalized_lines2(start_y)
+        return get_grid_lines_by_cell_count2(start_x), get_grid_lines_by_cell_count2(start_y)
 
 
     def recognize_grid_lines(self: Self) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
@@ -378,13 +399,7 @@ class PuzzleAnalyzer:
         return .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3
 
 
-    def recognize_digit(
-            self: Self,
-            x: int,
-            y: int,
-            w: int,
-            h: int
-    ) -> str | None:
+    def recognize_digit(self: Self, x: int, y: int, w: int, h: int) -> str | None:
         roi = self.large_img_rgb[y:y + h, x:x + w]
         scale = self.get_scale_for_digit_recognition(w)
         roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
@@ -416,7 +431,6 @@ class PuzzleAnalyzer:
                     ch = ' '
                 else:
                     ch = self.recognize_digit(x, y, w, h) or ' '
-                    ch = self.to_hex_char(ch)
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -426,13 +440,13 @@ class PuzzleAnalyzer:
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]],
-            is_white
-    ) -> set[tuple[int, int]] | None:
+            is_block: Callable[[tuple[int, int, int]], bool]
+    ) -> set[tuple[int, int]]:
         result = set()
         for row_idx, (y, h) in enumerate(vertical_line_list):
             for col_idx, (x, w) in enumerate(horizontal_line_list):
                 color = self.large_img_bgr[y + 20, x + 20]
-                if is_white(color):
+                if is_block(color):
                     result.add((row_idx, col_idx))
         return result
 
@@ -562,41 +576,6 @@ class PuzzleAnalyzer:
         return ''
 
 
-    @staticmethod
-    def to_hex_char(
-            s: str
-    ) -> str:
-        """
-        将表示 0~15 的数字字符串转换为对应的十六进制字符（大写）
-        空格保持不变
-        其他无效输入返回原字符串或报错（可按需调整）
-        """
-        if s == ' ':
-            return s  # 空格不转换
-
-        try:
-            num = int(s)
-            if 0 <= num <= 15:
-                return format(num, 'X')  # 转为大写十六进制字符，如 'A', 'F'
-            else:
-                return s  # 超出范围则返回原字符串
-        except ValueError:
-            return s  # 非数字字符串也返回原值
-
-
-    @staticmethod
-    def level_node_string(
-            level: int,
-            level_str: str,
-            attr_str: str = ''
-    ) -> str:
-        return f"""  <level id="{level}"{attr_str}>
-    <![CDATA[
-{level_str}
-    ]]>
-  </level>
-"""
-
     def get_levels_str_from_puzzle(
             self: Self,
             start_level: int = 1,
@@ -628,6 +607,11 @@ class PuzzleAnalyzer:
                 self.large_img_rgb = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2RGB)
             self.level_str = self.get_level_str_from_image()
             self.attr_str = self.get_attr_str_from_image()
-            node = self.level_node_string(i, self.level_str, self.attr_str)
+            node = f"""  <level id="{i}"{self.attr_str}>
+    <![CDATA[
+{self.level_str}
+    ]]>
+  </level>
+"""
             with open(f"Levels.txt", "a") as text_file:
                 text_file.write(node)

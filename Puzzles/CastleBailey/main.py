@@ -2,36 +2,26 @@ import string
 from typing import Self, override
 
 import cv2
-import numpy as np
 
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 13
+class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            "CastleBailey",
+            200,
             [(1,4), (6,5), (21,6), (51,7), (81,8), (111,9), (141,10), (171,11)],
             True
         )
 
-
     @override
-    def recognize_digit(
-            self: Self,
-            x: int,
-            y: int,
-            w: int,
-            h: int
-    ) -> str | None:
-        def get_roi_large(roi: np.ndarray) -> np.ndarray:
-            scale = .75 * self.cell_count
-            roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-            return roi_large
-
-        x = max(0, min(1180 - w, x))
-        output = self.recognize_text(x, y, w, h, allowlist=string.digits, get_roi_large=get_roi_large)
+    def recognize_digit(self: Self, x: int, y: int, w: int, h: int) -> str | None:
+        roi = self.large_img_rgb[y:y + h, x:x + w]
+        scale = .75 * self.cell_count
+        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        output = self.reader.readtext(roi_large, allowlist=string.digits)
         if not output:
             return None
         else:
@@ -40,8 +30,7 @@ class Analyzer(PuzzleAnalyzer):
                 text = "2" if text == "22" else "1" if text == "7" or text == "71" or text == "17" else text
             return text
 
-
-    def recognize_digits(
+    def recognize_vertex_digits(
             self: Self,
             x_list: list[int],
             y_list: list[int],
@@ -70,14 +59,10 @@ class Analyzer(PuzzleAnalyzer):
         cell_length = max(processed_horizontal_lines, key=lambda x: x[1])[1]
         x_list = [start_x + i * cell_length for i in range(self.cell_count + 1)]
         y_list = [start_y + i * cell_length for i in range(self.cell_count + 1)]
-        matrix = self.recognize_digits(x_list, y_list, cell_length)
+        matrix = self.recognize_vertex_digits(x_list, y_list, cell_length)
         level_str = '\n'.join([''.join(row) + '`' for row in matrix])
         return level_str
 
 
-analyzer = Analyzer()
-analyzer.get_levels_str_from_puzzle(
-    # 151,151
-    1,
-    200,
-)
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()

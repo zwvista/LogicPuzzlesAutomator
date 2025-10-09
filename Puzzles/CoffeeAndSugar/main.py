@@ -1,70 +1,54 @@
-import os
+from typing import Self, override
 
-from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, \
-    level_node_string, normalize_lines, get_template_index_by_diff_in_region, recognize_text
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
-CUP_PATH = '../../images/TileContent/cup.png'
-SUGAR_PATH = '../../images/TileContent/cube_white.png'
 
-def recognize_template(
-        image_path: str,
-        horizontal_line_list: list[tuple[int, int]],
-        vertical_line_list: list[tuple[int, int]]
-) -> list[list[str]]:
-    result = []
-    for row_idx, (y, h) in enumerate(vertical_line_list):
-        row_result = []
-        for col_idx, (x, w) in enumerate(horizontal_line_list):
-            index = get_template_index_by_diff_in_region(
-                large_image_path=image_path,
-                template_path_list=[CUP_PATH, SUGAR_PATH],
-                top_left_coord=(x, y),
-                size=(w, h),
-                tweak=lambda diff_list: [diff_list[0] + 0.03, diff_list[1]],
-            )
-            ch = ' ' if index == -1 else 'CS'[index]
-            row_result.append(ch)
-        result.append(row_result)
-    return result
+# Puzzle Set 17
+class _Analyzer(PuzzleAnalyzer):
 
-def format_template_matrix(matrix):
-    lines = []
-    for row_idx, row in enumerate(matrix):
-        line = ''.join(row)
-        lines.append(line + '`')
+    CUP_PATH = '../../images/TileContent/cup.png'
+    SUGAR_PATH = '../../images/TileContent/cube_white.png'
+    template_img_4channel_list = get_template_img_4channel_list(CUP_PATH, SUGAR_PATH)
 
-    result = '\n'.join(lines)
-    return result
+    def __init__(self: Self):
+        super().__init__(
+            200,
+            [(1,5), (11,6), (31,7), (71,8), (111,9), (151,10), (191,11)],
+            False
+        )
 
-def get_level_str_from_image(image_path: str) -> str:
-    horizontal_line_results = analyze_horizontal_line(image_path, y_coord=210, start_x=0, end_x=1180)
-    processed_horizontal_lines = process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-    processed_horizontal_lines2 = normalize_lines(processed_horizontal_lines, start_position=2)
-    vertical_line_results = analyze_vertical_line(image_path, x_coord=10, start_y=200, end_y=1380)
-    processed_vertical_lines = process_pixel_long_results(vertical_line_results, is_horizontal=False)
-    processed_vertical_lines2 = normalize_lines(processed_vertical_lines, start_position=202)
-    template_matrix = recognize_template(image_path, processed_horizontal_lines2, processed_vertical_lines2)
-    level_str = format_template_matrix(template_matrix)
-    return level_str
+    def recognize_template(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                index = self.get_template_index_by_diff_in_region(
+                    template_img_4channel_list=self.template_img_4channel_list,
+                    top_left_coord=(x, y),
+                    size=(w, h),
+                    tweak=lambda diff_list: [diff_list[0] + 0.03, diff_list[1]],
+                )
+                ch = ' ' if index == -1 else 'CS'[index]
+                row_result.append(ch)
+            result.append(row_result)
+        return result
 
-def recognize_variant(image_path: str) -> bool:
-    text = recognize_text(image_path, 840, 56, 320, 34)
-    return text is not None
+    @override
+    def get_level_str_from_image(self: Self) -> str:
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_template(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
+        return level_str
 
-def main():
-    level_image_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels/CoffeeAndSugar/")
-    START_LEVEL = 1  # 起始关卡: 从1开始
-    END_LEVEL = 200  # 结束关卡号
-    with open(f"Levels.txt", "w") as text_file:
-        for i in range(START_LEVEL, END_LEVEL+1):
-            # 图像信息
-            image_path = f'{level_image_path}Level_{i:03d}.png'
-            print("正在处理图片 " + image_path)
-            level_str = get_level_str_from_image(image_path)
-            attr_str = ' DoubleEspressoVariant="1"' if recognize_variant(image_path) else ''
-            node = level_node_string(i, level_str, attr_str)
-            text_file.write(node)
+    @override
+    def get_attr_str_from_image(self: Self) -> str:
+        text = self.recognize_text(840, 56, 320, 34)
+        return ' DoubleEspressoVariant="1"' if text else ''
 
-# --- 主程序 ---
-if __name__ == "__main__":
-    main()
+
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()

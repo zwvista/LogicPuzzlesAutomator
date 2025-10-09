@@ -1,18 +1,23 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 12
+class _Analyzer(PuzzleAnalyzer):
 
     SHEEP_PATH = '../../images/128/128_sheep.png'
     WOLF_PATH = '../../images/TileContent/wolf.png'
-    template_img_4channel_list = PuzzleAnalyzer.get_template_img_4channel_list([SHEEP_PATH, WOLF_PATH])
+    template_img_4channel_list = get_template_img_4channel_list(SHEEP_PATH, WOLF_PATH)
 
     def __init__(self: Self):
-        super().__init__("SheepAndWolves", True)
+        super().__init__(
+            100,
+            [(1, 5), (5, 6), (11, 7), (23, 8), (39, 9), (59, 10), (79, 11)],
+            True
+        )
 
-    def recognize_template(
+    def recognize_template_and_digits(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
@@ -34,24 +39,18 @@ class Analyzer(PuzzleAnalyzer):
                     if index != -1:
                         ch = 'SW'[index]
                     else:
-                        ch = self.recognize_text(x, y, w, h) or ' '
+                        ch = self.recognize_digit(x, y, w, h) or ' '
                 row_result.append(ch)
             result.append(row_result)
         return result
 
     @override
     def get_level_str_from_image(self: Self) -> str:
-        horizontal_line_results = self.analyze_horizontal_line(y_coord=202, start_x=0, end_x=1180)
-        processed_horizontal_lines = self.process_pixel_long_results(horizontal_line_results, is_horizontal=True, threshold=40)
-        cell_length = max(processed_horizontal_lines, key=lambda x: x[1])[1]
-        processed_horizontal_lines2, processed_vertical_lines2 = self.get_normalized_lines(cell_length)
-        matrix = self.recognize_template(processed_horizontal_lines2, processed_vertical_lines2)
-        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_template_and_digits(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
-analyzer = Analyzer()
-analyzer.get_levels_str_from_puzzle(
-    1,
-    100,
-)
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()

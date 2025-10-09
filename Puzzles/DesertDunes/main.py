@@ -1,60 +1,55 @@
-import os
+import string
+from typing import Self, override
 
 import cv2
-import easyocr
-import numpy as np
 
-from Puzzles.common import analyze_horizontal_line, analyze_vertical_line, process_pixel_long_results, recognize_digits, \
-    level_node_string, to_hex_char, normalize_lines, recognize_grid_lines, get_levels_str_from_puzzle
-
-reader = easyocr.Reader(['en'])  # 初始化，只加载英文模型
-
-def _recognize_digits(
-        large_img: np.ndarray,
-        horizontal_line_list: list[tuple[int, int]],
-        vertical_line_list: list[tuple[int, int]]
-) -> list[list[str]]:
-    gray = cv2.cvtColor(large_img, cv2.COLOR_BGR2GRAY)
-    _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
-
-    result = []
-    for row_idx, (y, h) in enumerate(vertical_line_list):
-        row_result = []
-        for col_idx, (x, w) in enumerate(horizontal_line_list):
-            # 裁剪感兴趣区域(ROI)
-            roi = img_result[y:y + h, x:x + w]
-            roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-
-            output = reader.readtext(roi_large, detail=0)
-            if output and output[0] == '22':
-                output = reader.readtext(roi, detail=0)
-            text = output[0] if output else ' '
-
-            # 将识别的结果添加到当前行的结果列表中
-            row_result.append(text)
-
-        # 将当前行的结果添加到最终结果列表中
-        result.append(row_result)
-
-    return result
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_hex_char
 
 
-def _format_digit_matrix(matrix):
-    lines = []
-    for row_str in matrix:
-        line = ''
-        for col_str in row_str:
-            line += to_hex_char(col_str)
-        lines.append(line + '`')
-    result = '\n'.join(lines)
-    return result
+# Puzzle Set 17
+class _Analyzer(PuzzleAnalyzer):
+
+    def __init__(self: Self):
+        super().__init__(
+            200,
+            [(1,5), (6,6), (31,7), (76,8), (121,9), (151,10), (191,11)],
+            True
+        )
+
+    @override
+    def recognize_digits(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        gray = cv2.cvtColor(self.large_img, cv2.COLOR_BGR2GRAY)
+        _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
+
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                roi = img_result[y:y + h, x:x + w]
+                roi_large = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+                output = self.reader.readtext(roi_large, allowlist=string.digits)
+                if not output:
+                    text = " "
+                else:
+                    _, text, prob = output[0]
+                    if text == "22":
+                        if prob < 0.99:
+                            text = "2"
+                row_result.append(text)
+            result.append(row_result)
+        return result
+
+    @override
+    def get_level_str_from_image(self: Self) -> str:
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_digits(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix, to_hex_char)
+        return level_str
 
 
-def _get_level_str_from_image(large_img: np.ndarray) -> str:
-    processed_horizontal_lines, processed_vertical_lines = recognize_grid_lines(large_img)
-    digits_matrix = _recognize_digits(large_img, processed_horizontal_lines, processed_vertical_lines)
-    level_str = _format_digit_matrix(digits_matrix)
-    return level_str
-
-
-get_levels_str_from_puzzle("DesertDunes", 1, 200, _get_level_str_from_image)
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()

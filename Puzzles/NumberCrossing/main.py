@@ -1,18 +1,19 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 17
+class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            "NumberCrossing",
             200,
             [(1,5), (6,6), (31,7), (71,8), (101,9), (141,10), (191,11)],
             True
         )
 
+    @override
     def recognize_digits(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
@@ -25,24 +26,21 @@ class Analyzer(PuzzleAnalyzer):
             for col_idx, (x, w) in enumerate(horizontal_line_list):
                 is_hint_col = col_idx == 0 or col_idx == len(horizontal_line_list) - 1
                 if is_hint_row or is_hint_col:
-                    ch = f'{self.recognize_digit(x, y, w, h) or ' ':>2}'
+                    ch = self.recognize_digit(x, y, w, h) or ' '
                 else:
-                    ch = ' ' * 2
+                    ch = ' '
                 row_result.append(ch)
             result.append(row_result)
         return result
 
+
     @override
     def get_level_str_from_image(self: Self) -> str:
-        cell_length = 1180 // (self.cell_count + 2)
-        processed_horizontal_lines2, processed_vertical_lines2 = self.get_normalized_lines(cell_length)
-        matrix = self.recognize_digits(processed_horizontal_lines2, processed_vertical_lines2)
-        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_digits(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix, lambda s: s.rjust(2))
         return level_str
 
 
-analyzer = Analyzer()
-analyzer.get_levels_str_from_puzzle(
-    # 1,
-    # 1
-)
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()

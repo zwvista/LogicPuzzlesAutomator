@@ -1,22 +1,24 @@
+from itertools import chain
 from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 14
+class _Analyzer(PuzzleAnalyzer):
 
     A1_PATH = '../../images/TileContent/thermometer1A.png'
     A2_PATH = '../../images/TileContent/thermometer2A.png'
     A3_PATH = '../../images/TileContent/thermometer3A.png'
-    template_img_4channel_list_3 = PuzzleAnalyzer.get_template_img_4channel_list([A1_PATH, A2_PATH, A3_PATH])
-    template_img_4channel_list_12 = [img2 for img in template_img_4channel_list_3 for img2 in [
+    template_img_4channel_list_3 = get_template_img_4channel_list(A1_PATH, A2_PATH, A3_PATH)
+    template_img_4channel_list_12 = chain.from_iterable([
         cv2.rotate(img, cv2.ROTATE_180),
         cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE),
         img,
         cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE),
-    ]]
+    ] for img in template_img_4channel_list_3)
 
     def __init__(self: Self):
         super().__init__(
@@ -25,7 +27,7 @@ class Analyzer(PuzzleAnalyzer):
             True
         )
 
-    def recognize_template(
+    def recognize_template_and_digits(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
@@ -51,18 +53,15 @@ class Analyzer(PuzzleAnalyzer):
             result.append(row_result)
         return result
 
-
     @override
     def get_level_str_from_image(self: Self) -> str:
-        cell_length = 1180 // (self.cell_count + 1)
-        processed_horizontal_lines, processed_vertical_lines = self.get_normalized_lines(cell_length)
-        matrix = self.recognize_template(processed_horizontal_lines, processed_vertical_lines)
-        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count + 1)
+        matrix = self.recognize_template_and_digits(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
-
-analyzer = Analyzer()
+analyzer = _Analyzer()
 analyzer.get_levels_str_from_puzzle(12, 12)
 
 # string of level 12 is not correct

@@ -1,15 +1,20 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 12
+class _Analyzer(PuzzleAnalyzer):
 
-    path_list = [f'../../images/TileContent/arrow{n}.png' for n in list("89632147")]
-    template_img_4channel_list = PuzzleAnalyzer.get_template_img_4channel_list(path_list)
+    paths = (f'../../images/TileContent/arrow{n}.png' for n in "89632147")
+    template_img_4channel_list = get_template_img_4channel_list(*paths)
 
     def __init__(self: Self):
-        super().__init__("BotanicalPark", False)
+        super().__init__(
+            24,
+            [(1,5), (4,6), (7,7), (10,8), (13,9), (16,10), (19,11), (22,12)],
+            False
+        )
 
     def recognize_template(
             self: Self,
@@ -37,21 +42,15 @@ class Analyzer(PuzzleAnalyzer):
 
     @override
     def get_level_str_from_image(self: Self) -> str:
-        horizontal_line_results = self.analyze_horizontal_line(y_coord=210, start_x=0, end_x=1180)
-        processed_horizontal_lines = self.process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-        cell_length = max(processed_horizontal_lines, key=lambda x: x[1])[1]
-        processed_horizontal_lines2, processed_vertical_lines2 = self.get_normalized_lines(cell_length)
-        matrix = self.recognize_template(processed_horizontal_lines2, processed_vertical_lines2)
-        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_template(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
     @override
     def get_attr_str_from_image(self: Self) -> str:
-        return ' PlantsInEachArea="2"' if len(self.level_str.split('\n')) >= 9 else ''
+        return ' PlantsInEachArea="2"' if self.cell_count >= 9 else ''
 
 
-analyzer = Analyzer()
-analyzer.get_levels_str_from_puzzle(
-    1,
-    24,
-)
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()

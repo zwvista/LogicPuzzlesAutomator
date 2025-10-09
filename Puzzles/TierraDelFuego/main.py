@@ -3,10 +3,11 @@ from typing import Self, override
 import cv2
 import numpy as np
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 11
+class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
@@ -16,11 +17,10 @@ class Analyzer(PuzzleAnalyzer):
         )
 
 
-    def recognize_characters(
+    def recognize_letters(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]],
-            cell_length: int,
     ) -> list[list[str]]:
         def get_roi_large(roi: np.ndarray) -> np.ndarray:
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
@@ -50,16 +50,13 @@ class Analyzer(PuzzleAnalyzer):
 
     @override
     def get_level_str_from_image(self: Self) -> str:
-        horizontal_line_results = self.analyze_horizontal_line(y_coord=210, start_x=0, end_x=1180)
-        processed_horizontal_lines = self.process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-        cell_length = max(processed_horizontal_lines, key=lambda x: x[1])[1]
-        processed_horizontal_lines2, processed_vertical_lines2 = self.get_normalized_lines(cell_length)
-        matrix = self.recognize_characters(processed_horizontal_lines2, processed_vertical_lines2, cell_length)
-        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_letters(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
-analyzer = Analyzer()
+analyzer = _Analyzer()
 analyzer.get_levels_str_from_puzzle(
     65,65
     # 1,

@@ -1,20 +1,17 @@
-import string
 from typing import Self, override
 
-import cv2
-import numpy as np
-
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-class Analyzer(PuzzleAnalyzer):
+# Puzzle Set 16
+class _Analyzer(PuzzleAnalyzer):
 
-    A3_PATH = '../../images/TileContent/nail_head.png'
-    template_img_4channel_list = PuzzleAnalyzer.get_template_img_4channel_list([A3_PATH])
+    NAIL_PATH = '../../images/TileContent/nail_head.png'
+    template_img_4channel_list = get_template_img_4channel_list(NAIL_PATH)
 
     def __init__(self: Self):
         super().__init__(
-            "Planks",
+            250,
             [(1,6), (11,7), (31,8), (71,9), (121,10), (181,11)],
             False
         )
@@ -45,17 +42,11 @@ class Analyzer(PuzzleAnalyzer):
 
     @override
     def get_level_str_from_image(self: Self) -> str:
-        horizontal_line_results = self.analyze_horizontal_line(y_coord=210, start_x=0, end_x=1180)
-        processed_horizontal_lines = self.process_pixel_long_results(horizontal_line_results, is_horizontal=True)
-        cell_length = max(processed_horizontal_lines, key=lambda x: x[1])[1]
-        processed_horizontal_lines2, processed_vertical_lines2 = self.get_normalized_lines(cell_length)
-        matrix = self.recognize_template(processed_horizontal_lines2, processed_vertical_lines2)
-        level_str = '\n'.join([''.join(row) + '`' for row in matrix])
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        matrix = self.recognize_template(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
-analyzer = Analyzer()
-analyzer.get_levels_str_from_puzzle(
-    1,
-    250,
-)
+analyzer = _Analyzer()
+analyzer.get_levels_str_from_puzzle()
