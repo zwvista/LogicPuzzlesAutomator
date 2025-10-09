@@ -3,10 +3,11 @@
 100 LG 自动化截图脚本 - 坐标点击版本
 """
 
-import time
 import os
 import subprocess
-import sys
+import time
+
+import pyautogui
 
 
 def activate_100lg():
@@ -355,12 +356,6 @@ def take_snapshot_puzzle(puzzle_name, start_level, end_level, need_page_screensh
 
 
 if __name__ == "__main__":
-    try:
-        import pyautogui
-    except ImportError:
-        print("请先安装依赖: pip3 install pyautogui")
-        sys.exit(1)
-
     take_snapshot_puzzle(
         puzzle_name="NumberCrossing",
         start_level=152,

@@ -29,7 +29,7 @@ def format_matrix_with_walls(
     return result
 
 
-# Puzzle Set 2
+# Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

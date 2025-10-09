@@ -6,7 +6,7 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_hex_char
 
 
-# Puzzle Set 17
+# Games 1 Puzzle Set 17
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

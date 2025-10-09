@@ -13,10 +13,7 @@ class _Analyzer(PuzzleAnalyzer):
         )
 
     @override
-    def get_scale_for_digit_recognition(
-            self: Self,
-            w: int
-    ) -> float:
+    def get_scale_for_digit_recognition(self: Self, w: int) -> float:
         return .75 if w > 220 else 1 if w > 180 else 1.5 if w > 130 else 2.5
 
     @override

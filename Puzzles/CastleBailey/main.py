@@ -6,7 +6,7 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer
 
 
-# Puzzle Set 13
+# Games 1 Puzzle Set 13
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

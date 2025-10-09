@@ -3,7 +3,7 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Puzzle Set 16
+# Games 1 Puzzle Set 16
 class _Analyzer(PuzzleAnalyzer):
 
     NAIL_PATH = '../../images/TileContent/nail_head.png'

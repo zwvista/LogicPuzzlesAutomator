@@ -14,7 +14,7 @@ def process_matrix_with_blocks(
             row[col_idx] = 'W' if col == ' ' and (row_idx, col_idx) in blocks else col
 
 
-# Puzzle Set 2
+# Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

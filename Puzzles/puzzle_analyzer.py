@@ -167,7 +167,7 @@ class PuzzleAnalyzer:
             need_level_screenshot: bool = True
     ) -> None:
         end_level = end_level or self.level_count
-        take_snapshot_puzzle(start_level, end_level, need_page_screenshot, need_level_screenshot)
+        take_snapshot_puzzle(self.puzzle_name, start_level, end_level, need_page_screenshot, need_level_screenshot)
 
 
     def get_cell_count(self: Self, level: int) -> int:
@@ -392,10 +392,7 @@ class PuzzleAnalyzer:
         return output[0] if output else None
 
 
-    def get_scale_for_digit_recognition(
-            self: Self,
-            w: int
-    ) -> float:
+    def get_scale_for_digit_recognition(self: Self, w: int) -> float:
         return .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3
 
 

@@ -3,7 +3,7 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Puzzle Set 10
+# Games 1 Puzzle Set 10
 class _Analyzer(PuzzleAnalyzer):
 
     HOME_PATH = '../../images/TileContent/home.png'

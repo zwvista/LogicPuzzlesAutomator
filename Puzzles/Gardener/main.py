@@ -4,7 +4,7 @@ from Puzzles.Tatami.main import format_matrix_with_walls
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer
 
 
-# Puzzle Set 7
+# Games 1 Puzzle Set 7
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

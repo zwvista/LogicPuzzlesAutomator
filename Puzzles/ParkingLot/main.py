@@ -1,15 +1,15 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_hex_char
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 2
+# Games 1 Puzzle Set 11
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            73,
-            [(1,5), (13,6), (18,7), (27,8), (35,9), (44,10), (54,11), (64,12)],
+            68,
+            [(1,4), (4,5), (8,6), (16,7), (32,8), (48,9), (64,10)],
             True
         )
 
@@ -17,9 +17,10 @@ class _Analyzer(PuzzleAnalyzer):
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        level_str = get_level_str_from_matrix(matrix, to_hex_char)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
 analyzer = _Analyzer()
+# analyzer.take_snapshot()
 analyzer.get_levels_str_from_puzzle()

@@ -3,7 +3,7 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_hex_char, get_level_str_from_matrix
 
 
-# Puzzle Set 5
+# Games 1 Puzzle Set 5
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
@@ -14,10 +14,7 @@ class _Analyzer(PuzzleAnalyzer):
         )
 
     @override
-    def get_scale_for_digit_recognition(
-            self: Self,
-            w: int
-    ) -> float:
+    def get_scale_for_digit_recognition(self: Self, w: int) -> float:
         return .5 if w > 220 else 1 if w > 180 else 1.5 if w > 130 else 2.5
 
     @override

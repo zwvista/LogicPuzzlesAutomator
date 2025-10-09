@@ -5,7 +5,7 @@ from typing_extensions import Self
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Puzzle Set 14
+# Games 1 Puzzle Set 14
 class _Analyzer(PuzzleAnalyzer):
 
     CUBE_PATH = '../../images/128/128_icecube.png'
