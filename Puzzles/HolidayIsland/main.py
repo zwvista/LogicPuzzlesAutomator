@@ -6,13 +6,13 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36
 
 
-# Games 1 Puzzle Set 17
+# Games 1 Puzzle Set 14
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            200,
-            [(1,5), (6,6), (31,7), (76,8), (121,9), (151,10), (191,11)],
+            74,
+            [(1,5), (4,6), (10,7), (19,8), (51,10)],
             True
         )
 
@@ -22,7 +22,7 @@ class _Analyzer(PuzzleAnalyzer):
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
     ) -> list[list[str]]:
-        gray = cv2.cvtColor(self.large_img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
         _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
 
         result = []
@@ -52,4 +52,5 @@ class _Analyzer(PuzzleAnalyzer):
 
 
 analyzer = _Analyzer()
+# analyzer.take_snapshot()
 analyzer.get_levels_str_from_puzzle()

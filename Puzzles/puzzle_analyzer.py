@@ -99,23 +99,16 @@ def process_pixel_short_results(
     return processed_list
 
 
-def to_hex_char(
+def to_base_36(
         s: str
 ) -> str:
     """
-    将表示 0~15 的数字字符串转换为对应的十六进制字符（大写）
-    空格保持不变
-    其他无效输入返回原字符串或报错（可按需调整）
+    将表示 0~35 的数字字符串转换为对应的36进制字符（大写）
+    无效输入返回原字符串
     """
-    if s == ' ':
-        return s  # 空格不转换
-
     try:
         num = int(s)
-        if 0 <= num <= 15:
-            return format(num, 'X')  # 转为大写十六进制字符，如 'A', 'F'
-        else:
-            return s  # 超出范围则返回原字符串
+        return s if num < 10 else chr(ord('A') + num - 10)
     except ValueError:
         return s  # 非数字字符串也返回原值
 
