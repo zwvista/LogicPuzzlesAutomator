@@ -158,13 +158,14 @@ class PuzzleAnalyzer:
 
     def take_snapshot(
             self: Self,
+            app_series_no: int = 1,
             start_level: int = 1,
             end_level: int | None = None,
             need_page_screenshot: bool = True,
             need_level_screenshot: bool = True
     ) -> None:
         end_level = end_level or self.level_count
-        take_snapshot_puzzle(self.puzzle_name, start_level, end_level, need_page_screenshot, need_level_screenshot)
+        take_snapshot_puzzle(app_series_no, self.puzzle_name, start_level, end_level, need_page_screenshot, need_level_screenshot)
 
 
     def get_cell_count(self: Self, level: int) -> int:
@@ -627,6 +628,7 @@ class PuzzleAnalyzer:
         level_result = []
         break_out = False
         for f in matching_files:
+            print("正在处理图片 " + os.path.abspath(f))
             self.large_img_bgr = cv2.imread(f, cv2.IMREAD_COLOR)
             self.large_img_rgb = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2RGB)
             for r in range(6):

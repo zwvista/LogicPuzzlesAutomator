@@ -9,12 +9,13 @@ import time
 
 import pyautogui
 
+puzzle_app_name = "100 LG"
 
 def activate_100lg() -> bool:
     """激活100 LG应用程序"""
     try:
-        script = '''
-        tell application "100 LG"
+        script = f'''
+        tell application "{puzzle_app_name}"
             activate
         end tell
         '''
@@ -29,9 +30,9 @@ def activate_100lg() -> bool:
 def get_window_info():
     """获取100 LG窗口信息"""
     try:
-        script = '''
+        script = f'''
         tell application "System Events"
-            tell process "100 LG"
+            tell process "{puzzle_app_name}"
                 if exists window 1 then
                     set windowPos to position of window 1
                     set windowSize to size of window 1
@@ -311,6 +312,7 @@ def process_level_range(
 
 
 def take_snapshot_puzzle(
+        app_series_no: int,
         puzzle_name: str,
         start_level: int,
         end_level: int,
@@ -318,14 +320,17 @@ def take_snapshot_puzzle(
         need_level_screenshot: bool = True
 ):
     """主函数"""
-    print("=== 100 LG 自动化截图脚本 (坐标点击版) ===")
+    global puzzle_app_name
+    if app_series_no == 2:
+        puzzle_app_name = "100 LG II"
+    print(f"=== {puzzle_app_name} 自动化截图脚本 (坐标点击版) ===")
 
     # 安全检查
     pyautogui.FAILSAFE = True
     pyautogui.PAUSE = 0.2
 
     # 激活应用程序
-    print("激活100 LG应用程序...")
+    print(f"激活{puzzle_app_name}应用程序...")
     if not activate_100lg():
         return
 
@@ -364,7 +369,7 @@ def take_snapshot_puzzle(
     # 完成通知
     try:
         script = f'''
-        display notification "关卡截图任务已完成！" with title "100 LG 自动化完成" sound name "Glass"
+        display notification "关卡截图任务已完成！" with title "{puzzle_app_name} 自动化完成" sound name "Glass"
         '''
         subprocess.run(['osascript', '-e', script], check=True)
     except:
