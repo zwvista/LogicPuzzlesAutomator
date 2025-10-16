@@ -82,5 +82,5 @@ class _Analyzer(PuzzleAnalyzer):
         return level_str
 
 
-analyzer = _Analyzer()
-analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()

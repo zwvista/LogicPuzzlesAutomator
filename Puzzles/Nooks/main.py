@@ -53,6 +53,6 @@ class _Analyzer(PuzzleAnalyzer):
         return level_str
 
 
-analyzer = _Analyzer()
-# analyzer.take_snapshot()
-analyzer.get_levels_str_from_puzzle(141)
+if __name__ == "__main__":
+    analyzer = _Analyzer()# analyzer.take_snapshot()
+    analyzer.get_levels_str_from_puzzle(141)

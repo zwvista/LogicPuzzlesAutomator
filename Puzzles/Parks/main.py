@@ -3,7 +3,7 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer
 
 
-class ParksLikeAnalyzer(PuzzleAnalyzer):
+class ParksBaseAnalyzer(PuzzleAnalyzer):
 
     def __init__(
             self: Self,
@@ -182,7 +182,7 @@ class ParksLikeAnalyzer(PuzzleAnalyzer):
 
 
 # Games 1 Puzzle Set 1
-class _Analyzer(ParksLikeAnalyzer):
+class _Analyzer(ParksBaseAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
@@ -190,6 +190,6 @@ class _Analyzer(ParksLikeAnalyzer):
             [(1,5), (7,6), (14,7), (15,9), (16,8), (17,9), (26,10), (33,11), (39,12)],
         )
 
-analyzer = _Analyzer()
-# analyzer.take_snapshot()
-analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()# analyzer.take_snapshot()
+    analyzer.get_levels_str_from_puzzle()

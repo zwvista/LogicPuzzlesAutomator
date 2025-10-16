@@ -51,5 +51,5 @@ class _Analyzer(PuzzleAnalyzer):
         return ' PlantsInEachArea="2"' if self.cell_count >= 9 else ''
 
 
-analyzer = _Analyzer()
-analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()

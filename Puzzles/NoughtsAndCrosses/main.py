@@ -6,7 +6,7 @@ import numpy as np
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 5
+# Games 1 Puzzle Set 16
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
@@ -72,10 +72,35 @@ class _Analyzer(PuzzleAnalyzer):
             result.append(row_result)
         return result
 
+    def recognize_pattern2(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + 20, start_x=x + 20, end_x=x+w - 20)
+                horizontal_line_results2 = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 20, end_x=x+w - 20)
+                match len(horizontal_line_results) == 1, len(horizontal_line_results2) == 1:
+                    case True, True:
+                        ch = ' '
+                    case False, False:
+                        ch = 'X'
+                    case False, True:
+                        ch = 'O'
+                    case True, False:
+                        ch = self.recognize_digit(x, y, w, h) or ' '
+                row_result.append(ch)
+            result.append(row_result)
+        return result
+
     @override
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
-        matrix = self.recognize_pattern(horizontal_lines, vertical_lines)
+        # matrix = self.recognize_pattern(horizontal_lines, vertical_lines)
+        matrix = self.recognize_pattern2(horizontal_lines, vertical_lines)
         level_str = get_level_str_from_matrix(matrix, to_base_36)
         return level_str
 
@@ -85,7 +110,7 @@ class _Analyzer(PuzzleAnalyzer):
         return f' num="{result[1][2:]}"'
 
 
-analyzer = _Analyzer()
-# analyzer.take_snapshot()
-# analyzer.get_level_board_size_from_puzzle()
-analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()# analyzer.take_snapshot()
+    # analyzer.get_level_board_size_from_puzzle()
+    analyzer.get_levels_str_from_puzzle()

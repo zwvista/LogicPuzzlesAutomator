@@ -60,7 +60,8 @@ class _Analyzer(PuzzleAnalyzer):
         return level_str
 
 
-analyzer = _Analyzer()
-analyzer.get_levels_str_from_puzzle(12, 12)
+if __name__ == "__main__":
+    analyzer = _Analyzer()
+    analyzer.get_levels_str_from_puzzle(12, 12)
 
 # string of level 12 is not correct

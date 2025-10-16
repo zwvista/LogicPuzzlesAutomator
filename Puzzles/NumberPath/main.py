@@ -24,7 +24,7 @@ class _Analyzer(PuzzleAnalyzer):
         return level_str
 
 
-analyzer = _Analyzer()
-# analyzer.take_snapshot(need_level_screenshot=False)
-analyzer.get_level_board_size_from_puzzle()
-# analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()# analyzer.take_snapshot(need_level_screenshot=False)
+    analyzer.get_level_board_size_from_puzzle()
+    # analyzer.get_levels_str_from_puzzle()

@@ -1,6 +1,6 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
 # Games 1 Puzzle Set 8
@@ -20,6 +20,7 @@ class _Analyzer(PuzzleAnalyzer):
         return level_str
 
 
-analyzer = _Analyzer()
-analyzer.take_snapshot()
-# analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()
+    analyzer.take_snapshot()
+    # analyzer.get_levels_str_from_puzzle()

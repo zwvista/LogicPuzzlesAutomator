@@ -25,5 +25,5 @@ class _Analyzer(PuzzleAnalyzer):
         return f' InsideOutside="1"' if output else ''
 
 
-analyzer = _Analyzer()
-analyzer.get_levels_str_from_puzzle()
+if __name__ == "__main__":
+    analyzer = _Analyzer()
