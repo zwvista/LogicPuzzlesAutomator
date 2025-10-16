@@ -1,6 +1,7 @@
 import os
 import string
-from itertools import pairwise
+from itertools import pairwise, groupby
+from pathlib import Path
 from typing import Self, Callable
 
 import cv2
@@ -605,3 +606,39 @@ class PuzzleAnalyzer:
 """
             with open(f"Levels.txt", "a") as text_file:
                 text_file.write(node)
+
+
+    def get_level_board_size_from_puzzle(self: Self) -> None:
+        def recognize_digit2(scale: int, x: int, y: int, w: int, h: int) -> int | None:
+            roi = self.large_img_rgb[y:y + h, x:x + w]
+            roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+            # cv2.imshow("cell", roi_large)
+            # cv2.waitKey(0)
+            output = self.reader.readtext(roi_large, allowlist=string.digits)
+            return int(output[0][1]) if output else None
+
+        self.reader = self.reader or easyocr.Reader(['en'])
+        level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{self.puzzle_name}/")
+        path = Path(level_image_path)
+        matching_files = list(sorted(path.rglob("Page_*.png")))
+        x1, y1, x2, y2 = 40, 402, 165, 512
+        level_result = []
+        break_out = False
+        for f in matching_files:
+            self.large_img_bgr = cv2.imread(f, cv2.IMREAD_COLOR)
+            self.large_img_rgb = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2RGB)
+            for r in range(6):
+                offset_y = r * 186
+                for c in range(6):
+                    offset_x = c * 186
+                    level_no = recognize_digit2(1, x1 + offset_x, y1 + offset_y, 135, 130)
+                    board_size = recognize_digit2(4, x2 + offset_x, y2 + offset_y, 40, 55)
+                    if board_size:
+                        level_result.append((level_no or 7, board_size))
+                    else:
+                        break_out = True
+                        break
+                if break_out: break
+            if break_out: break
+        result = [next(g) for _, g in groupby(level_result, key=lambda x: x[1])]
+        print(f"result: {result}")

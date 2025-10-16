@@ -10,7 +10,7 @@ import time
 import pyautogui
 
 
-def activate_100lg():
+def activate_100lg() -> bool:
     """激活100 LG应用程序"""
     try:
         script = '''
@@ -64,7 +64,7 @@ def get_window_info():
         return None
 
 
-def create_screenshot_dir(puzzle_name):
+def create_screenshot_dir(puzzle_name: str) -> str | None:
     """创建截图目录"""
     desktop_path = os.path.expanduser("~/Documents/Programs/Games/100LG/Levels")
     screenshot_dir = os.path.join(desktop_path, puzzle_name)
@@ -177,7 +177,10 @@ def click_at_position(x, y, description="位置"):
         return False
 
 
-def navigate_to_level(window_info, start_level):
+def navigate_to_level(
+        window_info,
+        start_level: int
+) -> bool:
     """导航到起始关卡所在的页面"""
     if start_level <= 1:
         print("从第一页开始，无需导航")
@@ -212,7 +215,14 @@ def navigate_to_level(window_info, start_level):
     return True
 
 
-def process_level_range(start_level, end_level, window_info, screenshot_dir, need_page_screenshot=True, need_level_screenshot=True):
+def process_level_range(
+        start_level: int,
+        end_level: int,
+        window_info,
+        screenshot_dir: str,
+        need_page_screenshot: bool = True,
+        need_level_screenshot: bool = True
+) -> None:
     """
     处理指定范围的关卡
 
@@ -300,7 +310,13 @@ def process_level_range(start_level, end_level, window_info, screenshot_dir, nee
     print(f"\n关卡范围处理完成: {start_level:03d} - {completed_level:03d}")
 
 
-def take_snapshot_puzzle(puzzle_name, start_level, end_level, need_page_screenshot=True, need_level_screenshot=True):
+def take_snapshot_puzzle(
+        puzzle_name: str,
+        start_level: int,
+        end_level: int,
+        need_page_screenshot: bool = True,
+        need_level_screenshot: bool = True
+):
     """主函数"""
     print("=== 100 LG 自动化截图脚本 (坐标点击版) ===")
 
