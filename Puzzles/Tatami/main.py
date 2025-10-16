@@ -35,8 +35,7 @@ class _Analyzer(PuzzleAnalyzer):
     def __init__(self: Self):
         super().__init__(
             200,
-            [(1,6), (32,8), (76,9), (119,10), (152,12)],
-            True
+            [(1,6), (32,8), (76,9), (119,10), (152,12)]
         )
 
     @override

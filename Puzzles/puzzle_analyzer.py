@@ -131,12 +131,11 @@ class PuzzleAnalyzer:
             self: Self,
             level_count: int,
             level_to_cell_count: list[tuple[int, int]],
-            need_ocr_reader: bool,
             puzzle_name: str | None = None,
     ):
         self.puzzle_name = puzzle_name or os.path.split(os.getcwd())[-1]
         self.level_count = level_count
-        self.reader = easyocr.Reader(['en']) if need_ocr_reader else None
+        self._reader = None
         # large_img_bgr (np.ndarray): 使用 cv2.imread 读取的图像数组。
         self.large_img_bgr = None
         self.large_img_rgb = None
@@ -152,6 +151,10 @@ class PuzzleAnalyzer:
         self.levels_to_cell_count.append((l2, self.level_count, c2))
         pass
 
+    @property
+    def reader(self):
+        self._reader = self._reader or easyocr.Reader(['en'])
+        return self._reader
 
     def take_snapshot(
             self: Self,
@@ -617,7 +620,6 @@ class PuzzleAnalyzer:
             output = self.reader.readtext(roi_large, allowlist=string.digits)
             return int(output[0][1]) if output else None
 
-        self.reader = self.reader or easyocr.Reader(['en'])
         level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{self.puzzle_name}/")
         path = Path(level_image_path)
         matching_files = list(sorted(path.rglob("Page_*.png")))

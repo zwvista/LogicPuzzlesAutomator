@@ -1,21 +1,21 @@
-from typing import override
-
-from typing_extensions import Self
+from typing import Self, override
 
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 14
+# Games 1 Puzzle Set 10
 class _Analyzer(PuzzleAnalyzer):
 
-    CUBE_PATH = '../../images/128/128_icecube.png'
-    HOLE_PATH = '../../images/TileContent/ice_hole.png'
-    template_img_4channel_list = get_template_img_4channel_list(CUBE_PATH, HOLE_PATH)
+    B1_PATH = '../../images/TileContent/B1.jpg'
+    B2_PATH = '../../images/TileContent/B2-f.jpg'
+    B3_PATH = '../../images/TileContent/B3-f.jpg'
+    B4_PATH = '../../images/TileContent/B4-f.jpg'
+    template_img_4channel_list = get_template_img_4channel_list(B1_PATH, B2_PATH, B3_PATH, B4_PATH)
 
     def __init__(self: Self):
         super().__init__(
-            200,
-            [(1,4), (11,5), (41,6), (81,7), (111,8), (151,9), (181,10)]
+            100,
+            [(1, 5), (11, 6), (21, 7), (41, 8), (61, 9), (81, 10)]
         )
 
     def recognize_template(
@@ -27,16 +27,12 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x, end_x=x+w)
-                if len(horizontal_line_results) == 1:
-                    index = -1
-                else:
-                    index = self.get_template_index_by_diff_in_region(
-                        template_img_4channel_list=self.template_img_4channel_list,
-                        top_left_coord=(x, y),
-                        size=(w, h),
-                    )
-                ch = ' ' if index == -1 else 'BH'[index]
+                index = self.get_template_index_by_diff_in_region(
+                    template_img_4channel_list=self.template_img_4channel_list,
+                    top_left_coord=(x, y),
+                    size=(w, h),
+                )
+                ch = ' ' if index == -1 else ' 123'[index]
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -50,4 +46,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 
 analyzer = _Analyzer()
+# analyzer.take_snapshot()
+# analyzer.get_level_board_size_from_puzzle()
 analyzer.get_levels_str_from_puzzle()

@@ -13,8 +13,7 @@ class _Analyzer(PuzzleAnalyzer):
     def __init__(self: Self):
         super().__init__(
             100,
-            [(1, 5), (5, 6), (11, 7), (23, 8), (39, 9), (59, 10), (79, 11)],
-            True
+            [(1, 5), (5, 6), (11, 7), (23, 8), (39, 9), (59, 10), (79, 11)]
         )
 
     def recognize_template_and_digits(

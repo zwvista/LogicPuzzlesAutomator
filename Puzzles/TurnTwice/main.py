@@ -12,8 +12,7 @@ class _Analyzer(PuzzleAnalyzer):
     def __init__(self: Self):
         super().__init__(
             200,
-            [(1,4), (4,5), (14,6), (34,7), (64,8), (101,9), (141,10), (181,11)],
-            False
+            [(1,4), (4,5), (14,6), (34,7), (64,8), (101,9), (141,10), (181,11)]
         )
 
     def recognize_template(
