@@ -1,6 +1,6 @@
 from typing import Self
 
-from Puzzles.Tapa.main import TapaBaseAnalyzer
+from Puzzles.tapa_base_analyzer import TapaBaseAnalyzer
 
 
 # Games 1 Puzzle Set 9
