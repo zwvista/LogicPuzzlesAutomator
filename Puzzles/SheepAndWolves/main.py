@@ -6,8 +6,8 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 12
 class _Analyzer(PuzzleAnalyzer):
 
-    SHEEP_PATH = '../../images/128/128_sheep.png'
-    WOLF_PATH = '../../images/TileContent/wolf.png'
+    SHEEP_PATH = '../../images/sheep.png'
+    WOLF_PATH = '../../images/wolf.png'
     template_img_4channel_list = get_template_img_4channel_list(SHEEP_PATH, WOLF_PATH)
 
     def __init__(self: Self):

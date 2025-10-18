@@ -6,8 +6,8 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 17
 class _Analyzer(PuzzleAnalyzer):
 
-    CUP_PATH = '../../images/TileContent/cup.png'
-    SUGAR_PATH = '../../images/TileContent/cube_white.png'
+    CUP_PATH = '../../images/cup.png'
+    SUGAR_PATH = '../../images/cube_white.png'
     template_img_4channel_list = get_template_img_4channel_list(CUP_PATH, SUGAR_PATH)
 
     def __init__(self: Self):

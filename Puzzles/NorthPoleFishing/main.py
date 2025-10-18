@@ -8,8 +8,8 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 14
 class _Analyzer(PuzzleAnalyzer):
 
-    CUBE_PATH = '../../images/128/128_icecube.png'
-    HOLE_PATH = '../../images/TileContent/ice_hole.png'
+    CUBE_PATH = '../../images/icecube.png'
+    HOLE_PATH = '../../images/ice_hole.png'
     template_img_4channel_list = get_template_img_4channel_list(CUBE_PATH, HOLE_PATH)
 
     def __init__(self: Self):

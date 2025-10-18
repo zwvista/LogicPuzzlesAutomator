@@ -9,9 +9,9 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 14
 class _Analyzer(PuzzleAnalyzer):
 
-    A1_PATH = '../../images/TileContent/thermometer1A.png'
-    A2_PATH = '../../images/TileContent/thermometer2A.png'
-    A3_PATH = '../../images/TileContent/thermometer3A.png'
+    A1_PATH = '../../images/thermometer1A.png'
+    A2_PATH = '../../images/thermometer2A.png'
+    A3_PATH = '../../images/thermometer3A.png'
     template_img_4channel_list_3 = get_template_img_4channel_list(A1_PATH, A2_PATH, A3_PATH)
     template_img_4channel_list_12 = chain.from_iterable([
         cv2.rotate(img, cv2.ROTATE_180),

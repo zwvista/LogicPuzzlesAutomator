@@ -8,7 +8,7 @@ block_color = (170, 170, 170)
 # Games 1 Puzzle Set 9
 class _Analyzer(PuzzleAnalyzer):
 
-    FLOWER_PATH = '../../images/TileContent/flower_blue.png'
+    FLOWER_PATH = '../../images/flower_blue.png'
     template_img_4channel_list = get_template_img_4channel_list(FLOWER_PATH)
 
     def __init__(self: Self):

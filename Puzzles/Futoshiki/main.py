@@ -7,12 +7,12 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
-    UP_PATH = '../../images/TileContent/navigate_up.png'
-    DOWN_PATH = '../../images/TileContent/navigate_down.png'
-    LEFT_PATH = '../../images/TileContent/navigate_left.png'
-    RIGHT_PATH = '../../images/TileContent/navigate_right.png'
-    MINUS_PATH = '../../images/TileContent/navigate_minus.png'
-    PIPE_PATH = '../../images/TileContent/navigate_pipe.png'
+    UP_PATH = '../../images/navigate_up.png'
+    DOWN_PATH = '../../images/navigate_down.png'
+    LEFT_PATH = '../../images/navigate_left.png'
+    RIGHT_PATH = '../../images/navigate_right.png'
+    MINUS_PATH = '../../images/navigate_minus.png'
+    PIPE_PATH = '../../images/navigate_pipe.png'
     template_img_4channel_list_row = get_template_img_4channel_list(UP_PATH, DOWN_PATH, MINUS_PATH)
     template_img_4channel_list_col = get_template_img_4channel_list(LEFT_PATH, RIGHT_PATH, PIPE_PATH)
 

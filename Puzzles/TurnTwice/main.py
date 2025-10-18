@@ -6,7 +6,7 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 15
 class _Analyzer(PuzzleAnalyzer):
 
-    SIGNPOST_PATH = '../../images/128/128_signpost.png'
+    SIGNPOST_PATH = '../../images/signpost.png'
     template_img_4channel_list = get_template_img_4channel_list(SIGNPOST_PATH)
 
     def __init__(self: Self):

@@ -6,10 +6,10 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 10
 class _Analyzer(PuzzleAnalyzer):
 
-    B1_PATH = '../../images/TileContent/B1.jpg'
-    B2_PATH = '../../images/TileContent/B2-f.jpg'
-    B3_PATH = '../../images/TileContent/B3-f.jpg'
-    B4_PATH = '../../images/TileContent/B4-f.jpg'
+    B1_PATH = '../../images/B1.png'
+    B2_PATH = '../../images/B2-f.png'
+    B3_PATH = '../../images/B3-f.png'
+    B4_PATH = '../../images/B4-f.png'
     template_img_4channel_list = get_template_img_4channel_list(B1_PATH, B2_PATH, B3_PATH, B4_PATH)
 
     def __init__(self: Self):

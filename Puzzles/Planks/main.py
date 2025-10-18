@@ -6,7 +6,7 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 16
 class _Analyzer(PuzzleAnalyzer):
 
-    NAIL_PATH = '../../images/TileContent/nail_head.png'
+    NAIL_PATH = '../../images/nail_head.png'
     template_img_4channel_list = get_template_img_4channel_list(NAIL_PATH)
 
     def __init__(self: Self):

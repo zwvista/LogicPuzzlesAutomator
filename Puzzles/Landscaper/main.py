@@ -5,8 +5,8 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 
 # Games 1 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
-    TREE_PATH = '../../images/TileContent/tree.png'
-    FLOWER_PATH = '../../images/TileContent/flower_blue.png'
+    TREE_PATH = '../../images/tree.png'
+    FLOWER_PATH = '../../images/flower_blue.png'
     template_img_4channel_list = get_template_img_4channel_list(TREE_PATH, FLOWER_PATH)
 
     def __init__(self: Self):

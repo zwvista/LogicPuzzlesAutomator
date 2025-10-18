@@ -6,7 +6,7 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 12
 class _Analyzer(PuzzleAnalyzer):
 
-    paths = (f'../../images/TileContent/arrow{n}.png' for n in "89632147")
+    paths = (f'../../images/arrow{n}.png' for n in "89632147")
     template_img_4channel_list = get_template_img_4channel_list(*paths)
 
     def __init__(self: Self):

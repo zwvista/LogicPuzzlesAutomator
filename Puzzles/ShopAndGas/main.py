@@ -6,9 +6,9 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 10
 class _Analyzer(PuzzleAnalyzer):
 
-    HOME_PATH = '../../images/TileContent/home.png'
-    SHOP_PATH = '../../images/TileContent/shoppingcart.png'
-    GAS_PATH = '../../images/TileContent/gauge.png'
+    HOME_PATH = '../../images/home.png'
+    SHOP_PATH = '../../images/shoppingcart.png'
+    GAS_PATH = '../../images/gauge.png'
     template_img_4channel_list = get_template_img_4channel_list(HOME_PATH, SHOP_PATH, GAS_PATH)
 
     def __init__(self: Self):
