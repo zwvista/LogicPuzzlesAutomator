@@ -125,6 +125,32 @@ def get_level_str_from_matrix(
     return '\n'.join(''.join(elem_func(s) for s in row) + '`' for row in matrix)
 
 
+def format_matrix_with_walls(
+        matrix: list[list[str]],
+        walls: tuple[set[tuple[int, int]], set[tuple[int, int]]]
+) -> str:
+    rows, cols = len(matrix), len(matrix[0])
+    row_walls, col_walls = walls
+    lines = []
+    for r in range(rows + 1):
+        line = []
+        for c in range(cols + 1):
+            line.append(' ')
+            if c == cols: break
+            line.append('-' if (r, c) in row_walls else ' ')
+        lines.append(''.join(line) + '`')
+        if r == rows: break
+        digits = matrix[r]
+        line = []
+        for c in range(cols + 1):
+            line.append('|' if (r, c) in col_walls else ' ')
+            if c == cols: break
+            line.append(digits[c])
+        lines.append(''.join(line) + '`')
+    result = '\n'.join(lines)
+    return result
+
+
 class PuzzleAnalyzer:
 
     def __init__(
@@ -455,14 +481,14 @@ class PuzzleAnalyzer:
         col_walls = set()
         for col_idx, (x, w) in enumerate(horizontal_line_list):
             vertical_line_results = self.analyze_vertical_line(x_coord=x+15, start_y=200, end_y=1380)
-            processed_column_grid = self.process_pixel_short_results(vertical_line_results, is_horizontal=False)
+            processed_column_grid = process_pixel_short_results(vertical_line_results, is_horizontal=False)
             for row_idx, (y, h) in enumerate(processed_column_grid):
                 if row_idx == 0 or row_idx == len(processed_column_grid) - 1 or h > 4:
                     row_walls.add((row_idx, col_idx))
 
         for row_idx, (y, h) in enumerate(vertical_line_list):
             horizontal_line_results = self.analyze_horizontal_line(y_coord=y+15, start_x=0, end_x=1180)
-            processed_line_grid = self.process_pixel_short_results(horizontal_line_results, is_horizontal=True)
+            processed_line_grid = process_pixel_short_results(horizontal_line_results, is_horizontal=True)
             for col_idx, (x, w) in enumerate(processed_line_grid):
                 if col_idx == 0 or col_idx == len(processed_line_grid) - 1 or w > 4:
                     col_walls.add((row_idx, col_idx))

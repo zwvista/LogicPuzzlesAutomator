@@ -1,7 +1,6 @@
 from typing import Self, override
 
-from Puzzles.Tatami.main import format_matrix_with_walls
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls
 
 
 # Games 1 Puzzle Set 7

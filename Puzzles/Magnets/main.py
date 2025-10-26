@@ -42,7 +42,7 @@ class _Analyzer(PuzzleAnalyzer):
         return row_walls, col_walls
 
     @staticmethod
-    def format_matrix_with_walls(
+    def format_matrix_with_walls2(
             matrix: list[list[str]],
             walls: tuple[set[tuple[int, int]], set[tuple[int, int]]]
     ) -> None:
@@ -73,7 +73,7 @@ class _Analyzer(PuzzleAnalyzer):
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count + 2)
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
         walls = self.recognize_walls2(horizontal_lines[:-2], vertical_lines[:-2])
-        self.format_matrix_with_walls(matrix, walls)
+        self.format_matrix_with_walls2(matrix, walls)
         level_str = get_level_str_from_matrix(matrix)
         return level_str
 

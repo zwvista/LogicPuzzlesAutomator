@@ -1,32 +1,6 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer
-
-
-def format_matrix_with_walls(
-        matrix: list[list[str]],
-        walls: tuple[set[tuple[int, int]], set[tuple[int, int]]]
-) -> str:
-    rows, cols = len(matrix), len(matrix[0])
-    row_walls, col_walls = walls
-    lines = []
-    for r in range(rows + 1):
-        line = []
-        for c in range(cols + 1):
-            line.append(' ')
-            if c == cols: break
-            line.append('-' if (r, c) in row_walls else ' ')
-        lines.append(''.join(line) + '`')
-        if r == rows: break
-        digits = matrix[r]
-        line = []
-        for c in range(cols + 1):
-            line.append('|' if (r, c) in col_walls else ' ')
-            if c == cols: break
-            line.append(digits[c])
-        lines.append(''.join(line) + '`')
-    result = '\n'.join(lines)
-    return result
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls
 
 
 # Games 1 Puzzle Set 2
