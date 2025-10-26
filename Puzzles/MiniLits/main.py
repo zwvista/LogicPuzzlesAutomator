@@ -13,5 +13,6 @@ class _Analyzer(ParksBaseAnalyzer):
         )
 
 if __name__ == "__main__":
-    analyzer = _Analyzer()# analyzer.take_snapshot()
+    analyzer = _Analyzer()
+    # analyzer.take_snapshot()
     analyzer.get_levels_str_from_puzzle()
