@@ -3,16 +3,16 @@ from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36
 
 
-# Games 1 Puzzle Set 14
+# Games 2 Puzzle Set 6
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            160,
-            [(1,4), (3,5), (6,6), (16,7), (31,8), (51,9), (71,10), (101,11), (131,12)]
+            200,
+            [(1, 5), (21, 6), (41, 7), (71, 8), (111, 9), (141, 10)]
         )
 
     @override
@@ -22,7 +22,7 @@ class _Analyzer(PuzzleAnalyzer):
             vertical_line_list: list[tuple[int, int]]
     ) -> list[list[str]]:
         gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
-        _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
+        _, img_result = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
 
         result = []
         for row_idx, (y, h) in enumerate(vertical_line_list):
@@ -46,9 +46,12 @@ class _Analyzer(PuzzleAnalyzer):
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        level_str = get_level_str_from_matrix(matrix)
+        level_str = get_level_str_from_matrix(matrix, to_base_36)
         return level_str
 
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
+    # analyzer.take_snapshot(app_series_no=2)
+    # analyzer.get_level_board_size_from_puzzle()
+    analyzer.get_levels_str_from_puzzle()

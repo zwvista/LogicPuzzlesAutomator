@@ -323,6 +323,10 @@ def take_snapshot_puzzle(
     global puzzle_app_name
     if app_series_no == 2:
         puzzle_app_name = "100 LG II"
+    elif app_series_no == 3:
+        puzzle_app_name = "100 x 3 LG"
+    elif app_series_no == 4:
+        puzzle_app_name = "100 / 4 LG"
     print(f"=== {puzzle_app_name} 自动化截图脚本 (坐标点击版) ===")
 
     # 安全检查

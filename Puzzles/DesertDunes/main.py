@@ -21,7 +21,7 @@ class _Analyzer(PuzzleAnalyzer):
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
     ) -> list[list[str]]:
-        gray = cv2.cvtColor(self.large_img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
         _, img_result = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
 
         result = []
