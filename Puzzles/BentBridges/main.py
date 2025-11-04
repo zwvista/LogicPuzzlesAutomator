@@ -8,8 +8,8 @@ class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            200,
-            [(1, 5), (11, 6), (41, 7), (71, 8), (101, 9), (141, 10)]
+            300,
+            [(1, 5), (31, 6), (76, 7), (136, 8), (196, 9), (236, 10)]
         )
 
     @override
@@ -19,9 +19,18 @@ class _Analyzer(PuzzleAnalyzer):
         level_str = get_level_str_from_matrix(matrix, to_base_36)
         return level_str
 
+    @override
+    def get_attr_str_from_image(self: Self) -> str:
+        output = self.recognize_text(660, 56, 500, 34)
+        if not output:
+            return ''
+        else:
+            _, text, _ = output
+            return f' GameType="{text}"'
+
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    # analyzer.take_snapshot(app_series_no=2)
+    # analyzer.take_snapshot(app_series_no=3)
     # analyzer.get_level_board_size_from_puzzle()
     analyzer.get_levels_str_from_puzzle()
