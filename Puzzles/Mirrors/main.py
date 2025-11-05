@@ -18,8 +18,10 @@ class _Analyzer(PuzzleAnalyzer):
             vertical_line_list: list[tuple[int, int]]
     ) -> list[list[str]]:
         def is_gray(y: int, x: int) -> bool:
-            b, g, r = self.large_img_bgr[y, x]
-            return b == 170
+            b1, _, _ = self.large_img_bgr[y, x - 1]
+            b2, _, _ = self.large_img_bgr[y, x]
+            b3, _, _ = self.large_img_bgr[y, x + 1]
+            return b1 != 0 and b2 != 0 and b3 != 0
 
         result = []
         for row_idx, (y, h) in enumerate(vertical_line_list):
