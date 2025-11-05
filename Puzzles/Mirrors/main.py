@@ -17,25 +17,25 @@ class _Analyzer(PuzzleAnalyzer):
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
     ) -> list[list[str]]:
-        def is_gray(y: int, x: int) -> bool:
-            b1, _, _ = self.large_img_bgr[y, x - 1]
-            b2, _, _ = self.large_img_bgr[y, x]
+        def is_gray(y: int, x: int, check3: bool) -> bool:
+            b1, _, _ = self.large_img_bgr[y, x]
+            b2, _, _ = self.large_img_bgr[y, x - 1]
             b3, _, _ = self.large_img_bgr[y, x + 1]
-            return b1 != 0 and b2 != 0 and b3 != 0
+            return b1 != 0 and (not check3 or (b2 != 0 and b3 != 0))
 
         result = []
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
                 lst = [
-                    is_gray(y + h // 4, x + w // 4),
-                    is_gray(y + h // 4, x + w // 2),
-                    is_gray(y + h // 4, x + w - w // 4),
-                    is_gray(y + h // 2, x + w - w // 4),
-                    is_gray(y + h - h // 4, x + w - w // 4),
-                    is_gray(y + h - h // 4, x + w // 2),
-                    is_gray(y + h - h // 4, x + w // 4),
-                    is_gray(y + h // 2, x + w // 4),
+                    is_gray(y + h // 4, x + w // 4, True),
+                    is_gray(y + h // 4, x + w // 2, False),
+                    is_gray(y + h // 4, x + w - w // 4, True),
+                    is_gray(y + h // 2, x + w - w // 4, False),
+                    is_gray(y + h - h // 4, x + w - w // 4, True),
+                    is_gray(y + h - h // 4, x + w // 2, False),
+                    is_gray(y + h - h // 4, x + w // 4, True),
+                    is_gray(y + h // 2, x + w // 4, False),
                 ]
                 ch = 'S' if self.large_img_bgr[y + h // 2, x + w // 2][1] == 202 else \
                      '9' if not lst[0] and lst[7] and lst[1] and lst[4] else \
