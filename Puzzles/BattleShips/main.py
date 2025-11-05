@@ -1,7 +1,5 @@
 from typing import Self, override
 
-import cv2
-
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix
 
 
@@ -13,22 +11,6 @@ class _Analyzer(PuzzleAnalyzer):
             128,
             [(1, 10), (21, 8), (35, 9), (50, 10), (91, 11)]
         )
-
-    def recognize_circle(self: Self, x: int, y: int, w: int, h: int) -> bool:
-        roi = self.large_img_bgr[y:y + h, x:x + w]
-        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-        maxRadius = w
-        minRadius = w // 2 - 10
-        circles = cv2.HoughCircles(image=gray,
-                                   method=cv2.HOUGH_GRADIENT,
-                                   dp=1.2,
-                                   minDist=2 * minRadius,
-                                   param1=50,
-                                   param2=50,
-                                   minRadius=minRadius,
-                                   maxRadius=maxRadius
-                                   )
-        return circles is not None
 
     def recognize_pattern(
             self: Self,
