@@ -1,26 +1,22 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 5
+# Games 2 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            111,
-            [(1,6), (10,7), (29,8), (39,9), (48,10), (62,8), (72,9), (92,10)]
+            68,
+            [(1, 5), (3, 7), (9, 8), (38, 9), (68, 10)]
         )
-
-    @override
-    def get_scale_for_digit_recognition(self: Self, w: int) -> float:
-        return .5 if w > 220 else 1 if w > 180 else 1.5 if w > 130 else 2.5
 
     @override
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        level_str = get_level_str_from_matrix(matrix, to_base_36)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
