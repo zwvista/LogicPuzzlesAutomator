@@ -1,4 +1,3 @@
-import string
 from typing import Self, override
 
 import cv2
@@ -35,7 +34,7 @@ class _Analyzer(PuzzleAnalyzer):
                     roi = img_result[y:y + h, x:x + w]
                     scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 150 else 3 if w > 120 else 4
                     roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-                    output = self.reader.readtext(roi_large, allowlist=string.digits)
+                    output = self.reader.readtext(roi_large, allowlist="0123456789?")
                     if not output:
                         text = " "
                     else:
