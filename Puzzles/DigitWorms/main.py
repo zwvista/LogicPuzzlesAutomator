@@ -8,8 +8,8 @@ class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            200,
-            [(1,6), (32,8), (76,9), (119,10), (152,12)]
+            400,
+            [(1, 4), (11, 5), (31, 6), (51, 7), (96, 8), (151, 9), (211, 10), (271, 11), (301, 12)]
         )
 
     @override
@@ -23,6 +23,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    analyzer.take_snapshot()
-    analyzer.get_level_board_size_from_puzzle()
-    # analyzer.get_levels_str_from_puzzle()
+    # analyzer.take_snapshot(app_series_no=4)
+    # analyzer.get_level_board_size_from_puzzle()
+    analyzer.get_levels_str_from_puzzle()

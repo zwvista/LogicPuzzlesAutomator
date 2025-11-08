@@ -6,9 +6,9 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 # Games 1 Puzzle Set 10
 class _Analyzer(PuzzleAnalyzer):
 
-    DIFF_PATH = '../../images/different.png'
-    EQUAL_PATH = '../../images/equal.png'
-    QM_PATH = '../../images/help_transparent.png'
+    DIFF_PATH = '../../images/carpenter_different.png'
+    EQUAL_PATH = '../../images/carpenter_equal.png'
+    QM_PATH = '../../images/carpenter_help.png'
     template_img_4channel_list = get_template_img_4channel_list(DIFF_PATH, EQUAL_PATH, QM_PATH)
 
     def __init__(self: Self):
