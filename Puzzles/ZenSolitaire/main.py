@@ -1,13 +1,17 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
+import cv2
+
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
 # Games 2 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
-    PEBBLE_PATH_LIST = (f'../../images/pebble{i}.png' for i in range(1, 8))
-    template_img_4channel_list = get_template_img_4channel_list(*PEBBLE_PATH_LIST)
+    # PEBBLE_PATH_LIST = (f'../../images/pebble{i}.png' for i in range(1, 8))
+    # template_img_4channel_list = get_template_img_4channel_list(*PEBBLE_PATH_LIST)
+    SAND_PATH = '../../images/sand_zen.png'
+    template_img_4channel = cv2.imread(SAND_PATH, cv2.IMREAD_UNCHANGED)
 
     def __init__(self: Self):
         super().__init__(
@@ -24,12 +28,12 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                index = self.get_template_index_by_diff_in_region(
-                    template_img_4channel_list=self.template_img_4channel_list,
+                diff = self.get_template_diff_in_region(
+                    template_img_4channel=self.template_img_4channel,
                     top_left_coord=(x, y),
                     size=(w, h),
                 )
-                ch = ' ' if index == -1 else 'O'
+                ch = 'O' if diff > .02 else ' '
                 row_result.append(ch)
             result.append(row_result)
         return result

@@ -23,7 +23,7 @@ def activate_100lg() -> bool:
         time.sleep(3)
         return True
     except subprocess.CalledProcessError:
-        print("错误: 无法找到或激活100 LG应用程序")
+        print(f"错误: 无法找到或激活{puzzle_app_name}应用程序")
         return False
 
 
@@ -326,7 +326,7 @@ def take_snapshot_puzzle(
     elif app_series_no == 3:
         puzzle_app_name = "100 x 3 LG"
     elif app_series_no == 4:
-        puzzle_app_name = "100 / 4 LG"
+        puzzle_app_name = "100   4  LG"
     print(f"=== {puzzle_app_name} 自动化截图脚本 (坐标点击版) ===")
 
     # 安全检查
