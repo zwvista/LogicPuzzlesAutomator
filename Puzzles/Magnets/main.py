@@ -13,7 +13,8 @@ class _Analyzer(PuzzleAnalyzer):
             [(1, 4), (3, 5), (11, 6), (28, 7), (38, 8), (66, 9), (82, 10)]
         )
 
-    def recognize_walls2(
+    @override
+    def recognize_walls(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]]
@@ -72,7 +73,7 @@ class _Analyzer(PuzzleAnalyzer):
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count + 2)
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        walls = self.recognize_walls2(horizontal_lines[:-2], vertical_lines[:-2])
+        walls = self.recognize_walls(horizontal_lines[:-2], vertical_lines[:-2])
         self.format_matrix_with_walls2(matrix, walls)
         level_str = get_level_str_from_matrix(matrix)
         return level_str
