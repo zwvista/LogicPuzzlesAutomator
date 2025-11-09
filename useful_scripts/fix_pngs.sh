@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 定义输入和输出目录
-INPUT_DIR="../../100LG/Images3/TileContent"
-OUTPUT_DIR="../../100LG/Images3/TileContent_fixed"
+INPUT_DIR="../../100LG/Images4/TileContent"
+OUTPUT_DIR="../../100LG/Images4/TileContent_fixed"
 
 # 创建输出目录
 mkdir -p "$OUTPUT_DIR"
