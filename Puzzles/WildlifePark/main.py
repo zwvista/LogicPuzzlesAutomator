@@ -8,10 +8,12 @@ class _Analyzer(PuzzleAnalyzer):
     ANIMALS_PATH = [
         '../../images/bull.png',
         '../../images/camel.png',
+        '../../images/chick.png',
         '../../images/crab.png',
         '../../images/elephant.png',
         '../../images/fox.png',
         '../../images/giraffe.png',
+        '../../images/hedgehog.png',
         '../../images/hippopotamus.png',
         '../../images/kangaroo.png',
         '../../images/koala.png',
@@ -23,6 +25,7 @@ class _Analyzer(PuzzleAnalyzer):
         '../../images/toucan.png',
         '../../images/turtle.png',
         '../../images/tiger.png',
+        '../../images/whale.png',
         '../../images/zebra.png',
     ]
     template_img_4channel_list = get_template_img_4channel_list(*ANIMALS_PATH)
