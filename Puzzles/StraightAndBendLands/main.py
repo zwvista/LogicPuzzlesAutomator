@@ -43,7 +43,7 @@ class _Analyzer(PuzzleAnalyzer):
         matrix = self.recognize_template(horizontal_lines, vertical_lines)
 
         gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
-        _, self.large_img_bgr = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        _, self.large_img_bgr = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
         self.large_img_bgr = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_GRAY2BGR)
 
         walls = self.recognize_walls2(horizontal_lines, vertical_lines, 255)
