@@ -18,7 +18,7 @@ class _Analyzer(PuzzleAnalyzer):
     def __init__(self: Self):
         super().__init__(
             200,
-            [(1, 5), (21, 6), (51, 7), (81, 8), (111, 9), (151, 10)]
+            [(1, 4), (11, 5), (41, 6), (71, 7), (101, 8), (141, 9), (171, 10)]
         )
 
     def recognize_template_and_digits(
@@ -48,10 +48,10 @@ class _Analyzer(PuzzleAnalyzer):
                     roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
                     output = self.reader.readtext(roi_large, allowlist=string.digits)
                     if not output:
-                        ch = " "
+                        ch = "1"
                     else:
                         _, ch, prob = output[0]
-                        ch = '2' if ch == "22" and prob < 0.99 else ch
+                        ch = '2' if ch == "22" and prob < 0.99 else '1' if ch == '7' else ch
                     s = ch + s
                 row_result.append(s)
             result.append(row_result)
@@ -67,6 +67,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    analyzer.take_snapshot(app_series_no=2)
-    analyzer.get_level_board_size_from_puzzle()
-    # analyzer.get_levels_str_from_puzzle()
+    # analyzer.take_snapshot(app_series_no=2)
+    # analyzer.get_level_board_size_from_puzzle()
+    analyzer.get_levels_str_from_puzzle()
