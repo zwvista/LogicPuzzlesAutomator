@@ -415,7 +415,7 @@ class PuzzleAnalyzer:
 
 
     def get_scale_for_digit_recognition(self: Self, w: int) -> float:
-        return .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3
+        return .5 if w > 220 else 1 if w > 180 else 2 if w > 130 else 3 if w > 120 else 4
 
 
     def recognize_digit(self: Self, x: int, y: int, w: int, h: int) -> str | None:
