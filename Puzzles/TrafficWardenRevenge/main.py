@@ -37,6 +37,24 @@ class _Analyzer(PuzzleAnalyzer):
             result.append(row_result)
         return result
 
+    @override
+    def recognize_digit(self: Self, x: int, y: int, w: int, h: int) -> str | None:
+        roi = self.large_img_rgb[y:y + h, x:x + w]
+        scale = self.get_scale_for_digit_recognition(w)
+        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        output = self.reader.readtext(roi_large)
+        if not output:
+            return None
+        else:
+            _, text, prob = output[0]
+            if text == "22":
+                if prob < 0.99:
+                    text = "2"
+            # elif text == "7":
+            #     if prob < 0.35:
+            #         text = "1"
+            return text
+
     @staticmethod
     def format_matrix_with_digits(
             matrix: list[list[str]],
