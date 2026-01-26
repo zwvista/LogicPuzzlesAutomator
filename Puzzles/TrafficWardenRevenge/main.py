@@ -50,9 +50,6 @@ class _Analyzer(PuzzleAnalyzer):
             if text == "22":
                 if prob < 0.99:
                     text = "2"
-            # elif text == "7":
-            #     if prob < 0.35:
-            #         text = "1"
             return text
 
     @staticmethod
@@ -67,7 +64,10 @@ class _Analyzer(PuzzleAnalyzer):
             lights = matrix[r]
             digits = matrix2[r]
             for c in range(cols):
-                line.append(lights[c] + digits[c])
+                l = lights[c]; d = digits[c]
+                if l != " " and not d.isdigit():
+                    d = "B" if l == "R" else "W" if l == "G" else " "
+                line.append(l + d)
             lines.append(''.join(line) + '`')
         result = '\n'.join(lines)
         return result
@@ -78,7 +78,7 @@ class _Analyzer(PuzzleAnalyzer):
         matrix = self.recognize_template(horizontal_lines, vertical_lines)
 
         gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
-        _, self.large_img_bgr = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        _, self.large_img_bgr = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
         self.large_img_bgr = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_GRAY2BGR)
 
         matrix2 = self.recognize_digits(horizontal_lines, vertical_lines)
