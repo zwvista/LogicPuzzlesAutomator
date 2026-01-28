@@ -65,8 +65,11 @@ class _Analyzer(PuzzleAnalyzer):
             digits = matrix2[r]
             for c in range(cols):
                 l = lights[c]; d = digits[c]
-                if l != " " and not d.isdigit():
-                    d = "B" if l == "R" else "W" if l == "G" else " "
+                if l != " ":
+                    if d[0] == "(":
+                        d = d[1] if len(d) > 1 else ' '
+                    if not d.isdigit():
+                        d = "B" if l == "R" else "W" if l == "G" else " "
                 line.append(l + d)
             lines.append(''.join(line) + '`')
         result = '\n'.join(lines)

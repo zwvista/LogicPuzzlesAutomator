@@ -2,7 +2,7 @@ from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, to_base_36
 
 
 # Games 2 Puzzle Set 2
@@ -50,7 +50,11 @@ class _Analyzer(PuzzleAnalyzer):
             lights = matrix[r]
             digits = matrix2[r]
             for c in range(cols):
-                line.append(lights[c] + digits[c])
+                l = lights[c]; d = digits[c]
+                if l != " ":
+                    if len(d) == 2 and d[0] == '6':
+                        d = d[1]
+                line.append(l + to_base_36(d))
             lines.append(''.join(line) + '`')
         result = '\n'.join(lines)
         return result
