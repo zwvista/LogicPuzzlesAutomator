@@ -28,9 +28,10 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                diff_empty = self.get_template_diff_in_region(self.template_img_4channel_empty, (x, y), (w, h))
-                diff_hedge = self.get_template_diff_in_region(self.template_img_4channel_hedge, (x, y), (w, h))
-                ch = ' ' if diff_empty < 1 else 'H' if diff_hedge < 1 else 'F'
+                diff_empty = self.get_template_diff_in_region(self.template_img_4channel_empty, (x + 20, y + 20), (w - 40, h - 40))
+                diff_hedge = self.get_template_diff_in_region(self.template_img_4channel_hedge, (x + 20, y + 20), (w - 40, h - 40))
+                ch = 'F' if diff_empty == 1 and diff_hedge == 1 else ' ' if diff_empty < diff_hedge else 'H'
+                # print(diff_empty, diff_hedge, ch)
                 row_result.append(ch)
             result.append(row_result)
         return result
