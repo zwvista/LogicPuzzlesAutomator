@@ -6,15 +6,17 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, ge
 # Games 2 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
-    PLANT_A1_PATH = '../../images/aubergine.png'
-    PLANT_B1_PATH = '../../images/carrot.png'
-    PLANT_C1_PATH = '../../images/C3.png'
-    template_img_4channel_list = get_template_img_4channel_list(PLANT_A1_PATH, PLANT_B1_PATH)
+    PLANTS_PATH = [
+        '../../images/aubergine.png',
+        '../../images/carrot.png',
+        '../../images/carrot.png',
+    ]
+    template_img_4channel_list = get_template_img_4channel_list(*PLANTS_PATH)
 
     def __init__(self: Self):
         super().__init__(
             200,
-            [(1, 6), (11, 7), (41, 8), (81, 9), (121, 10), (161, 11), (181, 12)]
+            [(1, 3), (5, 6), (55, 9), (125, 12)]
         )
 
     def recognize_template(
@@ -47,6 +49,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    # analyzer.take_snapshot(app_series_no=2)
-    # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.take_snapshot(app_series_no=2)
+    analyzer.get_level_board_size_from_puzzle()
+    # analyzer.get_levels_str_from_puzzle()
