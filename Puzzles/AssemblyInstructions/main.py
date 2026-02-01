@@ -11,8 +11,8 @@ class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            300,
-            [(1, 4), (6, 5), (31, 6), (61, 7), (101, 8), (151, 9), (201, 10), (251, 11)]
+            400,
+            [(1, 4), (11, 5), (31, 6), (71, 7), (151, 8), (231, 9), (311, 10), (391, 11)]
         )
 
     def recognize_chars(
@@ -29,7 +29,7 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 20, end_x=x+w - 20)
                 if len(horizontal_line_results) == 1:
                     ch = ' '
                 else:
@@ -54,6 +54,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    # analyzer.take_snapshot(app_series_no=3)
+    # analyzer.take_snapshot(app_series_no=4)
     # analyzer.get_level_board_size_from_puzzle()
     analyzer.get_levels_str_from_puzzle()
