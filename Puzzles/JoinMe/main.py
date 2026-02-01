@@ -1,3 +1,4 @@
+from curses.ascii import isdigit
 from typing import Self, override
 
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, process_pixel_short_results
@@ -76,6 +77,13 @@ class _Analyzer(PuzzleAnalyzer):
         walls = self.recognize_walls2(horizontal_lines2, vertical_lines2, 170)
         level_str = self.format_matrix_with_walls2(matrix, walls)
         return level_str
+
+    @override
+    def get_attr_str_from_image(self: Self) -> str:
+        text = self.recognize_text(840, 56, 320, 34)
+        ch = text[1][-1]
+        ch = ch if isdigit(ch) else '1'
+        return f' Stitches="{ch}"' if text else ''
 
 
 if __name__ == "__main__":
