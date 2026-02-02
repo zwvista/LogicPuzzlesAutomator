@@ -24,7 +24,8 @@ class _Analyzer(PuzzleAnalyzer):
                 if row_idx >= self.cell_count or col_idx >= self.cell_count:
                     ch = self.recognize_digit(x, y, w, h) or ' '
                 else:
-                    ch = ' '
+                    color = self.large_img_bgr[y + 20, x + 20]
+                    ch = 'C' if color[0] == 170 else ' '
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -39,6 +40,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    # analyzer.take_snapshot()
-    # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.take_snapshot()
+    analyzer.get_level_board_size_from_puzzle()
+    # analyzer.get_levels_str_from_puzzle()
