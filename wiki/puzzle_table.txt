@@ -1,0 +1,208 @@
+| Name | Title | Game Set | Puzzle Set | Total Levels | Solved Levels | Algorithm | Automator | iOS / Android |
+|------|-------|----------|------------|--------------|---------------|-----------|-----------|---------------|
+| Abc | | 1 | 1 | 57 | All | | ⭕️ | ⭕️ |
+| AbstractMirrorPainting | Abstract Mirror Painting | 4 | 4 | 400 | A few | | | |
+| AbstractPainting | Abstract Painting | 1 | 16 | 250 | All | | ⭕️ | ⭕️ |
+| ADifferentFarmer | A Different Farmer | 2 | 4 | 200 | A few | | | |
+| Archipelago | | 1 | 8 | 40 | All | | ❌ | ⭕️ |
+| Arrows | | 1 | 6 | 12 | All | | ❌ | ⭕️ |
+| AssemblyInstructions | Assembly Instructions | 4 | 4 | 400 | A few | | ⭕️ | ⭕️ |
+| BalancedTapas | Balanced Tapas | 1 | 10 | 61 | A few | | | ⭕️ |
+| Banquet | | 3 | 2 | 300 | A few | | ⭕️ | |
+| BattleShips | Battle Ships | 1 | 1 | 128 | All | | ⭕️ | ⭕️ |
+| BentBridges | Bent Bridges | 3 | 1 | 300 | All | | ⭕️ | |
+| BootyIsland | Booty Island | 1 | 13 | 24 | All | | ❌ | ⭕️ |
+| BotanicalPark | Botanical Park | 1 | 12 | 24 | All | | ⭕️ | ⭕️ |
+| BoxItAgain | Box It Again | 1 | 15 | 200 | All | | ⭕️ | ⭕️ |
+| BoxItAround | Box It Around | 1 | 8 | 15 | All | | ❌ | ⭕️ |
+| BoxItUp | Box It Up | 1 | 5 | 15 | All | | ❌ | ⭕️ |
+| Branches | | 1 | 2 | 52 | All | | ⭕️ | ⭕️ |
+| Bridges | | 1 | 7 | 38 | All | | ❌ | ⭕️ |
+| BusySeas | Busy Seas | 1 | 14 | 160 | All | | ⭕️ | ⭕️ |
+| BWTapa | B&W Tapa | 1 | 9 | 61 | A few | | | ⭕️ |
+| Caffelatte | | 2 | 7 | 200 | All | | ⭕️ | ⭕️ |
+| Calcudoku | | 1 | 4 | 9 | All | | ❌ | ⭕️ |
+| CarpentersSquare | Carpenter's Square | 1 | 16 | 220 | Many | ✗ | ⭕️ | ⭕️ |
+| CarpentersWall | Carpenter's Wall | 1 | 12 | 23 | All | | ❌ | ⭕️ |
+| CastleBailey | Castle Bailey | 1 | 13 | 200 | All | ✗ | ⭕️ | ⭕️ |
+| CastlePatrol | Castle Patrol | 2 | 4 | 200 | A few | | ⭕️ | |
+| Chocolate | | 2 | 6 | 200 | All | | ⭕️ | ⭕️ |
+| CleaningPath | Cleaning Path | 3 | 1 | 300 | A few | | ⭕️ | ⭕️ |
+| Clouds | | 1 | 5 | 51 | All | | ⭕️ | ⭕️ |
+| CloudsAndClears | Clouds and Clears | 4 | 3 | 400 | A few | | ⭕️ | |
+| CoffeeAndSugar | Coffee And Sugar | 1 | 17 | 200 | All | | ⭕️ | ⭕️ |
+| CrossroadBlocks | Crossroad Blocks | 3 | 4 | 300 | A few | | | |
+| CrossroadsX | Crossroads X | 3 | 5 | 300 | A few | | ⭕️ | ⭕️ |
+| CrosstownTraffic | Crosstown Traffic | 2 | 3 | 200 | A few | | ⭕️ | |
+| CulturedBranches | Cultured Branches | 3 | 3 | 300 | A few | | ⭕️ | ⭕️ |
+| CultureTrip | Culture Trip | 2 | 1 | 200 | A few | | ⭕️ | |
+| DesertDunes | Desert Dunes | 1 | 17 | 200 | All | ✗ | ⭕️ | ⭕️ |
+| DigitalBattleShips | Digital Battle Ships | 1 | 13 | 120 | All | ✗ | ❌ | |
+| DigitalPath | Digital Path | 2 | 2 | 200 | All | | ⭕️ | ⭕️ |
+| DigitWorms | Digit Worms | 4 | 1 | 400 | A few | | ⭕️ | ⭕️ |
+| DirectionalPlanks | Directional Planks | 3 | 5 | 170 | All | | ⭕️ | ⭕️ |
+| DisconnectFour | Disconnect Four | 1 | 11 | 157 | All | | ⭕️ | ⭕️ |
+| Domino | | 1 | 5 | 7 | All | | ❌ | ⭕️ |
+| Farmer | | 2 | 2 | 200 | A few | | ⭕️ | |
+| FenceItUp | Fence It Up | 1 | 7 | 12 | All | | ❌ | ⭕️ |
+| FenceLits | | 1 | 12 | 50 | All | | ⭕️ | ⭕️ |
+| FenceSentinels | Fence Sentinels | 1 | 12 | 84 | All | ✗ | ⭕️ | ⭕️ |
+| FencingSheep | Fencing Sheep | 2 | 5 | 200 | Almost | | ⭕️ | |
+| Fields | | 2 | 1 | 200 | Many | ✗ | ⭕️ | ⭕️ |
+| Fillomino | | 1 | 3 | 145 | Many | | ⭕️ | ⭕️ |
+| FingerPointing | Finger Pointing | 3 | 5 | 300 | A few | | ⭕️ | ⭕️ |
+| FloorPlan | Floor Plan | 3 | 1 | 300 | A few | | ⭕️ | ⭕️ |
+| FlowerBeds | Flower Beds | 2 | 2 | 200 | A few | | ⭕️ | ⭕️ |
+| FlowerbedShrubs | Flowerbed Shrubs | 3 | 2 | 300 | A few | | ⭕️ | ⭕️ |
+| FlowerOMino | Flower-O-Mino | 4 | 1 | 400 | A few | | | |
+| FourMeNot | Four-Me-Not | 1 | 9 | 40 | All | | ⭕️ | ⭕️ |
+| FreePlanks | Free Planks | 2 | 6 | 200 | All | | ⭕️ | ⭕️ |
+| FunnyNumbers | Funny Numbers | 4 | 2 | 400 | A few | | ⭕️ | ⭕️ |
+| FussyWaiter | Fussy Waiter | 1 | 15 | 141 | A few | | | |
+| Futoshiki | | 1 | 2 | 190 | All | | ⭕️ | ⭕️ |
+| Galaxies | | 1 | 4 | 24 | All | | ⭕️ | ⭕️ |
+| Gardener | | 1 | 7 | 35 | Almost | | ⭕️ | ⭕️ |
+| GardenTunnels | Garden Tunnels | 3 | 4 | 300 | A few | | ⭕️ | ⭕️ |
+| Gems | | 2 | 1 | 200 | All | | ⭕️ | ⭕️ |
+| Guesstris | | 3 | 3 | 300 | All | | ⭕️ | |
+| HeliumAndIron | Helium And Iron | 2 | 2 | 200 | All | | ⭕️ | ⭕️ |
+| HiddenClouds | Hidden Clouds | 2 | 7 | 200 | Many | | ⭕️ | ⭕️ |
+| HiddenPath | Hidden Path | 1 | 3 | 6 | All | | ❌ | ⭕️ |
+| HiddenStars | Hidden Stars | 1 | 2 | 14 | All | | ❌ | ⭕️ |
+| Hidoku | | 1 | 4 | 16 | All | | ⭕️ | ⭕️ |
+| Hitori | | 1 | 2 | 73 | Almost | ✗ | ⭕️ | ⭕️ |
+| HolidayIsland | Holiday Island | 1 | 11 | 74 | All | ✗ | ⭕️ | ⭕️ |
+| InbetweenNurikabe | Inbetween Nurikabe | 3 | 4 | 300 | A few | | | |
+| InbetweenSumscrapers | Inbetween Sumscrapers | 2 | 6 | 200 | Many | ✗ | ⭕️ | ⭕️ |
+| InsaneTatamis | Insane Tatamis | 2 | 5 | 200 | All | | ⭕️ | ⭕️ |
+| IslandConnections | Island Connections | 2 | 5 | 200 | All | | ⭕️ | ⭕️ |
+| JoinMe | Join Me! | 4 | 2 | 400 | A few | | ⭕️ | ⭕️ |
+| Kakurasu | | 1 | 8 | 27 | All | | ❌ | ⭕️ |
+| Kakuro | | 1 | 4 | 131 | A few | | | ⭕️ |
+| Knightoku | | 1 | 8 | 45 | A few | | | |
+| Kropki | | 1 | 6 | 22 | A few | | | ⭕️ |
+| LakesAndMeadows | Lakes and Meadows | 2 | 5 | 200 | All | | ⭕️ | ⭕️ |
+| Landscaper | | 1 | 4 | 72 | All | | ⭕️ | ⭕️ |
+| Landscapes | | 1 | 16 | 300 | A few | | | |
+| LiarLiar | Liar Liar | 2 | 2 | 200 | All | | ⭕️ | ⭕️ |
+| LightBattleShips | Light Battle Ships | 1 | 13 | 185 | A few | | | |
+| LightenUp | Lighten Up | 1 | 2 | 81 | All | | ⭕️ | ⭕️ |
+| Lighthouses | | 1 | 9 | 36 | All | | ❌ | ⭕️ |
+| LineSweeper | | 1 | 4 | 47 | All | | ⭕️ | ⭕️ |
+| Lits | | 1 | 12 | 22 | All | | ❌ | ⭕️ |
+| LoopAndBlocks | Loop and Blocks | 2 | 7 | 200 | A few | | ⭕️ | ⭕️ |
+| Loopy | | 1 | 5 | 9 | All | | ❌ | ⭕️ |
+| Magnets | | 1 | 2 | 119 | Many | | ⭕️ | ⭕️ |
+| MakeTheDifference | Make the Difference | 3 | 4 | 300 | All | | ⭕️ | ⭕️ |
+| Masyu | | 1 | 3 | 170 | All | | ⭕️ | ⭕️ |
+| Mathrax | | 1 | 6 | 20 | All | | ❌ | ⭕️ |
+| MineShips | Mine Ships | 1 | 8 | 230 | Many | | ⭕️ | ⭕️ |
+| MineSlither | | 4 | 3 | 400 | A few | | ⭕️ | ⭕️ |
+| Minesweeper | | 1 | 6 | 24 | All | | ❌ | ⭕️ |
+| MiniLits | Mini-Lits | 1 | 14 | 21 | All | | ⭕️ | ⭕️ |
+| Mirrors | | 1 | 10 | 45 | All | | ⭕️ | |
+| MirrorsExtended | Mirrors, extended | 2 | 4 | 200 | None | | | |
+| MixedTatamis | Mixed Tatamis | 2 | 4 | 200 | All | | ⭕️ | ⭕️ |
+| MondrianLoop | Mondrian Loop | 4 | 2 | 400 | A few | | ⭕️ | |
+| MoreOrLess | More Or Less | 1 | 7 | 23 | A few | | | |
+| Mosaik | | 1 | 4 | 8 | All | | ❌ | ⭕️ |
+| Neighbours | | 1 | 8 | 123 | Many | | ⭕️ | ⭕️ |
+| NewCarpenterSquare | New Carpenter Square | 3 | 3 | 300 | All | | ⭕️ | ⭕️ |
+| Nooks | | 1 | 17 | 200 | Some | | ⭕️ | |
+| NorthPoleFishing | North Pole Fishing | 1 | 14 | 200 | All | | ⭕️ | ⭕️ |
+| NoughtsAndCrosses | Noughts & Crosses | 1 | 16 | 300 | All | | ⭕️ | ⭕️ |
+| NumberCrossing | Number Crossing | 1 | 17 | 200 | Many | | ⭕️ | ⭕️ |
+| NumberCrosswords | Number Crosswords | 2 | 1 | 200 | A few | | | ⭕️ |
+| NumberLink | | 1 | 3 | 154 | Many | ✗ | ⭕️ | ⭕️ |
+| NumberPath | Number Path | 1 | 15 | 260 | All | | ⭕️ | ⭕️ |
+| Nurikabe | | 1 | 1 | 47 | All | | ⭕️ | ⭕️ |
+| OddsAreEven | Odds Are Even | 1 | 7 | 56 | A few | | | |
+| OneUpOrDown | One Up or Down | 3 | 1 | 300 | A few | | | |
+| OnlyBends | Only Bends | 4 | 1 | 400 | A few | | ⭕️ | ⭕️ |
+| OnlyStraights | Only Straights | 4 | 4 | 400 | A few | | | |
+| Orchards | | 1 | 11 | 88 | All | | ⭕️ | ⭕️ |
+| OverUnder | Over Under | 1 | 15 | 200 | A few | ✗ | ⭕️ | ⭕️ |
+| Pata | | 1 | 9 | 36 | A few | | | ⭕️ |
+| PaintTheNurikabe | Paint The Nurikabe | 1 | 16 | 220 | A few | | ⭕️ | |
+| Pairakabe | | 1 | 12 | 101 | All | | ⭕️ | ⭕️ |
+| ParkingLot | Parking Lot | 1 | 11 | 68 | All | | ⭕️ | |
+| ParkLakes | Park Lakes | 1 | 15 | 200 | A few | | | |
+| Parks | | 1 | 1 | 41 | All | | ⭕️ | ⭕️ |
+| PathOnTheHills | Path on the Hills | 3 | 2 | 300 | A few | ✗ | ⭕️ | ⭕️ |
+| PathOnTheMountains | Path on the Mountains | 3 | 5 | 300 | A few | | ⭕️ | ⭕️ |
+| Picnic | | 3 | 1 | 300 | A few | | | |
+| Pipemania | | 2 | 5 | 200 | All | | ⭕️ | ⭕️ |
+| Planets | | 2 | 1 | 200 | A few | | | |
+| Planks | | 1 | 16 | 250 | All | | ⭕️ | ⭕️ |
+| PleaseComeBack | Please come back | 4 | 1 | 400 | All | | ⭕️ | ⭕️ |
+| PlugItIn | Plug it in | 2 | 6 | 200 | All | | ⭕️ | ⭕️ |
+| Pointing | | 3 | 2 | 300 | All | | ⭕️ | ⭕️ |
+| PondCamping | Pond camping | 3 | 5 | 300 | A few | | ⭕️ | ⭕️ |
+| PondsAndFlowerbeds | Ponds and Flowerbeds | 2 | 3 | 200 | A few | | | |
+| PouringWater | Pouring Water | 2 | 3 | 200 | Many | | ⭕️ | ⭕️ |
+| PowerGrid | Power Grid | 1 | 14 | 220 | All | | ⭕️ | ⭕️ |
+| ProductSentinels | Product Sentinels | 1 | 11 | 19 | All | | ❌ | ⭕️ |
+| Rabbits | | 3 | 3 | 300 | All | | ⭕️ | ⭕️ |
+| RippleEffect | Ripple Effect | 1 | 5 | 152 | A few | ✗ | ⭕️ | ⭕️ |
+| RobotCrosswords | Robot Crosswords | 1 | 13 | 200 | All | | ⭕️ | ⭕️ |
+| RobotFences | Robot Fences | 1 | 13 | 150 | Many | ✗ | ⭕️ | ⭕️ |
+| Rome | | 2 | 2 | 200 | Many | ✗ | ⭕️ | ⭕️ |
+| Rooms | | 1 | 5 | 8 | All | | ❌ | ⭕️ |
+| RunInALoop | Run in a Loop | 2 | 3 | 200 | All | | ⭕️ | ⭕️ |
+| Sentinels | | 1 | 3 | 54 | All | | ⭕️ | ⭕️ |
+| SheepAndWolves | Sheep & Wolves | 1 | 12 | 100 | All | ✗ | ⭕️ | ⭕️ |
+| ShopAndGas | Shop & Gas | 1 | 10 | 36 | All | | ⭕️ | |
+| Skyscrapers | | 1 | 1 | 30 | All | | ❌ | ⭕️ |
+| SlantedMaze | Slanted Maze | 1 | 6 | 9 | All | | ❌ | |
+| SlitherCorner | | 4 | 2 | 400 | Many | ✗ | ⭕️ | ⭕️ |
+| SlitherLink | | 1 | 3 | 68 | All | | ⭕️ | ⭕️ |
+| Snail | | 1 | 14 | 100 | All | | ⭕️ | ⭕️ |
+| Snake | | 1 | 16 | 275 | Many | ✗ | ⭕️ | ⭕️ |
+| SnakeIslands | Snake Islands | 3 | 3 | 300 | None | | | |
+| SnakeMaze | Snake Maze | 2 | 7 | 200 | All | | ⭕️ | |
+| Snakeomino | Snake-omino | 2 | 4 | 200 | Many | ✗ | ⭕️ | |
+| Square100 | Square 100 | 1 | 10 | 40 | All | | ❌ | ⭕️ |
+| Stacks | | 2 | 7 | 200 | All | | ⭕️ | ⭕️ |
+| Steps | | 2 | 6 | 200 | All | | ⭕️ | ⭕️ |
+| StraightAndBendLands | Straight and Bend Lands | 4 | 3 | 400 | All | | ⭕️ | ⭕️ |
+| StraightAndTurn | Straight and Turn | 2 | 7 | 200 | All | | ⭕️ | ⭕️ |
+| Sukrokuro | | 2 | 4 | 200 | A few | | | |
+| Sumscrapers | | 1 | 6 | 20 | All | | ❌ | ⭕️ |
+| SuspendedGravity | Suspended Gravity | 3 | 1 | 300 | A few | | ⭕️ | ⭕️ |
+| Tapa | | 1 | 9 | 67 | All | | ⭕️ | ⭕️ |
+| TapaIslands | Tapa Islands | 1 | 9 | 39 | Many | ✗ | ⭕️ | ⭕️ |
+| TapAlike | Tap-Alike | 1 | 10 | 56 | All | ✗ | ⭕️ | ⭕️ |
+| TapARow | Tap-A-Row | 1 | 10 | 50 | Many | ✗ | ⭕️ | ⭕️ |
+| TapDifferently | Tap Differently | 1 | 10 | 40 | All | ✗ | ⭕️ | ⭕️ |
+| Tatami | | 1 | 2 | 200 | Many | | ⭕️ | ⭕️ |
+| Tatamino | | 1 | 13 | 170 | A few | ❌ | ⭕️ | ⭕️ |
+| TennerGrid | Tenner Grid | 1 | 7 | 24 | All | | ⭕️ | ⭕️ |
+| Tents | | 1 | 1 | 39 | All | | ❌ | ⭕️ |
+| TetrominoPegs | Tetromino Pegs | 2 | 5 | 200 | All | | ⭕️ | |
+| TheCityRises | The City Rises | 2 | 7 | 200 | All | | ⭕️ | ⭕️ |
+| TheMagicNumber | The Magic Number | 4 | 3 | 400 | A few | | | |
+| TheOddBrick | The Odd Brick | 1 | 14 | 160 | All | | ⭕️ | ⭕️ |
+| Thermometers | | 1 | 14 | 100 | All | | ⭕️ | ⭕️ |
+| TierraDelFuego | Tierra Del Fuego | 1 | 11 | 82 | All | | ⭕️ | ⭕️ |
+| TopArrow | Top Arrow | 2 | 3 | 200 | A few | | | |
+| TraceNumbers | Trace Numbers | 2 | 1 | 200 | All | | ⭕️ | ⭕️ |
+| TrafficWarden | Traffic Warden | 4 | 2 | 400 | A few | | ⭕️ | ⭕️ |
+| TrafficWardenRevenge | Traffic Warden Revenge | 4 | 3 | 400 | A few | | ⭕️ | |
+| Trebuchet | | 2 | 6 | 200 | All | | ⭕️ | ⭕️ |
+| TurnMeUp | Turn me up | 3 | 2 | 300 | A few | ✗ | ⭕️ | ⭕️ |
+| TurnTwice | Turn Twice | 1 | 15 | 200 | All | | ⭕️ | ⭕️ |
+| Underground | | 3 | 2 | 300 | All | | ⭕️ | ⭕️ |
+| UnreliableHints | Unreliable hints | 2 | 5 | 200 | All | | ⭕️ | |
+| Unseen | | 3 | 4 | 300 | All | ✗ | ⭕️ | ⭕️ |
+| Venice | | 3 | 2 | 300 | All | | ⭕️ | ⭕️ |
+| WallHints | Wall Hints | 2 | 4 | 200 | All | | ⭕️ | ⭕️ |
+| Walls | | 1 | 5 | 111 | All | | ⭕️ | ⭕️ |
+| WallSentinels | Wall Sentinels | 1 | 11 | 19 | All | | ❌ | ⭕️ |
+| Warehouse | | 2 | 8 | 200 | All | | ⭕️ | ⭕️ |
+| WildlifePark | Wildlife Park | 2 | 1 | 200 | All | | ⭕️ | |
+| WishSandwich | Wish Sandwich | 2 | 3 | 200 | All | | ⭕️ | ⭕️ |
+| Yalooniq | | 1 | 6 | 11 | All | | ❌ | |
+| YouTurnMeOn | You Turn me on | 4 | 3 | 400 | A few | | ⭕️ | ⭕️ |
+| ZenGardens | Zen Gardens | 2 | 3 | 200 | All | | ⭕️ | |
+| ZenLandscaper | Zen Landscaper | 1 | 15 | 100 | All | | ⭕️ | ⭕️ |
+| ZenSolitaire | Zen Solitaire | 2 | 2 | 200 | All | | ⭕️ | |

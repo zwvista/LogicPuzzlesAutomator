@@ -1,0 +1,40 @@
+| Name | Transformed Name | Original Title | Processed Title (for comparison) |
+|:---|:---|:---|:---|
+| BWTapa | B W Tapa | B&W Tapa | B&W Tapa |
+| CarpentersSquare | Carpenters Square | Carpenter's Square | Carpenter's Square |
+| CarpentersWall | Carpenters Wall | Carpenter's Wall | Carpenter's Wall |
+| CloudsAndClears | Clouds And Clears | Clouds and Clears | Clouds and Clears |
+| FenceLits | Fence Lits |  | FenceLits |
+| FlowerOMino | Flower O Mino | Flower-O-Mino | Flower-O-Mino |
+| FourMeNot | Four Me Not | Four-Me-Not | Four-Me-Not |
+| JoinMe | Join Me | Join Me! | Join Me! |
+| LakesAndMeadows | Lakes And Meadows | Lakes and Meadows | Lakes and Meadows |
+| LineSweeper | Line Sweeper |  | LineSweeper |
+| LoopAndBlocks | Loop And Blocks | Loop and Blocks | Loop and Blocks |
+| MakeTheDifference | Make The Difference | Make the Difference | Make the Difference |
+| MineSlither | Mine Slither |  | MineSlither |
+| MiniLits | Mini Lits | Mini-Lits | Mini-Lits |
+| MirrorsExtended | Mirrors Extended | Mirrors, extended | Mirrors, extended |
+| NoughtsAndCrosses | Noughts And Crosses | Noughts & Crosses | Noughts & Crosses |
+| NumberLink | Number Link |  | NumberLink |
+| OneUpOrDown | One Up Or Down | One Up or Down | One Up or Down |
+| PathOnTheHills | Path On The Hills | Path on the Hills | Path on the Hills |
+| PathOnTheMountains | Path On The Mountains | Path on the Mountains | Path on the Mountains |
+| PleaseComeBack | Please Come Back | Please come back | Please come back |
+| PlugItIn | Plug It In | Plug it in | Plug it in |
+| PondCamping | Pond Camping | Pond camping | Pond camping |
+| PondsAndFlowerbeds | Ponds And Flowerbeds | Ponds and Flowerbeds | Ponds and Flowerbeds |
+| RunInALoop | Run In A Loop | Run in a Loop | Run in a Loop |
+| SheepAndWolves | Sheep And Wolves | Sheep & Wolves | Sheep & Wolves |
+| ShopAndGas | Shop And Gas | Shop & Gas | Shop & Gas |
+| SlitherCorner | Slither Corner |  | SlitherCorner |
+| SlitherLink | Slither Link |  | SlitherLink |
+| Snakeomino | Snakeomino | Snake-omino | Snake-omino |
+| Square100 | Square100 | Square 100 | Square 100 |
+| StraightAndBendLands | Straight And Bend Lands | Straight and Bend Lands | Straight and Bend Lands |
+| StraightAndTurn | Straight And Turn | Straight and Turn | Straight and Turn |
+| TapAlike | Tap Alike | Tap-Alike | Tap-Alike |
+| TapARow | Tap A Row | Tap-A-Row | Tap-A-Row |
+| TurnMeUp | Turn Me Up | Turn me up | Turn me up |
+| UnreliableHints | Unreliable Hints | Unreliable hints | Unreliable hints |
+| YouTurnMeOn | You Turn Me On | You Turn me on | You Turn me on |
