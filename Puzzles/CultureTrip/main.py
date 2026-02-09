@@ -5,8 +5,8 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 
 # Games 1 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
-    MUSEUM_PATH = '../../images/museum2.png'
-    MONUMENT_PATH = '../../images/exhibition.png'
+    MUSEUM_PATH = '../../images/ct_museum.png'
+    MONUMENT_PATH = '../../images/ct_monument.png'
     template_img_4channel_list = get_template_img_4channel_list(MUSEUM_PATH, MONUMENT_PATH)
 
     def __init__(self: Self):
