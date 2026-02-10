@@ -28,7 +28,7 @@ class _Analyzer(PuzzleAnalyzer):
                 if len(horizontal_line_results) == 1:
                     ch = ' '
                 else:
-                    ch = self.recognize_digit(x, y, w, h) or '1'
+                    ch = self.recognize_digit(x, y, w, h) or '7'
                 row_result.append(ch)
             result.append(row_result)
         return result
