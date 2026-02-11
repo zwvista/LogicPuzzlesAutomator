@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 12
 class _Analyzer(PuzzleAnalyzer):
 
     EMPTY_PATH = '../../images/lawn_background.png'

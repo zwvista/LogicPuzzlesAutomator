@@ -6,7 +6,6 @@ import numpy as np
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 16
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

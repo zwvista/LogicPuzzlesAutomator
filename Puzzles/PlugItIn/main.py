@@ -3,7 +3,6 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
     LIGHTBULB_PATH = '../../images/lightbulb2.png'
     BATTERY_PATH = '../../images/battery.png'

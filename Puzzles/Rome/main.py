@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, format_matrix_with_walls
 
 
-# Games 1 Puzzle Set 10
 class _Analyzer(PuzzleAnalyzer):
 
     UP_PATH = '../../images/arrow_bw_up.png'

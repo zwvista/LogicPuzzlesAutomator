@@ -5,7 +5,6 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 
 block_color = (170, 170, 170)
 
-# Games 1 Puzzle Set 9
 class _Analyzer(PuzzleAnalyzer):
 
     FLOWER_PATH = '../../images/flower_blue.png'

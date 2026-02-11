@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 
-# Games 2 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     # PEBBLE_PATH_LIST = (f'../../images/pebble{i}.png' for i in range(1, 8))

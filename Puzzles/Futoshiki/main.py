@@ -4,7 +4,6 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
     get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     UP_PATH = '../../images/navigate_up.png'

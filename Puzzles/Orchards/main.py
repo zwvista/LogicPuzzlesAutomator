@@ -3,7 +3,6 @@ from typing import Self
 from Puzzles.Parks.main import ParksBaseAnalyzer
 
 
-# Games 1 Puzzle Set 11
 class _Analyzer(ParksBaseAnalyzer):
 
     def __init__(self: Self):

@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36
 
 
-# Games 2 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

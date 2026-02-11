@@ -3,7 +3,6 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, format_matrix_with_walls
 
 
-# Games 1 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
     MUSEUM_PATH = '../../images/ct_museum.png'
     MONUMENT_PATH = '../../images/ct_monument.png'

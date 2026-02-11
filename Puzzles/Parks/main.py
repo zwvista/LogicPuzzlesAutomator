@@ -181,7 +181,6 @@ class ParksBaseAnalyzer(PuzzleAnalyzer):
         return level_str
 
 
-# Games 1 Puzzle Set 1
 class _Analyzer(ParksBaseAnalyzer):
 
     def __init__(self: Self):

@@ -3,7 +3,6 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, to_base_36
 
 
-# Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

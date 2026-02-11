@@ -4,7 +4,6 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
 block_color = (170, 170, 170)
 
-# Games 1 Puzzle Set 7
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

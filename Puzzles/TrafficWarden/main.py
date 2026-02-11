@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, to_base_36
 
 
-# Games 2 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     RED_PATH = '../../images/nav_plain_red.png'

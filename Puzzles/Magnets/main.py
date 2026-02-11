@@ -4,7 +4,6 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, process_pixel_short_results, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

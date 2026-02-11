@@ -4,7 +4,6 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
     process_pixel_long_results
 
 
-# Games 1 Puzzle Set 16
 class _Analyzer(PuzzleAnalyzer):
 
     NAIL_PATH = '../../images/nail_head.png'

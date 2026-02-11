@@ -3,7 +3,6 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 12
 class _Analyzer(PuzzleAnalyzer):
 
     paths = (f'../../images/arrow{n}.png' for n in "89632147")

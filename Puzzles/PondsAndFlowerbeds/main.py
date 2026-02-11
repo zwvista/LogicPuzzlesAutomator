@@ -4,7 +4,6 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, g
     process_pixel_long_results
 
 
-# Games 2 Puzzle Set 4
 class _Analyzer(PuzzleAnalyzer):
 
     HEDGE_PATH = '../../images/forest_lighter.png'

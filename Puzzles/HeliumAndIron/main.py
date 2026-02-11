@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, get_template_img_4channel_list
 
 
-# Games 2 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):

@@ -3,7 +3,6 @@ from typing import Self
 from Puzzles.tapa_base_analyzer import TapaBaseAnalyzer
 
 
-# Games 1 Puzzle Set 10
 class _Analyzer(TapaBaseAnalyzer):
 
     def __init__(self: Self):

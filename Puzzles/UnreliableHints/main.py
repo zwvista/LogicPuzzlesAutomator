@@ -6,7 +6,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, get_level_str_from_matrix
 
 
-# Games 1 Puzzle Set 12
 class _Analyzer(PuzzleAnalyzer):
 
     UP_PATH = '../../images/arrow_cyan_up.png'

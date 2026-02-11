@@ -5,7 +5,6 @@ import cv2
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, get_template_img_4channel_list
 
 
-# Games 1 Puzzle Set 2
 class _Analyzer(PuzzleAnalyzer):
     EMPTY_PATH = '../../images/lawn_background.png'
     EARTH_PATH = '../../images/earth.png'
