@@ -7,16 +7,21 @@ class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            230,
-            [(1, 10), (111, 11), (191, 12)]
+            120,
+            [(1, 10), (61, 11)]
         )
 
     @override
     def get_level_str_from_image(self: Self) -> str:
-        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count + 1)
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        level_str = get_level_str_from_matrix(matrix)
+        level_str = get_level_str_from_matrix(matrix, lambda x: x.rjust(2))
         return level_str
+
+    @override
+    def get_attr_str_from_image(self: Self) -> str:
+        output = self.recognize_text(660, 56, 500, 34)
+        return f' SuperTanker="1"' if output else ''
 
 
 if __name__ == "__main__":

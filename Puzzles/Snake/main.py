@@ -35,11 +35,6 @@ class _Analyzer(PuzzleAnalyzer):
         level_str = get_level_str_from_matrix(matrix, to_base_36)
         return level_str
 
-    @override
-    def get_attr_str_from_image(self: Self) -> str:
-        output = self.recognize_text(660, 56, 500, 34)
-        return f' SuperTanker="1"' if output else ''
-
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
