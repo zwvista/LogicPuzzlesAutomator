@@ -1,14 +1,17 @@
+import string
 from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36, \
+    get_template_img_4channel_list
 
 
 class _Analyzer(PuzzleAnalyzer):
 
     WOOD_PATH = '../../images/wood1.png'
-    template_img_4channel = cv2.imread(WOOD_PATH, cv2.IMREAD_UNCHANGED)
+    WOOD_QM_PATH = '../../images/wood_qm.png'
+    template_img_4channel_list = get_template_img_4channel_list(WOOD_PATH, WOOD_QM_PATH)
 
     def __init__(self: Self):
         super().__init__(
@@ -29,23 +32,28 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                diff = self.get_template_diff_in_region(
-                    template_img_4channel=self.template_img_4channel,
+                diff_list = [self.get_template_diff_in_region(
+                    template_img_4channel=template_img_4channel,
                     top_left_coord=(x, y),
                     size=(w, h),
-                )
-                if diff > .1:
+                ) for template_img_4channel in self.template_img_4channel_list]
+                if diff_list[0] > .1:
                     ch = ' '
+                elif diff_list[0] < .01:
+                    ch = '0'
+                elif diff_list[1] < .02:
+                    ch = '?'
                 else:
+                    # print(f'{row_idx=}, {col_idx=}, {diff_list=}')
                     roi = img_result[y:y + h, x:x + w]
                     scale = .1 * self.cell_count
                     roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-                    output = self.reader.readtext(roi_large, allowlist="0123456789?")
+                    output = self.reader.readtext(roi_large, allowlist=string.digits)
                     if not output:
                         ch = '0'
                     else:
                         _, ch, prob = output[0]
-                        ch = '2' if ch == "22" else '?' if (ch == '2' or ch == '7') and prob < 0.99 else ch
+                        ch = '2' if ch == "22" else ch
                 row_result.append(ch)
             result.append(row_result)
         return result
