@@ -32,7 +32,9 @@ class _Analyzer(PuzzleAnalyzer):
                 row_result = [' ']
                 for col_idx, (x, w) in enumerate(horizontal_line_list):
                     if col_idx > 0:
-                        colors = (self.large_img_bgr[y + dy, x + dx][0] == 255 for dy in range(0, 1) for dx in range(0, 1))
+                        colors = [self.large_img_bgr[y + dy, x + dx][0] > 250 for dy in range(0, 1) for dx in range(0, 1)]
+                        # colors2 = [self.large_img_bgr[y + dy, x + dx] for dy in range(0, 1) for dx in range(0, 1)]
+                        # print(f'{row_idx=}, {col_idx=}, {x=}, {y=}, {colors=}, {colors2=}')
                         row_result.append('O' if all(colors) else ' ')
                     row_result.append(' ')
                 row_result.append(' ')
