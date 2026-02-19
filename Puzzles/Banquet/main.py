@@ -41,7 +41,7 @@ class _Analyzer(PuzzleAnalyzer):
                     ch = ' '
                 elif diff_list[0] < .01:
                     ch = '0'
-                elif diff_list[1] < .02:
+                elif diff_list[1] < .03:
                     ch = '?'
                 else:
                     # print(f'{row_idx=}, {col_idx=}, {diff_list=}')
@@ -50,7 +50,7 @@ class _Analyzer(PuzzleAnalyzer):
                     roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
                     output = self.reader.readtext(roi_large, allowlist=string.digits)
                     if not output:
-                        ch = '0'
+                        ch = '7'
                     else:
                         _, ch, prob = output[0]
                         ch = '2' if ch == "22" else ch
@@ -70,4 +70,4 @@ if __name__ == "__main__":
     analyzer = _Analyzer()
     # analyzer.take_snapshot(app_series_no=3)
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(189)
