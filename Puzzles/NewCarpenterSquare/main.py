@@ -25,10 +25,17 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
+                # dl = [self.get_template_diff_in_region(
+                #     template_img_4channel=template_img_4channel,
+                #     top_left_coord=(x, y),
+                #     size=(w, h)
+                # ) for template_img_4channel in self.template_img_4channel_list]
+                # print(f'{row_idx}. {col_idx}: {dl}')
                 index = self.get_template_index_by_diff_in_region(
                     template_img_4channel_list=self.template_img_4channel_list,
                     top_left_coord=(x, y),
                     size=(w, h),
+                    tweak=lambda diff_list: [diff_list[0], diff_list[1] + 0.03, diff_list[2]]
                 )
                 ch = ' ' if index == -1 else '/=?'[index]
                 row_result.append(ch)
@@ -47,4 +54,4 @@ if __name__ == "__main__":
     analyzer = _Analyzer()
     # analyzer.take_snapshot(app_series_no=3)
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(158)

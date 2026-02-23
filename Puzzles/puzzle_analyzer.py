@@ -340,7 +340,7 @@ class PuzzleAnalyzer:
             start_x: int = 0,
             start_y: int = 200,
     ) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
-        self.cell_length = 1180 / cell_count
+        self.cell_length = 1182 / cell_count
         def get_grid_lines_by_cell_count2(start_position: int) -> list[tuple[int, int]]:
             result = []
             for i in range(cell_count):
