@@ -5,22 +5,24 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 
 class _Analyzer(PuzzleAnalyzer):
     FOODS_PATH = [
-        '../../images/hamburger.png',
-        '../../images/pizza.png',
-        '../../images/fries.png',
-        '../../images/donut.png',
-        '../../images/fish.png',
-        '../../images/icecream.png',
-        '../../images/pig.png',
+        '../../images/FW_aX.png',
+        '../../images/FW_bX.png',
+        '../../images/FW_cX.png',
+        '../../images/FW_dX.png',
+        '../../images/FW_eX.png',
+        '../../images/FW_fX.png',
+        '../../images/FW_gX.png',
+        '../../images/FW_sX.png',
     ]
     DRINKS_PATH = [
-        '../../images/drink_blue.png',
-        '../../images/cup.png',
-        '../../images/wine_red_glass.png',
-        '../../images/beer_glass.png',
-        '../../images/cocktail.png',
-        '../../images/wine_white_glass.png',
-        '../../images/lemonade_bottle.png',
+        '../../images/FW_XA.png',
+        '../../images/FW_XB.png',
+        '../../images/FW_XC.png',
+        '../../images/FW_XD.png',
+        '../../images/FW_XE.png',
+        '../../images/FW_XF.png',
+        '../../images/FW_XG.png',
+        '../../images/FW_XS.png',
     ]
     template_img_4channel_list_foods = get_template_img_4channel_list(*FOODS_PATH)
     template_img_4channel_list_drinks = get_template_img_4channel_list(*DRINKS_PATH)
@@ -44,13 +46,15 @@ class _Analyzer(PuzzleAnalyzer):
                     template_img_4channel_list=self.template_img_4channel_list_foods,
                     top_left_coord=(x, y),
                     size=(w // 2, h),
+                    tweak=lambda diff_list: [dl + 0.02 if i == 7 else dl for (i, dl) in enumerate(diff_list)],
                 )
                 index2 = self.get_template_index_by_diff_in_region(
                     template_img_4channel_list=self.template_img_4channel_list_drinks,
                     top_left_coord=(x + w // 2, y),
                     size=(w // 2, h),
                 )
-                ch = (' ' if index1 == -1 else 'abcdefg'[index1]) + (' ' if index2 == -1 else 'ABCDEFG'[index2])
+                # print(f'{row_idx=}, {col_idx=}, {index1=}, {index2=}')
+                ch = (' ' if index1 == -1 else 'abcdefg '[index1]) + (' ' if index2 == -1 else 'ABCDEFG '[index2])
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -67,4 +71,4 @@ if __name__ == "__main__":
     analyzer = _Analyzer()
     # analyzer.take_snapshot()
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle(1, 1)
+    analyzer.get_levels_str_from_puzzle()
