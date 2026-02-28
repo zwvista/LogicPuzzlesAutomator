@@ -28,7 +28,7 @@ class _Analyzer(PuzzleAnalyzer):
                     ch = ' '
                 else:
                     ch = self.recognize_digit(x, y, w, h) or '1'
-                    ch = '1' if ch == '7' else '2' if ch == '22' else ch
+                    ch = '1' if ch == '7' or ch == '14' or ch == '17' else '2' if ch == '22' else ch
                 row_result.append(ch)
             result.append(row_result)
         return result
