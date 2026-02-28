@@ -2,7 +2,7 @@ from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, to_base_36
 
 
 class _Analyzer(PuzzleAnalyzer):
@@ -12,6 +12,25 @@ class _Analyzer(PuzzleAnalyzer):
             300,
             [(1, 4), (21, 5), (31, 6), (121, 7), (181, 8), (231, 9), (241, 10), (281, 11)]
         )
+
+    @override
+    def recognize_digits(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
+                if len(horizontal_line_results) == 1:
+                    ch = ' '
+                else:
+                    ch = self.recognize_digit(x, y, w, h) or ' '
+                row_result.append(to_base_36(ch))
+            result.append(row_result)
+        return result
 
     @override
     def get_level_str_from_image(self: Self) -> str:
