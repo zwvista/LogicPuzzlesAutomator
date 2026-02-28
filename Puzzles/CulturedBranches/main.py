@@ -1,3 +1,4 @@
+import string
 from typing import Self, override
 
 import cv2
@@ -32,10 +33,10 @@ class _Analyzer(PuzzleAnalyzer):
                 if len(horizontal_line_results) == 1:
                     ch = ' '
                 else:
-                    output = self.recognize_text(x, y, w, h, get_roi_large=get_roi_large)
+                    output = self.recognize_text(x, y, w, h, get_roi_large=get_roi_large, allowlist=string.ascii_uppercase)
                     if output:
                         _, ch, prob = output
-                        ch = 'G' if ch == "6" else ch
+                        ch = 'C' if ch == "c" else ch
                     else:
                         ch = 'I'
                 row_result.append(ch)
