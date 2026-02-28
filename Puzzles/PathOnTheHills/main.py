@@ -2,7 +2,7 @@ from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, to_base_36
 
 
 class _Analyzer(PuzzleAnalyzer):
@@ -32,7 +32,7 @@ class _Analyzer(PuzzleAnalyzer):
                     ch = ' '
                 else:
                     ch = self.recognize_digit(x, y, w, h) or ' '
-                row_result.append(ch)
+                row_result.append(to_base_36(ch))
             result.append(row_result)
         return result
 

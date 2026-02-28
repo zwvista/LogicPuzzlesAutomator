@@ -2,10 +2,13 @@ from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36, get_level_str_from_matrix, \
+    get_template_img_4channel_list
 
 
 class _Analyzer(PuzzleAnalyzer):
+    QM_PATH = '../../images/circle_qm.png'
+    template_img_4channel_list = get_template_img_4channel_list(QM_PATH)
 
     def __init__(self: Self):
         super().__init__(
@@ -23,19 +26,27 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x, end_x=x+w)
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x+5, end_x=x+w-5)
                 if len(horizontal_line_results) == 1:
                     text = ' '
                 else:
-                    roi = self.large_img_bgr[y:y + h, x:x + w]
-                    scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 150 else 3 if w > 120 else 4
-                    roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-                    output = self.reader.readtext(roi_large, allowlist="0123456789?")
-                    if not output:
-                        text = " "
+                    index = self.get_template_index_by_diff_in_region(
+                        template_img_4channel_list=self.template_img_4channel_list,
+                        top_left_coord=(x, y),
+                        size=(w, h),
+                    )
+                    if index != -1:
+                        text = '?'
                     else:
-                        _, text, prob = output[0]
-                        text = '2' if text == "22" else '?' if (text == '2' or text == '7') and prob < 0.99 else text
+                        roi = self.large_img_bgr[y:y + h, x:x + w]
+                        scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 150 else 3 if w > 120 else 4
+                        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+                        output = self.reader.readtext(roi_large, allowlist="0123456789")
+                        if not output:
+                            text = " "
+                        else:
+                            _, text, prob = output[0]
+                            text = '2' if text == "22" else text
                 row_result.append(text)
             result.append(row_result)
         return result
