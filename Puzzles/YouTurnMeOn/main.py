@@ -32,6 +32,7 @@ class _Analyzer(PuzzleAnalyzer):
                     ch = ' '
                 else:
                     ch = self.recognize_digit(x, y, w, h) or ' '
+                ch = '0' if ch == '10' else ch
                 row_result.append(ch)
             result.append(row_result)
         return result

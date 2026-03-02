@@ -63,7 +63,7 @@ class _Analyzer(PuzzleAnalyzer):
                     elif self.recognize_circle(x, y, w, h):
                         ch += 'O'
                     elif self.recognize_cross(x, y, w, h):
-                        ch = 'XX'
+                        ch = ' X'
                 row_result.append(ch)
             result.append(row_result)
         return result
