@@ -47,13 +47,13 @@ class _Analyzer(PuzzleAnalyzer):
         col_walls = set()
         for col_idx, (x, w) in enumerate(horizontal_line_list):
             for row_idx, (y, h) in enumerate(vertical_line_list):
-                if row_idx == 0 or sum((1 if self.large_img_bgr[y + dy, x + w // 2][0] == color_b else 0) for dy in range(-3, 4)) > 0:
+                if row_idx == 0 or sum((1 if abs(int(self.large_img_bgr[y + dy, x + w // 2][0]) - color_b) < 2 else 0) for dy in range(-3, 4)) > 0:
                     row_walls.add((row_idx, col_idx))
             row_walls.add((len(vertical_line_list), col_idx))
 
         for row_idx, (y, h) in enumerate(vertical_line_list):
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                if col_idx == 0 or sum((1 if self.large_img_bgr[y + h // 2, x + dx][0] == color_b else 0) for dx in range(-3, 4)) > 0:
+                if col_idx == 0 or sum((1 if abs(int(self.large_img_bgr[y + h // 2, x + dx][0]) - color_b) < 2 else 0) for dx in range(-3, 4)) > 0:
                     col_walls.add((row_idx, col_idx))
             col_walls.add((row_idx, len(horizontal_line_list)))
 
@@ -63,7 +63,7 @@ class _Analyzer(PuzzleAnalyzer):
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
         matrix = self.recognize_template(horizontal_lines, vertical_lines)
-        walls = self.recognize_walls2(horizontal_lines, vertical_lines, 170)
+        walls = self.recognize_walls2(horizontal_lines, vertical_lines, 171)
         level_str = format_matrix_with_walls(matrix, walls)
         return level_str
 
