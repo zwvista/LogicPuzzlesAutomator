@@ -1,4 +1,7 @@
+import string
 from typing import Self, override
+
+import cv2
 
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
 
@@ -10,6 +13,24 @@ class _Analyzer(PuzzleAnalyzer):
             200,
             [(1, 5), (6, 6), (31, 7), (51, 8), (111, 9), (161, 10)]
         )
+
+    @override
+    def recognize_digit(self: Self, x: int, y: int, w: int, h: int) -> str | None:
+        roi = self.large_img_rgb[y:y + h, x:x + w]
+        scale = self.get_scale_for_digit_recognition(w)
+        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        output = self.reader.readtext(roi_large, allowlist=string.digits)
+        if not output:
+            return None
+        else:
+            _, text, prob = output[0]
+            if text == "22":
+                if prob < 0.99:
+                    text = "2"
+            elif text == "7":
+                if prob < 0.35:
+                    text = "1"
+            return text
 
     @override
     def recognize_digits(
