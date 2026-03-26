@@ -5,24 +5,24 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 
 class _Analyzer(PuzzleAnalyzer):
     FOODS_PATH = [
-        '../../images/FW_aX.png',
-        '../../images/FW_bX.png',
-        '../../images/FW_cX.png',
-        '../../images/FW_dX.png',
-        '../../images/FW_eX.png',
-        '../../images/FW_fX.png',
-        '../../images/FW_gX.png',
-        '../../images/FW_sX.png',
+        '../../images/FW_aX.png',# hamburger
+        '../../images/FW_bX.png',# pizza
+        '../../images/FW_cX.png',# fries
+        '../../images/FW_dX.png',# donut
+        '../../images/FW_eX.png',# fish
+        '../../images/FW_fX.png',# icecream
+        '../../images/FW_gX.png',# pig
+        '../../images/FW_sX.png',#
     ]
     DRINKS_PATH = [
-        '../../images/FW_XA.png',
-        '../../images/FW_XB.png',
-        '../../images/FW_XC.png',
-        '../../images/FW_XD.png',
-        '../../images/FW_XE.png',
-        '../../images/FW_XF.png',
-        '../../images/FW_XG.png',
-        '../../images/FW_XS.png',
+        '../../images/FW_XA.png',# drink_blue
+        '../../images/FW_XB.png',# cup
+        '../../images/FW_XC.png',# wine_red_glass
+        '../../images/FW_XD.png',# beer_glass
+        '../../images/FW_XE.png',# cocktail
+        '../../images/FW_XF.png',# wine_white_glass
+        '../../images/FW_XG.png',# lemonade_bottle
+        '../../images/FW_XS.png',#
     ]
     template_img_4channel_list_foods = get_template_img_4channel_list(*FOODS_PATH)
     template_img_4channel_list_drinks = get_template_img_4channel_list(*DRINKS_PATH)
