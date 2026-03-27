@@ -1,0 +1,79 @@
+import string
+from typing import Self, override
+
+import cv2
+
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
+
+
+class _Analyzer(PuzzleAnalyzer):
+
+    def __init__(self: Self):
+        super().__init__(
+            300,
+            [(1, 4), (6, 5), (41, 6), (101, 7), (181, 8), (241, 9), (281, 10)]
+        )
+
+    def recognize_digit(self: Self, x: int, y: int, w: int, h: int) -> str | None:
+        roi = self.large_img_rgb[y:y + h, x:x + w]
+        scale = self.get_scale_for_digit_recognition(w)
+        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        output = self.reader.readtext(roi_large, allowlist=string.digits)
+        if not output:
+            return None
+        else:
+            _, text, prob = output[0]
+            if text == "22":
+                if prob < 0.99:
+                    text = "2"
+            elif text == "7":
+                if prob < 0.5:
+                    text = "1"
+            elif len(text) > 1:
+                text = text[0]
+            return text
+
+    @override
+    def recognize_digits(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]]
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2 - 30, start_x=x + 10, end_x=x+w - 10)
+                horizontal_line_results2 = self.analyze_horizontal_line(y_coord=y + h // 2 + 30, start_x=x + 10, end_x=x+w - 10)
+                if len(horizontal_line_results) == 1 or len(horizontal_line_results2) == 1:
+                    ch = ' '
+                else:
+                    ch = self.recognize_digit(x, y, w, h) or '1'
+                row_result.append(ch)
+            result.append(row_result)
+        return result
+
+    @override
+    def get_level_str_from_image(self: Self) -> str:
+        horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+
+        gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
+        _, thresh1 = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        _, thresh2 = cv2.threshold(gray, 177, 255, cv2.THRESH_BINARY)
+        result = cv2.subtract(thresh1, thresh2)
+        self.large_img_bgr = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
+        self.large_img_rgb = cv2.cvtColor(result, cv2.COLOR_GRAY2RGB)
+        # cv2.imshow("Grid Intersections", self.large_img_rgb)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+        matrix = self.recognize_digits(horizontal_lines, vertical_lines)
+        level_str = get_level_str_from_matrix(matrix)
+        return level_str
+
+
+if __name__ == "__main__":
+    analyzer = _Analyzer()
+    # analyzer.take_snapshot(app_series_no=3)
+    # analyzer.get_level_board_size_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(101)
