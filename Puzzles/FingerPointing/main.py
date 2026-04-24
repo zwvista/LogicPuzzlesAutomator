@@ -36,7 +36,7 @@ class _Analyzer(PuzzleAnalyzer):
             for col_idx, (x, w) in enumerate(horizontal_line_list):
                 horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x+15, end_x=x+w - 15)
                 if len(horizontal_line_results) == 1:
-                    text = 'O' if horizontal_line_results[0].color[0] == 170 else ' '
+                    text = '@' if horizontal_line_results[0].color[0] == 170 else ' '
                 else:
                     diff_list = [self.get_template_diff_in_region(
                         template_img_4channel=template_img_4channel,
