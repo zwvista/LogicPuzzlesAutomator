@@ -1,11 +1,19 @@
+import string
 from typing import override, Self
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36, \
+    get_template_img_4channel_list
 
 
 class _Analyzer(PuzzleAnalyzer):
+
+    UP_PATH = '../../images/finger_up.png'
+    RIGHT_PATH = '../../images/finger_right.png'
+    DOWN_PATH = '../../images/finger_down.png'
+    LEFT_PATH = '../../images/finger_left.png'
+    template_img_4channel_list = get_template_img_4channel_list(UP_PATH, RIGHT_PATH, DOWN_PATH, LEFT_PATH)
 
     def __init__(self: Self):
         super().__init__(
@@ -20,7 +28,7 @@ class _Analyzer(PuzzleAnalyzer):
             vertical_line_list: list[tuple[int, int]]
     ) -> list[list[str]]:
         gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
-        _, img_result = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
+        _, img_result = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
         result = []
         for row_idx, (y, h) in enumerate(vertical_line_list):
@@ -30,15 +38,24 @@ class _Analyzer(PuzzleAnalyzer):
                 if len(horizontal_line_results) == 1:
                     text = 'O' if horizontal_line_results[0].color[0] == 170 else ' '
                 else:
-                    roi = img_result[y:y + h, x:x + w]
-                    scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 150 else 3 if w > 120 else 4
-                    roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-                    output = self.reader.readtext(roi_large, allowlist="0123456789?")
-                    if not output:
-                        text = " "
+                    diff_list = [self.get_template_diff_in_region(
+                        template_img_4channel=template_img_4channel,
+                        top_left_coord=(x, y),
+                        size=(w, h)
+                    ) for template_img_4channel in self.template_img_4channel_list]
+                    index = next((i for i, diff in enumerate(diff_list) if diff == min(diff_list)))
+                    if diff_list[index] < 0.2:
+                        text = '^>v<'[index]
                     else:
-                        _, text, prob = output[0]
-                        text = '2' if text == "22" else '?' if (text == '2' or text == '7') and prob < 0.99 else text
+                        roi = img_result[y:y + h, x:x + w]
+                        scale = .5 if w > 220 else 1 if w > 180 else 2 if w > 150 else 3 if w > 120 else 4
+                        roi_large = cv2.resize(roi, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+                        output = self.reader.readtext(roi_large, allowlist=string.digits)
+                        if not output:
+                            text = "1"
+                        else:
+                            _, text, prob = output[0]
+                            text = '2' if text == "22" else text
                 row_result.append(text)
             result.append(row_result)
         return result
@@ -55,4 +72,4 @@ if __name__ == "__main__":
     analyzer = _Analyzer()
     # analyzer.take_snapshot(app_series_no=2)
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(91)
