@@ -27,24 +27,24 @@ class _Analyzer(PuzzleAnalyzer):
             indexes.append(index)
         self.template_img_4channel_list2 = get_template_img_4channel_list(*(f'../../images/fruitvegetables/fv ({indexes[i]}).png' for i in range(3)))
 
-    @override
-    def recognize_walls2(
+    def recognize_walls3(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
             vertical_line_list: list[tuple[int, int]],
-            color_b: int = 255,
+            color_b1: int,
+            color_b2: int,
     ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
         row_walls = set()
         col_walls = set()
         for col_idx, (x, w) in enumerate(horizontal_line_list):
             for row_idx, (y, h) in enumerate(vertical_line_list):
-                if row_idx == 0 or sum((1 if self.large_img_bgr[y + dy, x + w // 2][0] > color_b else 0) for dy in range(-3, 4)) > 1:
+                if row_idx == 0 or sum((1 if color_b1 < self.large_img_bgr[y + dy, x + w // 3][0] < color_b2 else 0) for dy in range(-3, 4)) > 1:
                     row_walls.add((row_idx, col_idx))
             row_walls.add((len(vertical_line_list), col_idx))
 
         for row_idx, (y, h) in enumerate(vertical_line_list):
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                if col_idx == 0 or sum((1 if self.large_img_bgr[y + h // 2, x + dx][0] > color_b else 0) for dx in range(-3, 4)) > 1:
+                if col_idx == 0 or sum((1 if color_b1 < self.large_img_bgr[y + h // 3, x + dx][0] < color_b2 else 0) for dx in range(-3, 4)) > 1:
                     col_walls.add((row_idx, col_idx))
             col_walls.add((row_idx, len(horizontal_line_list)))
 
@@ -76,7 +76,7 @@ class _Analyzer(PuzzleAnalyzer):
         self.recognize_small_template()
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
         matrix = self.recognize_template(horizontal_lines, vertical_lines)
-        walls = self.recognize_walls2(horizontal_lines, vertical_lines, 150)
+        walls = self.recognize_walls3(horizontal_lines, vertical_lines, 155, 175)
         level_str = format_matrix_with_walls(matrix, walls)
         return level_str
 
