@@ -380,11 +380,183 @@ def take_snapshot_puzzle(
         print("(通知发送失败)")
 
 
+def take_snapshot_puzzle_for_levels(
+        app_series_no: int,
+        puzzle_name: str,
+        level_array: list,
+        need_page_screenshot: bool = True,
+        need_level_screenshot: bool = True
+):
+    """
+    为指定的关卡数组截图（支持不连续的关卡）
+
+    参数:
+    - app_series_no: 游戏系列号 (1,2,3,4)
+    - puzzle_name: 谜题名称，用于创建目录
+    - level_array: 关卡号数组（会被自动排序）
+    - need_page_screenshot: 是否需要截取页面缩略图
+    - need_level_screenshot: 是否需要截取关卡截图
+    """
+    global puzzle_app_name
+
+    # 设置应用名称
+    if app_series_no == 2:
+        puzzle_app_name = "100 LG II"
+    elif app_series_no == 3:
+        puzzle_app_name = "100 x 3 LG"
+    elif app_series_no == 4:
+        puzzle_app_name = "100 4 LG"
+
+    # 排序并去重
+    levels = sorted(set(level_array))
+    if not levels:
+        print("错误: 关卡数组为空")
+        return
+
+    print(f"=== {puzzle_app_name} 自动化截图脚本 (指定关卡版本) ===")
+    print(f"目标关卡: {levels}")
+    print(f"总关卡数: {len(levels)}")
+
+    # 安全检查
+    pyautogui.FAILSAFE = True
+    pyautogui.PAUSE = 0.2
+
+    # 激活应用程序
+    print(f"激活{puzzle_app_name}应用程序...")
+    if not activate_100lg():
+        return
+
+    # 创建截图目录
+    screenshot_dir = create_screenshot_dir(puzzle_name)
+    if not screenshot_dir:
+        return
+
+    # 获取窗口信息
+    print("获取窗口信息...")
+    window_info = get_window_info()
+    if not window_info:
+        return
+
+    print(f"窗口位置: [{window_info['x']}, {window_info['y']}]")
+    print(f"窗口大小: {window_info['width']}x{window_info['height']}")
+
+    # 按页面分组关卡
+    pages_dict = {}
+    for level in levels:
+        page_index = (level - 1) // 36  # 0-based page index
+        if page_index not in pages_dict:
+            pages_dict[page_index] = []
+        pages_dict[page_index].append(level)
+
+    print(f"\n页面分布:")
+    for page_index in sorted(pages_dict.keys()):
+        print(f"  第{page_index + 1}页: {pages_dict[page_index]}")
+
+    # 开始处理
+    print("\n开始处理...")
+    print("=" * 50)
+
+    # 导航到第一页
+    if not navigate_to_level(window_info, levels[0]):
+        print("导航到起始页面失败")
+        return
+
+    current_page = (levels[0] - 1) // 36
+
+    # 截取第一页的页面截图
+    if need_page_screenshot:
+        take_page_window_screenshot(window_info, current_page, screenshot_dir)
+
+    # 遍历每个页面
+    for page_index in sorted(pages_dict.keys()):
+        # 检查是否需要翻页
+        if page_index > current_page:
+            # 翻到目标页
+            pages_to_flip = page_index - current_page
+            for i in range(pages_to_flip):
+                more_x, more_y = calculate_more_button_position(window_info)
+                if click_at_position(more_x, more_y, f"More (翻到第{current_page + 2}页)"):
+                    time.sleep(2)
+                    current_page += 1
+                    # 更新窗口信息
+                    new_window_info = get_window_info()
+                    if new_window_info:
+                        window_info.update(new_window_info)
+                    else:
+                        print("翻页后无法获取窗口信息，停止处理")
+                        return
+
+                    # 截取新页面的页面截图
+                    if need_page_screenshot:
+                        take_page_window_screenshot(window_info, current_page, screenshot_dir)
+                else:
+                    print(f"翻页失败，无法到达第{page_index + 1}页")
+                    return
+
+        # 处理当前页面的所有关卡
+        page_levels = pages_dict[page_index]
+        print(f"\n=== 处理第{page_index + 1}页，共{len(page_levels)}个关卡 ===")
+
+        for level in page_levels:
+            # 计算关卡在页面中的位置
+            level_in_page = ((level - 1) % 36) + 1
+
+            print(f"\n[第{page_index + 1}页] 处理关卡 {level:03d} (位置{level_in_page}/36)")
+
+            if need_level_screenshot:
+                try:
+                    # 点击关卡按钮
+                    button_x, button_y = calculate_button_position(window_info, level)
+                    if not click_at_position(button_x, button_y, f"关卡{level:03d}"):
+                        print(f"点击关卡{level:03d}失败，跳过")
+                        continue
+
+                    # 等待游戏加载
+                    time.sleep(4)
+
+                    # 截图
+                    take_level_window_screenshot(window_info, level, screenshot_dir)
+
+                    # 点击返回按钮
+                    back_x, back_y = calculate_back_button_position(window_info)
+                    click_at_position(back_x, back_y, "返回")
+
+                    # 等待返回完成
+                    time.sleep(2)
+
+                    print(f"✓ 关卡 {level:03d} 处理完成")
+
+                except Exception as e:
+                    print(f"处理关卡 {level:03d} 时出错: {e}")
+
+    print("=" * 50)
+    print(f"=== 自动化完成 ===")
+    print(f"已处理 {len(levels)} 个关卡: {levels}")
+
+    # 完成通知
+    try:
+        script = f'''
+        display notification "已处理 {len(levels)} 个关卡！" with title "{puzzle_app_name} 截图完成" sound name "Glass"
+        '''
+        subprocess.run(['osascript', '-e', script], check=True)
+    except:
+        print("(通知发送失败)")
+
+
 if __name__ == "__main__":
     take_snapshot_puzzle(
+        app_series_no=1,
         puzzle_name="NumberCrossing",
         start_level=152,
         end_level=200,
+        need_page_screenshot=True,
+        need_level_screenshot=True
+    )
+    # 示例1: 使用关卡数组（不连续）
+    take_snapshot_puzzle_for_levels(
+        app_series_no=1,
+        puzzle_name="NumberCrossing",
+        level_array=[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],  # 不连续的关卡
         need_page_screenshot=True,
         need_level_screenshot=True
     )

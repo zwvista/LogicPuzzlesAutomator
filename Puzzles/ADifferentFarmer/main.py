@@ -84,5 +84,6 @@ class _Analyzer(PuzzleAnalyzer):
 if __name__ == "__main__":
     analyzer = _Analyzer()
     # analyzer.take_snapshot(app_series_no=2)
+    # analyzer.take_snapshot_for_levels(app_series_no=2, level_array=[26, 27, 117, 179])
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(179,179)

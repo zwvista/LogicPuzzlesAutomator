@@ -8,7 +8,7 @@ import cv2
 import easyocr
 import numpy as np
 
-from Puzzles.puzzle_snapshot_automator import take_snapshot_puzzle
+from Puzzles.puzzle_snapshot_automator import take_snapshot_puzzle, take_snapshot_puzzle_for_levels
 
 
 class PixelStreak:
@@ -192,6 +192,15 @@ class PuzzleAnalyzer:
     ) -> None:
         end_level = end_level or self.level_count
         take_snapshot_puzzle(app_series_no, self.puzzle_name, start_level, end_level, need_page_screenshot, need_level_screenshot)
+
+    def take_snapshot_for_levels(
+            self: Self,
+            app_series_no: int = 1,
+            level_array: list = [],
+            need_page_screenshot: bool = True,
+            need_level_screenshot: bool = True
+    ) -> None:
+        take_snapshot_puzzle_for_levels(app_series_no, self.puzzle_name, level_array, need_page_screenshot, need_level_screenshot)
 
 
     def get_cell_count(self: Self, level: int) -> int:
