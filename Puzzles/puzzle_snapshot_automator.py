@@ -405,7 +405,7 @@ def take_snapshot_puzzle_for_levels(
     elif app_series_no == 3:
         puzzle_app_name = "100 x 3 LG"
     elif app_series_no == 4:
-        puzzle_app_name = "100 4 LG"
+        puzzle_app_name = "100   4  LG"
 
     # 排序并去重
     levels = sorted(set(level_array))

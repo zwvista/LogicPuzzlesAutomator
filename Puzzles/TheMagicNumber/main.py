@@ -1,6 +1,7 @@
 from typing import Self, override
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls, get_template_img_4channel_list
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_list, \
+    get_level_str_from_matrix
 
 
 class _Analyzer(PuzzleAnalyzer):
@@ -10,8 +11,8 @@ class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
         super().__init__(
-            200,
-            [(1, 4), (11, 5), (41, 6), (61, 7), (91, 8), (121, 9), (151, 10)]
+            400,
+            [(1, 6), (51, 9), (171, 12)]
         )
         self.template_img_4channel_list2 = []
 
@@ -26,29 +27,6 @@ class _Analyzer(PuzzleAnalyzer):
             # print(index)
             indexes.append(index)
         self.template_img_4channel_list2 = get_template_img_4channel_list(*(f'../../images/fruitvegetables/fv ({indexes[i]}).png' for i in range(3)))
-
-    def recognize_walls3(
-            self: Self,
-            horizontal_line_list: list[tuple[int, int]],
-            vertical_line_list: list[tuple[int, int]],
-            color_b1: int,
-            color_b2: int,
-    ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
-        row_walls = set()
-        col_walls = set()
-        for col_idx, (x, w) in enumerate(horizontal_line_list):
-            for row_idx, (y, h) in enumerate(vertical_line_list):
-                if row_idx == 0 or sum((1 if color_b1 < self.large_img_bgr[y + dy, x + w // 3][0] < color_b2 else 0) for dy in range(-3, 4)) > 1:
-                    row_walls.add((row_idx, col_idx))
-            row_walls.add((len(vertical_line_list), col_idx))
-
-        for row_idx, (y, h) in enumerate(vertical_line_list):
-            for col_idx, (x, w) in enumerate(horizontal_line_list):
-                if col_idx == 0 or sum((1 if color_b1 < self.large_img_bgr[y + h // 3, x + dx][0] < color_b2 else 0) for dx in range(-3, 4)) > 1:
-                    col_walls.add((row_idx, col_idx))
-            col_walls.add((row_idx, len(horizontal_line_list)))
-
-        return row_walls, col_walls
 
     def recognize_template(
             self: Self,
@@ -67,6 +45,8 @@ class _Analyzer(PuzzleAnalyzer):
                 # if index != -1:
                 #     print(f'{row_idx=}, {col_idx=}, {index=}')
                 ch = ' ' if index == -1 else 'CBA'[index]
+                if sum(1 if c[0] == 136 else 0 for c in [self.large_img_bgr[y + 10, x + 10], self.large_img_bgr[y + 10, x + w - 10]]) > 0:
+                    ch = ch.lower()
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -76,14 +56,15 @@ class _Analyzer(PuzzleAnalyzer):
         self.recognize_small_template()
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
         matrix = self.recognize_template(horizontal_lines, vertical_lines)
-        walls = self.recognize_walls3(horizontal_lines, vertical_lines, 155, 175)
-        level_str = format_matrix_with_walls(matrix, walls)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    # analyzer.take_snapshot(app_series_no=2)
+    # analyzer.take_snapshot(app_series_no=4, start_level=240)
     # analyzer.get_level_board_size_from_puzzle()
-    # analyzer.take_snapshot_for_levels(app_series_no=2, level_array=[26, 27, 117, 179])
-    analyzer.get_levels_str_from_puzzle()
+    level_array = [264, 306, 308, 310, 394]
+    analyzer.take_snapshot_for_levels(app_series_no=4, level_array=level_array)
+    # analyzer.get_levels_str_from_puzzle(336, 391)
+    analyzer.get_levels_str_from_puzzle_for_levels(level_array)

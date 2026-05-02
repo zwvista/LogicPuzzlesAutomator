@@ -627,6 +627,33 @@ class PuzzleAnalyzer:
         return ''
 
 
+    def _get_levels_str_from_puzzle_for_one_level(
+            self: Self,
+            level_no: int,
+            level_image_path: str
+    ) -> None:
+        self.current_level = level_no
+        self.cell_count = self.get_cell_count(self.current_level)
+        # 图像信息
+        image_path = f'{level_image_path}Level_{level_no:03d}.png'
+        print("正在处理图片 " + image_path)
+        self.large_img_bgr = cv2.imread(image_path, cv2.IMREAD_COLOR)
+        if self.large_img_bgr is None:
+            print(f"错误：无法加载图像文件。{image_path}")
+            return
+        if self.reader:
+            self.large_img_rgb = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2RGB)
+        self.level_str = self.get_level_str_from_image()
+        self.attr_str = self.get_attr_str_from_image()
+        node = f"""  <level id="{level_no}"{self.attr_str}>
+    <![CDATA[
+{self.level_str}
+    ]]>
+  </level>
+"""
+        with open(f"Levels.txt", "a") as text_file:
+            text_file.write(node)
+
     def get_levels_str_from_puzzle(
             self: Self,
             start_level: int = 1,
@@ -645,27 +672,24 @@ class PuzzleAnalyzer:
             pass
         level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{self.puzzle_name}/")
         for i in range(start_level, end_level+1):
-            self.current_level = i
-            self.cell_count = self.get_cell_count(self.current_level)
-            # 图像信息
-            image_path = f'{level_image_path}Level_{i:03d}.png'
-            print("正在处理图片 " + image_path)
-            self.large_img_bgr = cv2.imread(image_path, cv2.IMREAD_COLOR)
-            if self.large_img_bgr is None:
-                print(f"错误：无法加载图像文件。{image_path}")
-                continue
-            if self.reader:
-                self.large_img_rgb = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2RGB)
-            self.level_str = self.get_level_str_from_image()
-            self.attr_str = self.get_attr_str_from_image()
-            node = f"""  <level id="{i}"{self.attr_str}>
-    <![CDATA[
-{self.level_str}
-    ]]>
-  </level>
-"""
-            with open(f"Levels.txt", "a") as text_file:
-                text_file.write(node)
+            self._get_levels_str_from_puzzle_for_one_level(i, level_image_path)
+
+    def get_levels_str_from_puzzle_for_levels(
+            self: Self,
+            level_array: list[int]
+    ) -> None:
+        '''
+
+        Args:
+            level_array: 关卡号数组
+        Returns:
+
+        '''
+        with open(f"Levels.txt", "w"):
+            pass
+        level_image_path = os.path.expanduser(f"~/Documents/Programs/Games/100LG/Levels/{self.puzzle_name}/")
+        for i in level_array:
+            self._get_levels_str_from_puzzle_for_one_level(i, level_image_path)
 
 
     def get_level_board_size_from_puzzle(self: Self) -> None:
