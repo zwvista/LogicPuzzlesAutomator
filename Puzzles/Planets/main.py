@@ -4,15 +4,15 @@ from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_template_img_4channel_li
 
 
 class _Analyzer(PuzzleAnalyzer):
-    P1_PATH = '../../images/planet_all.png'
-    P2_PATH = '../../images/planet_down.png'
-    P3_PATH = '../../images/planet_down_left.png'
-    P4_PATH = '../../images/planet_down_right.png'
-    P5_PATH = '../../images/planet_left.png'
-    P6_PATH = '../../images/planet_right.png'
-    P7_PATH = '../../images/planet_up.png'
-    P8_PATH = '../../images/planet_up_left.png'
-    P9_PATH = '../../images/planet_up_right.png'
+    P1_PATH = '../../images/planet_none.png'
+    P2_PATH = '../../images/planet_north.png'
+    P3_PATH = '../../images/planet_north_east.png'
+    P4_PATH = '../../images/planet_north_west.png'
+    P5_PATH = '../../images/planet_east.png'
+    P6_PATH = '../../images/planet_west.png'
+    P7_PATH = '../../images/planet_south.png'
+    P8_PATH = '../../images/planet_south_east.png'
+    P9_PATH = '../../images/planet_south_west.png'
     template_img_4channel_list = get_template_img_4channel_list(P1_PATH, P2_PATH, P3_PATH, P4_PATH, P5_PATH, P6_PATH, P7_PATH, P8_PATH, P9_PATH)
 
     def __init__(self: Self):
