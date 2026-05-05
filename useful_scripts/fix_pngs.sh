@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 定义输入和输出目录
-INPUT_DIR="../../100LG/Images2/TileContent/planets"
-OUTPUT_DIR="../../100LG/Images2/TileContent/planets_fixed"
+INPUT_DIR="../../100LG/Images4/Arrows/lime"
+OUTPUT_DIR="../../100LG/Images4/Arrows/lime_fixed"
 
 # 创建输出目录
 mkdir -p "$OUTPUT_DIR"
