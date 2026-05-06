@@ -616,6 +616,7 @@ class PuzzleAnalyzer:
         ) for template_img_4channel in template_img_4channel_list]
         if tweak:
             diff_list = tweak(diff_list)
+        # print(diff_list)
         index = next((i for i, diff in enumerate(diff_list) if diff == min(diff_list)))
         return -1 if diff_list[index] >= 1.0 else index
 
