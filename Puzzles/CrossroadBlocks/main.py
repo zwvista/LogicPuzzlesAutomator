@@ -32,9 +32,9 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                if sum((1 if abs(int(self.large_img_bgr[y + dy, x + w // 2][0]) - 116) < 5 else 0) for dy in range(4, 8)) > 1:
+                if self.large_img_bgr[y + 15, x + w // 2][0] == 0 and sum((1 if self.large_img_bgr[y + dy, x + w // 2][0] != 0 else 0) for dy in range(4, 8)) > 1:
                     ch = 'B'
-                elif self.large_img_bgr[y + 15, x + w // 2][0] == 255:
+                elif sum((1 if self.large_img_bgr[y + dy, x + w // 2][0] == 255 else 0) for dy in range(12, 18)) > 1:
                     ch = 'W'
                 else:
                     ch = ' '
@@ -71,12 +71,16 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                index = self.get_template_index_by_diff_in_region(
-                    template_img_4channel_list=self.template_img_4channel_list,
-                    top_left_coord=(x + w // 3, y),
-                    size=(w - w // 3, h),
-                )
-                ch = ' ' if index == -1 else '^>v<^>v<'[index]
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
+                if len(horizontal_line_results) == 1:
+                    ch = ' '
+                else:
+                    index = self.get_template_index_by_diff_in_region(
+                        template_img_4channel_list=self.template_img_4channel_list,
+                        top_left_coord=(x + w // 3, y),
+                        size=(w - w // 3, h),
+                    )
+                    ch = ' ' if index == -1 else '^>v<^>v<'[index]
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -96,7 +100,7 @@ class _Analyzer(PuzzleAnalyzer):
             arrows = matrix3[r]
             for c in range(cols):
                 c, d, a = colors[c], digits[c], arrows[c]
-                if len(d) == 2:
+                if len(d) > 1:
                     d = d[0]
                 if c == ' ' and d != ' ':
                     c = 'B'
@@ -120,6 +124,6 @@ class _Analyzer(PuzzleAnalyzer):
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    # analyzer.take_snapshot(app_series_no=3)
+    # analyzer.take_snapshot(app_series_no=3, start_level=263, end_level=263)
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(46)
