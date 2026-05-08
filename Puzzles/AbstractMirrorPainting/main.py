@@ -1,8 +1,6 @@
 from typing import Self, override
 
-import cv2
-
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, format_matrix_with_walls
 
 
 class _Analyzer(PuzzleAnalyzer):
@@ -10,38 +8,15 @@ class _Analyzer(PuzzleAnalyzer):
     def __init__(self: Self):
         super().__init__(
             400,
-            [(1, 3), (6, 4), (31, 5), (61, 6), (121, 7), (201, 8), (261, 9), (321, 10), (381, 11)]
+            [(1, 4), (6, 5), (16, 6), (36, 7), (96, 8), (171, 9), (271, 10), (371, 11)]
         )
-
-    @override
-    def recognize_digits(
-            self: Self,
-            horizontal_line_list: list[tuple[int, int]],
-            vertical_line_list: list[tuple[int, int]]
-    ) -> list[list[str]]:
-        result = []
-        for row_idx, (y, h) in enumerate(vertical_line_list):
-            row_result = []
-            for col_idx, (x, w) in enumerate(horizontal_line_list):
-                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
-                if len(horizontal_line_results) == 1:
-                    ch = ' '
-                else:
-                    ch = self.recognize_digit(x, y, w, h) or '1'
-                row_result.append(ch)
-            result.append(row_result)
-        return result
 
     @override
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
-
-        gray = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_BGR2GRAY)
-        _, self.large_img_bgr = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-        self.large_img_bgr = cv2.cvtColor(self.large_img_bgr, cv2.COLOR_GRAY2BGR)
-
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        level_str = get_level_str_from_matrix(matrix)
+        walls = self.recognize_walls(horizontal_lines, vertical_lines)
+        level_str = format_matrix_with_walls(matrix, walls)
         return level_str
 
 
