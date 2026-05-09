@@ -48,7 +48,7 @@ class _Analyzer(PuzzleAnalyzer):
                 horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x + w - 10)
                 b = len(horizontal_line_results) == 1
                 # print(f'{row_idx=} {col_idx=} {ch=} {ch2=} {b=}')
-                ch = ch if ch != ' ' else ' ' if b else ch2 or ' '
+                ch = ch if ch != ' ' else ' ' if b else ch2 or '1'
                 row_result.append(ch)
                 if row_idx == 0 and col_idx == 9:
                     roi = self.large_img_rgb[y:y + h, x:x + w]
