@@ -172,8 +172,11 @@ class PuzzleAnalyzer:
         self.cell_length = 0
 
         self.levels_to_cell_count: list[tuple[int, int, int]] = []
-        for (l1, c1), (l2, c2) in pairwise(level_to_cell_count):
-            self.levels_to_cell_count.append((l1, l2 - 1, c1))
+        if len(level_to_cell_count) == 1:
+            (l2, c2) = level_to_cell_count[0]
+        else:
+            for (l1, c1), (l2, c2) in pairwise(level_to_cell_count):
+                self.levels_to_cell_count.append((l1, l2 - 1, c1))
         self.levels_to_cell_count.append((l2, self.level_count, c2))
         pass
 
