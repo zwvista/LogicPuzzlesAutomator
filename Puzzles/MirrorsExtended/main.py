@@ -64,7 +64,7 @@ class _Analyzer(PuzzleAnalyzer):
                 else:
                     ch = self.recognize_text2(x, y, w, h) or '  '
                 s1 = ch[0]; s2 = ch[1:]
-                s1 = 'G' if s1 == '6' else 'I' if s1 == '1' else s1
+                s1 = 'G' if s1 == '6' else 'I' if s1 == '1' else 'O' if s1 == '0' else s1
                 s2 = '0' if s2 == 'O' else s2
                 ch = s1 + to_base_36(s2)
                 row_result.append(ch)
