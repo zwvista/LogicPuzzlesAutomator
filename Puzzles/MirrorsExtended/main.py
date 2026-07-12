@@ -2,7 +2,7 @@ from typing import Self, override
 
 import cv2
 
-from Puzzles.puzzle_analyzer import PuzzleAnalyzer, process_pixel_short_results
+from Puzzles.puzzle_analyzer import PuzzleAnalyzer, to_base_36
 
 
 class _Analyzer(PuzzleAnalyzer):
@@ -14,29 +14,27 @@ class _Analyzer(PuzzleAnalyzer):
         )
 
     @override
-    def recognize_walls(
+    def recognize_walls2(
             self: Self,
             horizontal_line_list: list[tuple[int, int]],
-            vertical_line_list: list[tuple[int, int]]
+            vertical_line_list: list[tuple[int, int]],
+            color_b: int = 170,
     ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
-        row_walls, col_walls = set(), set()
-        h_line, v_line = horizontal_line_list[-1], vertical_line_list[-1]
-        end_x, end_y = h_line[0] + h_line[1], v_line[0] + v_line[1]
+        row_walls = set()
+        col_walls = set()
         for col_idx, (x, w) in enumerate(horizontal_line_list):
             if col_idx == 0: continue
-            vertical_line_results = self.analyze_vertical_line(x_coord=x+15, start_y=200, end_y=end_y)
-            processed_column_grid = process_pixel_short_results(vertical_line_results, is_horizontal=False)
-            for row_idx, (y, h) in enumerate(processed_column_grid):
-                if row_idx == 1 or row_idx == len(processed_column_grid) - 1 or h > 4:
+            for row_idx, (y, h) in enumerate(vertical_line_list):
+                if row_idx == 1 or sum((1 if abs(self.large_img_bgr[y + dy, x + w // 2][0] - color_b) < 5 else 0) for dy in range(-3, 4)) > 0:
                     row_walls.add((row_idx, col_idx))
+            row_walls.add((len(vertical_line_list), col_idx))
 
         for row_idx, (y, h) in enumerate(vertical_line_list):
             if row_idx == 0: continue
-            horizontal_line_results = self.analyze_horizontal_line(y_coord=y+15, start_x=0, end_x=end_x)
-            processed_line_grid = process_pixel_short_results(horizontal_line_results, is_horizontal=True)
-            for col_idx, (x, w) in enumerate(processed_line_grid):
-                if col_idx == 1 or col_idx == len(processed_line_grid) - 1 or w > 4:
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                if col_idx == 1 or sum((1 if abs(self.large_img_bgr[y + h // 2, x + dx][0] - color_b) < 5 else 0) for dx in range(-3, 4)) > 0:
                     col_walls.add((row_idx, col_idx))
+            col_walls.add((row_idx, len(horizontal_line_list)))
 
         return row_walls, col_walls
 
@@ -65,6 +63,10 @@ class _Analyzer(PuzzleAnalyzer):
                     ch = '  '
                 else:
                     ch = self.recognize_text2(x, y, w, h) or '  '
+                s1 = ch[0]; s2 = ch[1:]
+                s1 = 'G' if s1 == '6' else 'I' if s1 == '1' else s1
+                s2 = '0' if s2 == 'O' else s2
+                ch = s1 + to_base_36(s2)
                 row_result.append(ch)
             result.append(row_result)
         return result
@@ -110,7 +112,7 @@ class _Analyzer(PuzzleAnalyzer):
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count + 2)
         horizontal_lines2, vertical_lines2 = horizontal_lines[:-1], vertical_lines[:-1]
         matrix = self.recognize_texts(horizontal_lines, vertical_lines)
-        walls = self.recognize_walls(horizontal_lines2, vertical_lines2)
+        walls = self.recognize_walls2(horizontal_lines2, vertical_lines2)
         level_str = self.format_matrix_with_walls2(matrix, walls)
         return level_str
 
@@ -119,4 +121,4 @@ if __name__ == "__main__":
     analyzer = _Analyzer()
     # analyzer.take_snapshot(app_series_no=2)
     # analyzer.get_level_board_size_from_puzzle()
-    analyzer.get_levels_str_from_puzzle()
+    analyzer.get_levels_str_from_puzzle(124)
