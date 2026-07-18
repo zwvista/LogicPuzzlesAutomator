@@ -3,6 +3,15 @@ from typing import Self, override
 from Puzzles.puzzle_analyzer import PuzzleAnalyzer, get_level_str_from_matrix, to_base_36
 
 
+def process_matrix_with_colors(
+        matrix: list[list[str]],
+        colors: list[list[str]],
+) -> None:
+    for row_idx, row in enumerate(matrix):
+        colors2 = colors[row_idx]
+        for col_idx, col in enumerate(row):
+            row[col_idx] = colors2[col_idx] + to_base_36(row[col_idx])
+
 class _Analyzer(PuzzleAnalyzer):
 
     def __init__(self: Self):
@@ -21,7 +30,7 @@ class _Analyzer(PuzzleAnalyzer):
         for row_idx, (y, h) in enumerate(vertical_line_list):
             row_result = []
             for col_idx, (x, w) in enumerate(horizontal_line_list):
-                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 10, end_x=x+w - 10)
+                horizontal_line_results = self.analyze_horizontal_line(y_coord=y + h // 2, start_x=x + 20, end_x=x+w - 20)
                 if len(horizontal_line_results) == 1:
                     ch = ' '
                 else:
@@ -30,16 +39,36 @@ class _Analyzer(PuzzleAnalyzer):
             result.append(row_result)
         return result
 
+    def recognize_color(
+            self: Self,
+            horizontal_line_list: list[tuple[int, int]],
+            vertical_line_list: list[tuple[int, int]],
+    ) -> list[list[str]]:
+        result = []
+        for row_idx, (y, h) in enumerate(vertical_line_list):
+            row_result = []
+            for col_idx, (x, w) in enumerate(horizontal_line_list):
+                color = self.large_img_bgr[y + 20, x + 20]
+                ch = 'W' if color[2] > 250 else 'B'
+                row_result.append(ch)
+            result.append(row_result)
+        return result
+
     @override
     def get_level_str_from_image(self: Self) -> str:
         horizontal_lines, vertical_lines = self.get_grid_lines_by_cell_count(self.cell_count)
+        horizontal_line_results = self.analyze_horizontal_line(1370, 20, 1170)
+        if len(horizontal_line_results) == 1:
+            vertical_lines = vertical_lines[:-1]
         matrix = self.recognize_digits(horizontal_lines, vertical_lines)
-        level_str = get_level_str_from_matrix(matrix, to_base_36)
+        colors = self.recognize_color(horizontal_lines, vertical_lines)
+        process_matrix_with_colors(matrix, colors)
+        level_str = get_level_str_from_matrix(matrix)
         return level_str
 
 
 if __name__ == "__main__":
     analyzer = _Analyzer()
-    analyzer.take_snapshot(app_series_no=4, start_level=301)
-    analyzer.get_level_board_size_from_puzzle()
-    # analyzer.get_levels_str_from_puzzle()
+    # analyzer.take_snapshot(app_series_no=4)
+    # analyzer.get_level_board_size_from_puzzle()
+    analyzer.get_levels_str_from_puzzle()
